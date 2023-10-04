@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -25,6 +26,8 @@ class RegisterRequest extends FormRequest
             'name' => 'required|string|min:3|max:64',
             'phone' => 'required|string|max:20|unique:users,phone',
             'password' => 'required|confirmed|min:6|max:100',
+            'email'=>'required|string|max:100|unique:users,email',
+            'type_id'=> Rule::in([1,2]),
         ];
     }
 }
