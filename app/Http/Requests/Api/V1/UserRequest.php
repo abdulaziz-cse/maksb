@@ -52,7 +52,7 @@ class UserRequest extends FormRequest
             'about' => 'sometimes|required|min:6|max:300',
             'purchase_purpose' => 'sometimes|required|min:6|max:200',
             'budget' => 'sometimes|required|min:6|max:200',
-            'favorite_value' => 'sometimes|required|min:6|max:200',
+            'favorite_value' => 'sometimes|required|min:3|max:200',
             'profession' => 'sometimes|required|min:6|max:200',
             'owner_of' => 'sometimes|required|min:6|max:200',
             'portfolio' => 'sometimes|required|min:6|max:200',

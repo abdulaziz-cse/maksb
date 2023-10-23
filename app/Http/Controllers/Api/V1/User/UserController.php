@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Api\V1\BaseApiController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\UserRequest;
 use App\Services\UserService;
-use Illuminate\Http\Request;
+
 
 class UserController extends BaseApiController
 {
@@ -15,6 +14,7 @@ class UserController extends BaseApiController
 
     public function __construct(UserService $service)
     {
+        parent::__construct();
         $this->service = $service;
     }
 
