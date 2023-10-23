@@ -19,6 +19,15 @@ return new class extends Migration
             $table->string('phone', 20)->unique();
             $table->timestamp('phone_verified_at')->nullable();
             $table->smallInteger('type_id');
+            $table->text('about')->nullable();
+            $table->string('purchase_purpose')->nullable();
+            $table->string('budget')->nullable();
+            $table->string('favorite_value')->nullable();
+            $table->string('profession')->nullable();
+            $table->string('owner_of')->nullable();
+            $table->string('portfolio')->nullable();
+            $table->string('website')->nullable();
+            $table->string('photo')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();

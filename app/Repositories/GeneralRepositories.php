@@ -35,8 +35,10 @@ class GeneralRepositories implements GeneralRepositoryInterface
        return $this->model::create($Details);
     }
 
-    public function update(array $Details) :Model
+    public function update(int $id,array $Details) :Model
     {
-       return $this->model::update($Details);
+        $model = $this->getOne($id);
+        $model->update($Details);
+        return $model;
     }
 }

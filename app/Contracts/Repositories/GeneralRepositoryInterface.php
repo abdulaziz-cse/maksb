@@ -8,5 +8,5 @@ interface GeneralRepositoryInterface
     public function getOne($id);
     public function deleteOne($id);
     public function create(array $Details);
-    public function update(array $Details);
+    public function update(int $id,array $Details);
 }

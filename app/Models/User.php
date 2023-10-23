@@ -26,6 +26,14 @@ class User extends Authenticatable implements HasMedia
         'email',
         'type_id',
         'password',
+        'about',
+        'purchase_purpose',
+        'budget',
+        'favorite_value',
+        'profession',
+        'owner_of',
+        'portfolio',
+        'website',
     ];
 
     /**
@@ -47,5 +55,16 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function photo()
+    {
+        return $this->morphOne('App\Models\Media', 'model')
+            ->where('collection_name', 'avatars');
+    }
+
+    public function isAdmin()
+    {
+        return false;
+    }
 
 }
