@@ -27,9 +27,9 @@ class SendVerificationCodeRequest extends FormRequest
 
         $phoneRule = 'required|string|max:20';
 
-        if (! auth('sanctum')->check()) {
-            $phoneRule .= '|exists:users';
-        }
+//        if (! auth('sanctum')->check()) {
+//            $phoneRule .= '|exists:users';
+//        }
 
         return [
             'phone' => $phoneRule,

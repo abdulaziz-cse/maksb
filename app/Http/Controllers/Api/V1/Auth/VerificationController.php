@@ -27,7 +27,7 @@ class VerificationController extends BaseApiController
         $this->authService->sendVerificationCode($data['phone'], $data['action']);
 
         return response()->json([
-            'message' => 'Verification code sent to ' . $data['phone'] . ' valid for 15 minutes.',
+            'message' => 'Verification code sent to ' . $data['phone'] . ' valid for 1 minutes.',
         ], 200);
     }
 

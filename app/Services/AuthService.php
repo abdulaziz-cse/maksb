@@ -67,8 +67,8 @@ class AuthService
             return self::VERIFICATION_CODE_INVALID;
         }
 
-        if ($verificationCode->created_at->lt(now()->subMinutes(15))) {
-            // 15 minutes passed, code expired
+        if ($verificationCode->created_at->lt(now()->subMinutes(1))) {
+            // 1 minutes passed, code expired
             return self::VERIFICATION_CODE_EXPIRED;
         }
 
