@@ -74,7 +74,7 @@ class AuthService
 
         if (
             $verificationCode->action === VerificationAction::VERIFY_PHONE->value &&
-            $user = $this->userRepository->getFirst(['phone' => $data['phone']])
+            $user = $this->userRepository->getFirst('phone', $data['phone'])
         ) {
             $user->phone_verified_at = now();
             $user->save();

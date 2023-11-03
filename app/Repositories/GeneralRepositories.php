@@ -41,4 +41,9 @@ class GeneralRepositories implements GeneralRepositoryInterface
         $model->update($Details);
         return $model;
     }
+
+    public function getFirst($columnName,$value) :Model
+    {
+        return $this->model::where($columnName,$value)->first();
+    }
 }
