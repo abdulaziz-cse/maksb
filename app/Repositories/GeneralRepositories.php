@@ -42,7 +42,7 @@ class GeneralRepositories implements GeneralRepositoryInterface
         return $model;
     }
 
-    public function getFirst($columnName,$value) :Model
+    public function getFirst($columnName,$value)
     {
         return $this->model::where($columnName,$value)->first();
     }
