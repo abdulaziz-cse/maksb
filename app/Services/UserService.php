@@ -38,7 +38,7 @@ class UserService
         $user = $this->userRepository->create($data);
 
         // Assign user role
-//        $user->assignRole('customer');
+        $user->assignRole('consumer');
 
         return $user;
     }
