@@ -23,9 +23,10 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 $command->ask('Email Address'),
                 $command->ask('Phone Number'),
                 $command->choice('Role', ['Super-Admin', 'Admin', 'Consumer'], 1),
+                $command->choice('Type', [1 => 'Seller', 2=> 'Buyer'], 1),
                 $command->secret('Password'),
             ];
-        }, function ($name, $email, $phone, $role, $password) {
+        }, function ($name, $email, $phone, $role,$type, $password) {
             $emailExists = User::where('email', $email)->exists();
             if ($emailExists) {
                 throw new \Exception('Email address already exists.');
@@ -43,6 +44,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
                 'password' => $password,
                 'email_verified_at' => now(),
                 'phone_verified_at' => now(),
+                'type_id' => $type=='Seller' ? 1:2
             ]);
 
             $user->save();
