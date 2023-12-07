@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
@@ -50,6 +51,12 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
             $user->save();
 
             $user->assignRole(strtolower(str_replace(' ', '', $role)));
+        });
+
+        Nova::footer(function ($request) {
+            return Blade::render('
+            Powered By Maksb.com
+        ');
         });
     }
 
