@@ -10,4 +10,6 @@ class RevenueSource extends Model
     use HasFactory;
 
     protected $table = 'revenue_sources';
+    public $timestamps = false;
+
 }

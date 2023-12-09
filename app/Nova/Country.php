@@ -3,20 +3,18 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Category extends Resource
+class Country extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Category>
+     * @var class-string<\App\Models\Country>
      */
-    public static $model = \App\Models\Category::class;
+    public static $model = \App\Models\Country::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -35,13 +33,6 @@ class Category extends Resource
     ];
 
     /**
-     * The relationships that should be eager loaded on index queries.
-     *
-     * @var array
-     */
-    public static $with = ['parent'];
-
-    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Laravel\Nova\Http\Requests\NovaRequest  $request
@@ -52,10 +43,6 @@ class Category extends Resource
         return [
             ID::make()->sortable(),
             Text::make('Name')->sortable()->required()->showOnPreview(),
-            BelongsTo::make('Category','Parent')->sortable()->nullable()->showOnPreview(),
-            DateTime::make('Created At','created_at')->sortable()->showOnPreview()->hide(),
-            DateTime::make('Updated At','updated_at')->sortable()->showOnPreview()->hide(),
-
         ];
     }
 
@@ -101,5 +88,10 @@ class Category extends Resource
     public function actions(NovaRequest $request)
     {
         return [];
+    }
+
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
     }
 }

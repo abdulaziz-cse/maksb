@@ -3,20 +3,19 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\BelongsTo;
-use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\Avatar;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Category extends Resource
+class Platform extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Category>
+     * @var class-string<\App\Models\Platform>
      */
-    public static $model = \App\Models\Category::class;
+    public static $model = \App\Models\Platform::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -34,12 +33,8 @@ class Category extends Resource
         'id','name'
     ];
 
-    /**
-     * The relationships that should be eager loaded on index queries.
-     *
-     * @var array
-     */
-    public static $with = ['parent'];
+    public static $with = ['logo'];
+
 
     /**
      * Get the fields displayed by the resource.
@@ -52,10 +47,24 @@ class Category extends Resource
         return [
             ID::make()->sortable(),
             Text::make('Name')->sortable()->required()->showOnPreview(),
-            BelongsTo::make('Category','Parent')->sortable()->nullable()->showOnPreview(),
-            DateTime::make('Created At','created_at')->sortable()->showOnPreview()->hide(),
-            DateTime::make('Updated At','updated_at')->sortable()->showOnPreview()->hide(),
-
+            Avatar::make('Image')->squared()
+                ->store(function (Request $request, $model) {
+                    $model->addMediaFromRequest('image')->toMediaCollection('platforms');
+                    return true;
+                })
+                ->preview(function () {
+                    return $this->getFirstMediaUrl('platforms', 'small');
+                })
+                ->thumbnail(function () {
+                    return $this->getFirstMediaUrl('platforms', 'small');
+                })
+                ->download(function() {
+                    return $this->logo;
+                })
+                ->delete(function () {
+                    $this->media()->delete();
+                    return true;
+                }),
         ];
     }
 
@@ -101,5 +110,10 @@ class Category extends Resource
     public function actions(NovaRequest $request)
     {
         return [];
+    }
+
+    public function authorizedToDelete(Request $request)
+    {
+        return false;
     }
 }
