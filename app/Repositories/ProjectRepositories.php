@@ -44,6 +44,7 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
         } catch (\Exception $e) {
             DB::rollback();
             // something went wrong
+            dd($e);
         }
 
     }

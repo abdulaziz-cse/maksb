@@ -22,7 +22,8 @@ class ProjectService
     public function store(array $data) : Project
     {
         $projectData = $data;
-        array_splice($projectData,-9);
+//        array_splice($projectData,-9);
+        unset($projectData['file1'], $projectData['file2'],$projectData['file3'],$projectData['image1'], $projectData['image2'],$projectData['image3'],$projectData['assets'], $projectData['platforms'],$projectData['revenue_sources']);
         $projectData['user_id'] = auth('sanctum')->user()->id;
         $project = $this->projectRepository->store($data,$projectData);
         $project->load(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user']);
