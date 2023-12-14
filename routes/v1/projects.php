@@ -11,4 +11,5 @@ Route::group([
     Route::post('/', 'ProjectController@index')->name('project.index');
     Route::get('/getlist', 'ProjectController@getListForUser')->name('project.getList');
     Route::delete('/destroy/{id}', 'ProjectController@destroy')->name('project.destroy');
+    Route::get('/{id}', 'ProjectController@show')->name('project.show');
 });

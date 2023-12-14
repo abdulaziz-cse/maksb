@@ -40,4 +40,9 @@ class ProjectService
         return $this->projectRepository->destroy($id);
     }
 
+    public function show(int $id)
+    {
+        return $this->projectRepository->get($id);
+    }
+
 }

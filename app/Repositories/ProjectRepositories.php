@@ -18,6 +18,11 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
         return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user'])->where('user_id',$user_id)->get();
     }
 
+    public function get(int $id)
+    {
+        return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user'])->where('id',$id)->first();
+    }
+
     public function store(array $data,array $projectData) : Project
     {
         DB::beginTransaction();

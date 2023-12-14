@@ -49,4 +49,10 @@ class ProjectController extends BaseApiController
         ]);
     }
 
+    public function show(int $id)
+    {
+        $project = $this->service->show($id);
+        return response()->json($project);
+    }
+
 }
