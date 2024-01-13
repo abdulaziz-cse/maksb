@@ -37,4 +37,14 @@ class LookUpService
         return $this->lookUpRepository->revenueSource();
     }
 
+    public function buyerType()
+    {
+        return $this->lookUpRepository->buyerType();
+    }
+
+    public function buyerStatus()
+    {
+        return $this->lookUpRepository->buyerStatus();
+    }
+
 }

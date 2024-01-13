@@ -25,4 +25,17 @@ class BuyerController extends BaseApiController
         return response()->json($buyer);
     }
 
+    public function getListForUser(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $buyers = $this->service->getList($user_id);
+        return response()->json($buyers);
+    }
+
+    public function show(int $id)
+    {
+        $buyer = $this->service->show($id);
+        return response()->json($buyer);
+    }
+
 }

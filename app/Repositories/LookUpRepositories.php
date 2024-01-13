@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\LookUpRepositoryInterface;
 use App\Models\Asset;
+use App\Models\BuyerStatus;
+use App\Models\BuyerType;
 use App\Models\Country;
 use App\Models\Currency;
 use App\Models\Package;
@@ -50,4 +52,17 @@ class LookUpRepositories implements LookUpRepositoryInterface
         $this->setModel(RevenueSource::class);
         return $this->model::all();
     }
+
+    public function buyerType()
+    {
+        $this->setModel(BuyerType::class);
+        return $this->model::all();
+    }
+
+    public function buyerStatus()
+    {
+        $this->setModel(BuyerStatus::class);
+        return $this->model::all();
+    }
+
 }

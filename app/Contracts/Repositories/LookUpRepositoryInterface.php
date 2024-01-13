@@ -9,5 +9,6 @@ interface LookUpRepositoryInterface
     public function currency();
     public function package();
     public function revenueSource();
-
+    public function buyerType();
+    public function buyerStatus();
 }

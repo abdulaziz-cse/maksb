@@ -23,4 +23,14 @@ class BuyerService
         $buyer->load(['projects','file']);
         return $buyer;
     }
+
+    public function getList(int $user_id)
+    {
+        return $this->buyerRepository->getList($user_id);
+    }
+
+    public function show(int $id)
+    {
+        return $this->buyerRepository->get($id);
+    }
 }
