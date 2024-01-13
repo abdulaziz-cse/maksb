@@ -27,7 +27,9 @@ class DatabaseSeeder extends Seeder
             CurrenciesSeeder::class,
             AssetsSeeder::class,
             PackagesSeeder::class,
-            RevenueSourcesSeeder::class
+            RevenueSourcesSeeder::class,
+            BuyerStatus::class,
+            BuyerTypes::class
         ]);
     }
 }

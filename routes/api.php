@@ -21,6 +21,7 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'namespace' => 'V1'], functio
     Route::prefix('projects')->group(base_path('routes/v1/projects.php'));
     Route::prefix('messaging')->group(base_path('routes/v1/messaging.php'));
     Route::prefix('notifications')->group(base_path('routes/v1/notifications.php'));
+    Route::prefix('buyers')->group(base_path('routes/v1/buyers.php'));
 
 });
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

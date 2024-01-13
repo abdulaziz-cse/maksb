@@ -80,5 +80,10 @@ class Project extends Model implements HasMedia
         return $this->hasOne(User::class,'id','user_id');
     }
 
+    public function buyers(): BelongsToMany
+    {
+        return $this->belongsToMany(Buyer::class,'projects_buyers','project_id','buyer_id');
+    }
+
 
 }
