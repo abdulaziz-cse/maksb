@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\Messageable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -66,6 +67,11 @@ class User extends Authenticatable implements HasMedia
     public function isAdmin()
     {
         return false;
+    }
+
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class,'favourites','user_id','project_id');
     }
 
 }
