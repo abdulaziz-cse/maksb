@@ -35,7 +35,7 @@ class PaymentRequest extends FormRequest
             'sadad_username' => 'required_if:method,sadad',
             'products' => 'required|array|min:1',
             'products.*' => 'required|array|size:2',
-            'products.*.id' => 'required|integer|exists:ads,id',
+            'products.*.id' => 'required|integer|exists:projects,id',
             'products.*.quantity' => 'required|integer|min:1|max:100',
         ];
     }

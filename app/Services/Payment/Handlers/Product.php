@@ -57,7 +57,9 @@ class Product implements PaymentHandler
 //				$this->data['products'][$key]['price'] = $product->price;
 //			}
 //            else {
-				$amount += $p['price'] * $p['quantity'];
+				$amount += 50 * $p['quantity'];
+//                $amount += $p['price'] * $p['quantity'];
+
 //			}
 		}
 
