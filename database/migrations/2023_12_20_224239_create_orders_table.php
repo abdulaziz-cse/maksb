@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('currency', 10);
             $table->string('payment_gateway', 50);
             $table->string('payment_method', 50);
-            $table->enum('status', ['Pending', 'Completed', 'Failed', 'Canceled']);
+            $table->string('status');
             $table->string('transaction_id')->nullable();
             $table->string('transaction_url')->nullable();
             $table->timestamps();

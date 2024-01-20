@@ -2,12 +2,11 @@
 
 namespace App\Services\Payment;
 
-use App\Models\Ad;
 use App\Models\Order;
 use App\Models\User;
 use App\Contracts\Repositories\OrderRepositoryInterface;
-use Exception;
-use Omnipay\Omnipay;
+use Illuminate\Support\Facades\Http;
+
 
 /**
  * To handle payment for a new entity
@@ -17,61 +16,50 @@ use Omnipay\Omnipay;
 
 class PaymentService {
 
-	/**
-	 * An instance of current payment gateway
-	 *
-	 * @var \App\Services\Payment\PaymentMethod
-	 */
-	private $paymentMethod;
-
-	/**
-	 * Course Service
-	 * @var \App\Services\EnrollService;
-	 */
-	private $enrollService;
-
-	/**
-	 * Data provided to process the payment
-	 *
-	 * @var array
-	 */
-	private $data;
-
-	private $defaultPaymentType = 'product';
-
 	public function __construct(OrderRepositoryInterface $orderRepository)
 	{
 		$this->orderRepository = $orderRepository;
 	}
 
-	/**
-	 * Initialize the service
-	 *
-	 * @param  string  $gateway
-	 * @return void
-	 */
-	public function initialize(string $gateway): void
+
+	public function handlePayment(User $user, array $data)
 	{
-		$this->paymentMethod = PaymentMethodFactory::make($gateway);
-	}
+        $callbackUrl = config('maksb.frontend_url').'/checkout/result';
+        $secret_key = config('maksb.moyasar_api_key');
+        $response = Http::withBasicAuth($secret_key, '')->post('https://api.moyasar.com/v1/payments',
+        [
+        "amount"=> $data['amount'],
+        "currency" => "SAR",
+        "description"=> "Payment for project",
+        "callback_url"=> $callbackUrl,
+        "source" => [
+            "type"=> "creditcard",
+            "name"=> $data['card_name'],
+            "number"=> $data['card_number'],
+            "cvc"=> $data['card_cvc'],
+            "month"=> $data['card_month'],
+            "year"=> $data['card_year']
+                    ]
+        ]);
+       $responseArray =  $response->json();
+       $order = $this->orderRepository->create([
+           'user_id' => $user->id,
+           'amount' => $responseArray['amount'],
+           'currency' => $responseArray['currency'],
+           'payment_gateway' => 'Moyasar',
+           'payment_method' => 'creditcard',
+           'status' => $responseArray['status'],
+           'transaction_id' => $responseArray['id'],
+           'transaction_url' => $responseArray['source']['transaction_url']
+       ]);
 
-	public function handlePayment(User $user, array $data): Order
-	{
-		$data['payment_type'] = $data['payment_type'] ?? $this->defaultPaymentType;
+       return $order;
 
-		$this->initialize($data['gateway']);
-
-		$handler = $this->getPaymentHandler($user, $data);
-		$order = $handler->purchase();
-
-		return $order;
 	}
 
 	public function verify(int $userId, string $transactionId)
 	{
 		$order = $this->orderRepository->getFirstTrans($userId,$transactionId);
-
-//        $order->load('shippingAddress');
 
         return $order;
 	}
@@ -120,18 +108,4 @@ class PaymentService {
         }
 	}
 
-	public function getPaymentHandler(User $user, array $data) {
-		$handlerClassName = '\App\Services\Payment\Handlers\\' . ucfirst($data['payment_type']);
-
-		if (! class_exists($handlerClassName)) {
-			abort(400, ucfirst($data['payment_type']) . ' payment not available');
-		}
-
-		return new $handlerClassName(
-			$user,
-			$data,
-			$this->paymentMethod,
-			$this->orderRepository,
-		);
-	}
 }

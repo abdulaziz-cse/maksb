@@ -41,13 +41,9 @@ class PaymentController extends BaseApiController
     public function pay(PaymentRequest $request)
     {
     	$data = $request->validated();
+        $order = $this->paymentService->handlePayment(auth()->user(), $data);
+        return response()->json($order);
 
-    	try {
-    		$order = $this->paymentService->handlePayment(auth()->user(), $data);
-            return response()->json($order);
-    	} catch (PaymentGatewayException $e) {
-    		abort(400, $e->getMessage());
-    	}
     }
 
     public function webhook(Request $request): void
