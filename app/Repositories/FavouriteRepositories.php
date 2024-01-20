@@ -22,7 +22,7 @@ class FavouriteRepositories extends GeneralRepositories implements FavouriteRepo
 
     public function getList($user_id)
     {
-       return User::find($user_id)->projects()->get();
+       return User::find($user_id)->projects()->with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user'])->get();
     }
 
     public function destroy($id)

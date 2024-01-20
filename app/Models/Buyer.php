@@ -24,7 +24,8 @@ class Buyer extends Model implements HasMedia
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class,'projects_buyers','buyer_id','project_id');
+        return $this->belongsToMany(Project::class,'projects_buyers','buyer_id','project_id')
+            ->With(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user']);
     }
 
     public function file()
