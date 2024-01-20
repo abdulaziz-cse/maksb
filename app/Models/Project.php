@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use PHPUnit\Framework\Constraint\Count;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use function PHPUnit\Framework\isEmpty;
 
 class Project extends Model implements HasMedia
 {
@@ -26,6 +27,15 @@ class Project extends Model implements HasMedia
 
     ];
 
+    protected $appends = [
+        'isFavorite'
+        ];
+
+    public function getIsFavoriteAttribute()
+    {
+        $relations = $this->getRelations();
+        return count($relations['currentUserFavorite']);
+    }
 
     public function revenueSources(): BelongsToMany
     {
@@ -83,6 +93,11 @@ class Project extends Model implements HasMedia
     public function buyers(): BelongsToMany
     {
         return $this->belongsToMany(Buyer::class,'projects_buyers','project_id','buyer_id');
+    }
+
+    public function currentUserFavorite()
+    {
+        return $this->hasMany(Favourite::class,'project_id','id')->where('favourites.user_id',auth('sanctum')->id());
     }
 
 
