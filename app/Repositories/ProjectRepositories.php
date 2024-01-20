@@ -15,7 +15,7 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
 
     public function getList(int $user_id)
     {
-        return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user'])->where('user_id',$user_id)->get();
+        return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite'])->where('user_id',$user_id)->get();
     }
 
     public function get(int $id)
@@ -56,7 +56,7 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
 
     public function index(array $data)
     {
-        $result = $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user']);
+        $result = $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite']);
         if (!empty($data['name']))
             $result = $result->where('name', 'like', '%'.$data['name'].'%');
         if (!empty($data['category']))
