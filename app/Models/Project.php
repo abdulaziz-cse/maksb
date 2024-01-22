@@ -34,7 +34,10 @@ class Project extends Model implements HasMedia
     public function getIsFavoriteAttribute()
     {
         $relations = $this->getRelations();
+        if(isset($relations['currentUserFavorite']))
         return count($relations['currentUserFavorite']);
+        else
+            return 0;
     }
 
     public function revenueSources(): BelongsToMany
