@@ -10,4 +10,5 @@ class Package extends Model
     use HasFactory;
 
     protected $table = 'packages';
+    public $timestamps = false;
 }
