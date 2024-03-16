@@ -123,7 +123,7 @@ class AuthService
         $sinchKey = config('maksb.sinch_key');
         $sinchSecret = config('maksb.sinch_secret');
 
-//        $phone = $this->formatPhoneNumber($phone);
+       $phone = $this->formatPhoneNumber($phone);
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
@@ -145,7 +145,7 @@ class AuthService
         $sinchKey = config('maksb.sinch_key');
         $sinchSecret = config('maksb.sinch_secret');
 
-//        $phone = $this->formatPhoneNumber($phone);
+       $phone = $this->formatPhoneNumber($phone);
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
