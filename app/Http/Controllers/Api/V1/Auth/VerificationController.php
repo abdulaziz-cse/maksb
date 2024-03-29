@@ -2,48 +2,34 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
-use App\Http\Controllers\Api\V1\BaseApiController;
-use App\Http\Requests\Api\V1\SendVerificationCodeRequest;
-use App\Http\Requests\Api\V1\VerifyCodeRequest;
+use App\Traits\GeneralTrait;
 use App\Services\AuthService;
-use Illuminate\Http\Request;
+use App\Http\Requests\Api\V1\Auth\VerifyCodeRequest;
+use App\Http\Requests\Api\V1\Auth\SendVerificationCodeRequest;
 
-class VerificationController extends BaseApiController
+class VerificationController
 {
-    private $authService;
+    use GeneralTrait;
 
-    public function __construct(AuthService $authService)
+    public function __construct(private AuthService $authService)
     {
-        parent::__construct();
-
-        $this->authService = $authService;
     }
-
 
     public function sendCode(SendVerificationCodeRequest $request)
     {
-        $data = $request->validated();
+        $requestData = $request->validated();
 
-        $this->authService->sendVerificationCode($data['phone'], $data['action']);
+        $this->authService->sendOTPByPhoneNumber($requestData);
 
-        return response()->json([
-            'message' => 'Verification code sent to ' . $data['phone'] . ' valid for 1 minutes.',
-        ], 200);
+        return $this->returnSuccessMessage('Verification code was sent successfully.');
     }
 
     public function verifyCode(VerifyCodeRequest $request)
     {
-        $data = $request->validated();
+        $requestData = $request->validated();
 
-        $result = $this->authService->verifyCode($data);
+        $this->authService->VerifyOTP($requestData);
 
-        $statusCode = $result === AuthService::VERIFICATION_CODE_VALID ? 200 : 422;
-
-        return response()->json([
-            'message' => 'Code ' . $result,
-            'result' => $result,
-        ], $statusCode);
+        return $this->returnSuccessMessage('Phone - ' . $requestData['phone'] . ' was verifed successfully.');
     }
-
-
 }
