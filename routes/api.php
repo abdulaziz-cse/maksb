@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
 Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'namespace' => 'V1'], function () {
     Route::prefix('auth')->group(base_path('routes/v1/auth.php'));
     Route::prefix('users')->group(base_path('routes/v1/users.php'));
@@ -24,7 +25,6 @@ Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'namespace' => 'V1'], functio
     Route::prefix('buyers')->group(base_path('routes/v1/buyers.php'));
     Route::prefix('favourites')->group(base_path('routes/v1/favourites.php'));
     Route::prefix('payments')->group(base_path('routes/v1/payments.php'));
-
 });
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
