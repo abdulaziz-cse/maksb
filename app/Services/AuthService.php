@@ -33,8 +33,10 @@ class AuthService
 
     public function sendVerificationCode(string $phone, string $action): bool
     {
+        $phone = $this->formatPhoneNumber($phone);
+
         $result = $this->smsProvider->sendVerificationOtp($phone);
-        
+
         if (!$result) {
             throw new \Exception('Failed to send verification code');
         }
@@ -44,7 +46,9 @@ class AuthService
 
     public function verifyCode($data): string
     {
-        $result = $this->smsProvider->verifyOtp($data['phone'], $data['code']);
+        $phone = $this->formatPhoneNumber($data['phone']);
+
+        $result = $this->smsProvider->verifyOtp($phone, $data['code']);
         if (!$result) {
             return self::VERIFICATION_CODE_INVALID;
         }
