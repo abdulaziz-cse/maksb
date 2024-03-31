@@ -217,6 +217,7 @@ class AuthService
     public function VerifyOTP($requestData)
     {
         $phone = $requestData['phone'];
+        $phone = $this->formatPhoneNumber($phone);
         $code = $requestData['code'];
 
         $verificationCode = $this->verificationService->getOneByPhone($phone);
