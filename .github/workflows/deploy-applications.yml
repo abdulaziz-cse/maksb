@@ -6,35 +6,65 @@ on:
       - main
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
+      - name: Checkout maksb
+        uses: actions/checkout@v3
+        with:
+          ref: main
 
-    - name: Build application
-      run: |
-        npm install
-        npm run build
+      - name: Build application
+        run: |
+          npm install
+          npm run build
 
-    - name: Configure PHP
-      uses: shivammathur/setup-php@main
-      with:
-        php-version: 8.2
-        extensions: mbstring, ctype, fileinfo, openssl, bcmath, json, tokenizer, xml
+      - name: Configure PHP
+        uses: shivammathur/setup-php@main
+        with:
+          php-version: 8.2
+          extensions: mbstring, ctype, fileinfo, openssl, bcmath, json, tokenizer, xml
 
-    - name: Install Composer
-      run: composer install --no-dev --no-interaction --prefer-dist
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-dev
 
-    - name: Create deployment artifacts
-      env:
-        GITHUB_SHA: ${{github.sha}}
-      run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=node_modules *
+      - name: Upload files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
+          username: ${{ secrets.PRODUCTION_SERVER_USERNAME }}
+          key: "${{ secrets.PRODUCTION_SERVER_SSH_KEY }}"
+          source: "./"
+          target: "/tmp/new-version"
 
-    - name: store artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: app-build
-        path: ${{github.sha}}.tar.gz
+      - name: Setup new version on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PRODUCTION_SERVER_HOST }}
+          username: ${{ secrets.PRODUCTION_SERVER_USERNAME }}
+          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
+          script: |
+            # Stop Nginx
+            # sudo service nginx stop
+
+            # Copy the .env file to the new version
+            cp /var/www/html/development/.env /tmp/new-version/.env
+
+            # Remove the old version
+            cd /var/www/html
+            sudo rm -rf development
+
+            # Move the new version to the right place
+            sudo mv /tmp/new-version development
+
+            # Update ownership and permissions
+            sudo chown -R $USER:www-data development
+            sudo chmod -R 775 development/storage
+            sudo chmod -R 775 development/bootstrap/cache
+
+            # Migrate the database
+            #cd development
+            #php artisan migrate --force --no-interaction
+
+            # Start Nginx
+            # sudo service nginx start
