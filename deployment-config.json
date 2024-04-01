@@ -1,0 +1,12 @@
+[
+    {
+        "name": "development",
+        "ip": "test",
+        "username": "test",
+        "password": "test",
+        "port": "22",
+        "beforeHooks": "php artisan migrate",
+        "afterhooks": "",
+        "path": "/var/www/html"
+    }
+]
