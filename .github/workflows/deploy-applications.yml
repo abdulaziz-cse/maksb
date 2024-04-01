@@ -1,6 +1,5 @@
-name: Push-to-EC2
+name: Deploy
 
-# Trigger deployment only on push to main branch
 on:
   push:
     branches:
@@ -8,11 +7,10 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to EC2 on master branch push
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout the files
+      - name: Checkout Maksb
         uses: actions/checkout@v3
 
       - name: Setup PHP
@@ -23,8 +21,8 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --prefer-dist --no-interaction --no-dev
 
-      - name: Deploy to Server 1
-        uses: easingthemes/ssh-deploy@main
+      - name: Transfer files to maksb-bakcend
+        uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
@@ -32,7 +30,7 @@ jobs:
           source: "./*"
           target: "/var/www/html/development"
 
-      - name: Executing remote ssh commands using ssh key
+      - name: SSH into EC2 and start application
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
