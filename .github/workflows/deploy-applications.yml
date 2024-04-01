@@ -10,13 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Maksb
         uses: actions/checkout@v3
 
-      - name: Install dependencies
-        run: |
-          npm install
-          composer install
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-interaction --no-dev
 
       - name: Transfer files to maksb-bakcend
         uses: appleboy/scp-action@master
