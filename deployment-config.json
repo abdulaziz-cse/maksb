@@ -5,7 +5,7 @@
         "username": "ubuntu",
         "port": "22",
         "beforeHooks": "echo $GITHUB_SHA",
-        "afterhooks": "",
+        "afterhooks": "php artisan key:generate",
         "path": "/var/www/html"
     }
 ]
