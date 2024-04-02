@@ -80,8 +80,11 @@ jobs:
           envs: GITHUB_SHA, ACTIVE_RELEASE_PATH
           script: |
             mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
-            mkdir -p $ACTIVE_RELEASE_PATH
             tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
+
+            if [ ! -d "${{ matrix.server.path }}/current" ]; then
+              ln -s "${{ matrix.server.path }}/releases/${GITHUB_SHA}" "${{ matrix.server.path }}/current"
+            fi
 
             rm -rf "${{ matrix.server.path }}/releases/${GITHUB_SHA}/storage"
             mkdir -p "${{ matrix.server.path }}/storage/{app, public, framework, logs}"
