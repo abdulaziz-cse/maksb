@@ -33,7 +33,9 @@ jobs:
         env:
           GITHUB_SHA: ${{ github.sha }}
 
-        run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=*node_modules
+        #run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=*node_modules
+        run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=.git --exclude=node_modules --exclude=vendor --exclude=storage/framework/cache/* --exclude=storage/framework/sessions/* --exclude=storage/framework/testing/* --exclude=storage/framework/views/* --exclude=storage/logs/* .
+
 
       - name: Store artifact for distribution
         uses: actions/upload-artifact@v2
