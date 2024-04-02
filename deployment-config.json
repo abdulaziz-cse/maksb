@@ -1,11 +1,10 @@
 [
     {
-        "name": "development",
-        "ip": "test",
-        "username": "test",
-        "password": "test",
+        "name": "Maksb-Backend",
+        "ip": "3.88.20.119",
+        "username": "ubuntu",
         "port": "22",
-        "beforeHooks": "php artisan migrate",
+        "beforeHooks": "",
         "afterhooks": "",
         "path": "/var/www/html"
     }
