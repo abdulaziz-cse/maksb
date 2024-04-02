@@ -4,7 +4,7 @@
         "ip": "3.88.20.119",
         "username": "ubuntu",
         "port": "22",
-        "beforeHooks": "echo $ACTIVE_RELEASE_PATH",
+        "beforeHooks": "echo $GITHUB_SHA",
         "afterhooks": "",
         "path": "/var/www/html"
     }
