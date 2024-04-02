@@ -27,6 +27,7 @@ jobs:
           host: ${{ secrets.PRODUCTION_SERVER_HOST }}
           username: ${{ secrets.PRODUCTION_SERVER_USERNAME }}
           key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
+          source: "./"
           target: "/var/www/html/development"
 
       - name: SSH into EC2 and start application
