@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout Maksb-backend
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -134,7 +134,7 @@ jobs:
           username: ${{ matrix.server.username }}
           key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
           port: ${{ matrix.server.port }}
-          envs: GITHUB_SHA,RELEASE_PATH,ACTIVE_RELEASE_PATH,STORAGE_PATH,BASE_PATH
+          envs: GITHUB_SHA, RELEASE_PATH, ACTIVE_RELEASE_PATH, STORAGE_PATH, BASE_PATH
           script: |
             ls -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            service php8.2-fpm reload
+            sudo service php8.2-fpm reload
