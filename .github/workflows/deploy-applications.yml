@@ -82,10 +82,6 @@ jobs:
             mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
             tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
 
-            if [ ! -d "${{ matrix.server.path }}/current" ]; then
-              ln -s "${{ matrix.server.path }}/releases/${GITHUB_SHA}" "${{ matrix.server.path }}/current"
-            fi
-
             rm -rf "${{ matrix.server.path }}/releases/${GITHUB_SHA}/storage"
             mkdir -p "${{ matrix.server.path }}/storage/{app, public, framework, logs}"
             mkdir -p "${{ matrix.server.path }}/storage/framework/{cache, sessions, testing, views}"
@@ -141,5 +137,5 @@ jobs:
           port: ${{ matrix.server.port }}
           envs: GITHUB_SHA, RELEASE_PATH, ACTIVE_RELEASE_PATH, STORAGE_PATH, BASE_PATH
           script: |
-            ls -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
+            ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
             sudo service php8.2-fpm reload
