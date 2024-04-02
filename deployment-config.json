@@ -1,9 +1,8 @@
 [
     {
-        "name": "Maksb-Backend",
+        "name": "maksb-backend",
         "ip": "3.88.20.119",
         "username": "ubuntu",
-        "port": "22",
         "beforeHooks": "",
         "afterhooks": "",
         "path": "/var/www/html"
