@@ -5,7 +5,7 @@
         "username": "ubuntu",
         "port": "22",
         "beforeHooks": "echo $GITHUB_SHA",
-        "afterhooks": "php artisan migrate",
+        "afterhooks": "",
         "path": "/var/www/html"
     }
 ]
