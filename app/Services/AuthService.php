@@ -2,12 +2,13 @@
 
 namespace App\Services;
 
-use App\Contracts\Repositories\UserRepositoryInterface;
-use App\Enums\VerificationAction;
-use App\Models\VerificationCode;
 use App\Models\User;
+use App\Models\VerificationCode;
+use App\Enums\VerificationAction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
+use App\Contracts\SmsProviderInterface;
+use App\Contracts\Repositories\UserRepositoryInterface;
 
 class AuthService
 {
@@ -15,31 +16,28 @@ class AuthService
     public const VERIFICATION_CODE_INVALID = 'invalid';
     public const VERIFICATION_CODE_VALID = 'valid';
 
-    private $sinchVerificationUrl = 'https://verification.api.sinch.com/verification/v1/verifications';
-
-    private $sinchSmsApiUrl = 'https://us.sms.api.sinch.com/xms/v1';
+    /**
+     * smsProvider
+     *
+     * @var \App\Services\TwilioService $smsProvider
+     */
+    private $smsProvider;
 
     private $userRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository, SmsProviderInterface $smsProvider)
     {
         $this->userRepository = $userRepository;
+        $this->smsProvider = $smsProvider;
     }
 
     public function sendVerificationCode(string $phone, string $action): bool
     {
-        $code = $this->generateVerificationCode();
+        $phone = $this->formatPhoneNumber($phone);
 
-        VerificationCode::create([
-            'phone' => $phone,
-            'code' => $code,
-            'action' => $action,
-            'created_at' => now(),
-        ]);
+        $result = $this->smsProvider->sendVerificationOtp($phone);
 
-        $successful = $this->sendOtpSms($phone, $code, $action.'-'.$code);
-
-        if (! $successful) {
+        if (!$result) {
             throw new \Exception('Failed to send verification code');
         }
 
@@ -48,34 +46,15 @@ class AuthService
 
     public function verifyCode($data): string
     {
-        // $data = ['phone' => '', 'code' => '', 'action' => ''];
-        $sinchVerifyResult = $this->sinchVerifyOtp($data['phone'], $data['code']);
+        $phone = $this->formatPhoneNumber($data['phone']);
 
-        $sinchSuccess = is_array($sinchVerifyResult) &&
-            isset($sinchVerifyResult['status'], $sinchVerifyResult['reference']) &&
-            $sinchVerifyResult['status'] === 'SUCCESSFUL';
-
-        if (! $sinchSuccess) {
+        $result = $this->smsProvider->verifyOtp($phone, $data['code']);
+        if (!$result) {
             return self::VERIFICATION_CODE_INVALID;
         }
 
-        $ourCode = substr(strrchr($sinchVerifyResult['reference'], '-'), 1);
-
-        $data['code'] = $ourCode;
-        $verificationCode = VerificationCode::where($data)->latest()->first();
-        if (! $verificationCode) {
-            return self::VERIFICATION_CODE_INVALID;
-        }
-
-        if ($verificationCode->created_at->lt(now()->subMinutes(1))) {
-            // 1 minutes passed, code expired
-            return self::VERIFICATION_CODE_EXPIRED;
-        }
-
-        if (
-            $verificationCode->action === VerificationAction::VERIFY_PHONE->value &&
-            $user = $this->userRepository->getFirst('phone', $data['phone'])
-        ) {
+        $user = $this->userRepository->getFirst('phone', $data['phone']);
+        if ($user) {
             $user->phone_verified_at = now();
             $user->save();
         }
@@ -84,7 +63,7 @@ class AuthService
             $userId = auth('sanctum')->id();
             // Store a redis key for 24 hours that this phone is verified
             // Used for profile update
-            Redis::set('user_'.$userId.'_verified_'.$data['phone'], 1, 'EX', 24 * 60 * 60);
+            Redis::set('user_' . $userId . '_verified_' . $data['phone'], 1, 'EX', 24 * 60 * 60);
         }
 
         return self::VERIFICATION_CODE_VALID;
@@ -118,49 +97,6 @@ class AuthService
         return strtoupper(substr(str_shuffle($allowedChars), 0, 5));
     }
 
-    public function sendOtpSms(string $phone, string $code, string $reference): bool
-    {
-        $sinchKey = config('maksb.sinch_key');
-        $sinchSecret = config('maksb.sinch_secret');
-
-       $phone = $this->formatPhoneNumber($phone);
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Basic '.base64_encode($sinchKey.':'.$sinchSecret),
-        ])->post($this->sinchVerificationUrl, [
-            'method' => 'sms',
-            'identity' => [
-                'type' => 'number',
-                'endpoint' => $phone,
-            ],
-            'reference' => $reference,
-        ]);
-
-        return $response->successful();
-    }
-
-    public function sinchVerifyOtp(string $phone, string $code): array
-    {
-        $sinchKey = config('maksb.sinch_key');
-        $sinchSecret = config('maksb.sinch_secret');
-
-       $phone = $this->formatPhoneNumber($phone);
-
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Basic '.base64_encode($sinchKey.':'.$sinchSecret),
-        ])->put($this->sinchVerificationUrl.'/number/'.$phone, [
-            'method' => 'sms',
-            'sms' => [
-                'code' => $code,
-            ],
-        ]);
-
-        $result = (array) json_decode((string)$response->getBody(), true);
-
-        return $result;
-    }
 
     public function formatPhoneNumber(string $phone): string
     {
@@ -169,7 +105,7 @@ class AuthService
         } elseif (strpos($phone, '+9660') === 0) {
             return preg_replace('/\+9660/', '+966', $phone, 1);
         } elseif (strpos($phone, '+966') === false) {
-            return '+966'.$phone;
+            return '+966' . $phone;
         }
 
         return $phone;
