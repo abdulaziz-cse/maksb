@@ -1,4 +1,4 @@
-name: Deploy Maksb
+name: Deploy Frontend
 
 on:
   push:
@@ -6,195 +6,18 @@ on:
       - main
 
 jobs:
-  create-depolyment-artifacts:
-    name: Create deployment artifacts
+  deploy:
     runs-on: ubuntu-latest
-    outputs:
-      deployment-matrix: ${{steps.export-deployment-matrix.outputs.deployment-matrix}}
-
     steps:
-      - name: Checkout Maksb-backend
+      - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          php-version: 8.2
-          extensions: mbstring, ctype, fileinfo, openssl, pdo_mysql, zip, bcmath, intl, gd, xml, tokenizer, PDO
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction --no-dev
-
-      - name: Create deployment artifacts
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-
-        run: tar -czf "${GITHUB_SHA}".tar.gz *
-
-      - name: Store artifact for distribution
-        uses: actions/upload-artifact@v2
-        with:
-          name: maksb-build
-          path: ${{ github.sha }}.tar.gz
-
-      - name: Export deployment matrix
-        id: export-deployment-matrix
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: Deploy to Server
         run: |
-          JSON="$(cat ./deployment-config.json)"
-          JSON="${JSON//'%'/'%25'}"
-          JSON="${JSON//$'\n'/'%0A'}"
-          JSON="${JSON//$'\r'/'%0D'}"
-          echo "::set-output name=deployment-matrix::$JSON"
+          ssh -o "StrictHostKeyChecking=no" ubuntu@54.211.147.107 'cd /home/ubuntu/stage/src/backend && git pull'
 
-
-  prepare-release-on-servers:
-    name: Prepare release on server
-    runs-on: ubuntu-latest
-    needs: create-depolyment-artifacts
-    strategy:
-      matrix:
-        server: ${{fromJson(needs.create-depolyment-artifacts.outputs.deployment-matrix)}}
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: maksb-build
-      - name: Upload
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          source: ${{ github.sha }}.tar.gz
-          target: ${{ matrix.server.path }}/artifacts  #/var/www/html/artifacts
-
-      - name: Extract archive and create directories
-        uses: appleboy/ssh-action@master
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          ACTIVE_RELEASE_PATH: ${{ matrix.server.path }}/current
-        with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          envs: GITHUB_SHA, ACTIVE_RELEASE_PATH
-          script: |
-            mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
-            tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
-
-            rm -rf ${{ matrix.server.path }}/releases/${GITHUB_SHA}/storage
-            mkdir -p ${{ matrix.server.path }}/storage/app
-            mkdir -p ${{ matrix.server.path }}/storage/public
-            mkdir -p ${{ matrix.server.path }}/storage/framework
-            mkdir -p ${{ matrix.server.path }}/storage/logs
-            mkdir -p ${{ matrix.server.path }}/storage/framework/cache
-            mkdir -p ${{ matrix.server.path }}/storage/framework/sessions
-            mkdir -p ${{ matrix.server.path }}/storage/framework/testing
-            mkdir -p ${{ matrix.server.path }}/storage/framework/views
-            mkdir -p ${{ matrix.server.path }}/storage/framework/cache/data
-
-
-  run-before-hooks:
-    name: Before hooks
-    runs-on: ubuntu-latest
-    needs: [create-depolyment-artifacts, prepare-release-on-servers]
-    strategy:
-      matrix:
-        server: ${{fromJson(needs.create-depolyment-artifacts.outputs.deployment-matrix)}}
-    steps:
-      - name: Run before hooks
-        uses: appleboy/ssh-action@master
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          RELEASE_PATH: ${{ matrix.server.path }}/releases/${{ github.sha }}
-          ACTIVE_RELEASE_PATH: ${{ matrix.server.path }}/current
-          STORAGE_PATH: ${{ matrix.server.path }}/storage
-          BASE_PATH: ${{ matrix.server.path }}
-        with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          envs: GITHUB_SHA, RELEASE_PATH, ACTIVE_RELEASE_PATH, STORAGE_PATH, BASE_PATH
-          script: |
-            ${{ matrix.server.beforeHooks }}
-
-
-  activate-release:
-    name: Activate release
-    runs-on: ubuntu-latest
-    needs: [create-depolyment-artifacts, prepare-release-on-servers, run-before-hooks]
-    strategy:
-      matrix:
-        server: ${{fromJson(needs.create-depolyment-artifacts.outputs.deployment-matrix)}}
-    steps:
-      - name: Activate release
-        uses: appleboy/ssh-action@master
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          RELEASE_PATH: ${{ matrix.server.path }}/releases/${{ github.sha }}
-          ACTIVE_RELEASE_PATH: ${{ matrix.server.path }}/current
-          STORAGE_PATH: ${{ matrix.server.path }}/storage
-          BASE_PATH: ${{ matrix.server.path }}
-          LARAVEL_ENV: ${{ secrets.LARAVEL_ENV }}
-        with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          envs: GITHUB_SHA, RELEASE_PATH, ACTIVE_RELEASE_PATH, STORAGE_PATH, BASE_PATH, LARAVEL_ENV
-          script: |
-            printf "%s" "$LARAVEL_ENV" > "${BASE_PATH}/.env"
-            ln -s -f ${BASE_PATH}/.env $RELEASE_PATH
-            ln -s -f $STORAGE_PATH $RELEASE_PATH
-            ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
-            sudo service php8.2-fpm reload
-
-  run-after-hooks:
-    name: After hooks
-    runs-on: ubuntu-latest
-    needs: [create-depolyment-artifacts, prepare-release-on-servers, run-before-hooks, activate-release]
-    strategy:
-      matrix:
-        server: ${{fromJson(needs.create-depolyment-artifacts.outputs.deployment-matrix)}}
-    steps:
-      - name: Run before hooks
-        uses: appleboy/ssh-action@master
-        env:
-          GITHUB_SHA: ${{ github.sha }}
-          RELEASE_PATH: ${{ matrix.server.path }}/releases/${{ github.sha }}
-          ACTIVE_RELEASE_PATH: ${{ matrix.server.path }}/current
-          STORAGE_PATH: ${{ matrix.server.path }}/storage
-          BASE_PATH: ${{ matrix.server.path }}
-        with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          envs: GITHUB_SHA, RELEASE_PATH, ACTIVE_RELEASE_PATH, STORAGE_PATH, BASE_PATH
-          script: |
-            ${{ matrix.server.afterHooks }}
-
-  clean-up:
-    name: Clean Up
-    runs-on: ubuntu-latest
-    needs: [create-depolyment-artifacts, prepare-release-on-servers, run-before-hooks, activate-release, run-after-hooks]
-    strategy:
-      matrix:
-        server: ${{fromJson(needs.create-depolyment-artifacts.outputs.deployment-matrix)}}
-    steps:
-      - name: Run clean up
-        uses: appleboy/ssh-action@master
-        env:
-          RELEASE_PATH: ${{ matrix.server.path }}/releases
-          ARTIFACTS_PATH: ${{ matrix.server.path }}/artifacts
-        with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.PRODUCTION_SERVER_SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          envs: RELEASE_PATH, ARTIFACTS_PATH
-          script: |
-            cd $RELEASE_PATH && ls -t -l | tail -n +6 | awk '/^d/{print $NF}' | xargs rm -rf
-            cd $ARTIFACTS_PATH && ls -t -l | tail -n +6 | awk '/^d/{print $NF}' | xargs rm -rf
