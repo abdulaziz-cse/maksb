@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\User;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -8,7 +8,7 @@ use Illuminate\Validation\Rule;
 /**
  * @bodyParam password_confirmation string required Confirm password
  */
-class UserRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,7 +17,7 @@ class UserRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return auth()->check() && auth()->id() === (int) $this->route('id');
     }
 
     /**
@@ -27,23 +27,12 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        $userId = (int) $this->route('id');
+        $id = $this->route('user.id', null);
 
         return [
             'name' => 'sometimes|required|string|min:3|max:64',
-            'phone' => [
-                'sometimes',
-                'required',
-                'string',
-                'max:20',
-                Rule::unique('users')->ignore($userId),
-            ],
-            'email' => [
-                'nullable',
-                'string',
-                'email',
-                Rule::unique('users')->ignore($userId),
-            ],
+            'phone' => 'sometimes|required|string|max:20|unique:users,phone,' . $id . ',id',
+            'email' => 'nullable|string|email|max:100|unique:users,email,' . $id . ',id',
             'password' => 'sometimes|required|confirmed|min:6|max:100',
             'oldpassword' => 'required_with:password|string|max:100',
             'photo' => 'nullable|image|max:10240',
@@ -57,7 +46,6 @@ class UserRequest extends FormRequest
             'owner_of' => 'sometimes|required|min:6|max:200',
             'portfolio' => 'sometimes|required|min:6|max:200',
             'website' => 'sometimes|required|min:6|max:200',
-
         ];
     }
 }

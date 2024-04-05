@@ -2,8 +2,12 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Http\JsonResponse;
+use App\Exceptions\ModelNotFoundException;
+use Illuminate\Database\QueryException as LaravelQueryException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException as EloquentModelNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -26,5 +30,23 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+
+    /**
+     * Render the exception into an HTTP response.
+     *
+     * @return JsonResponse
+     */
+    public function render($request, Throwable $e)
+    {
+        if ($e instanceof EloquentModelNotFoundException) {
+            return (new ModelNotFoundException("the model not found"))->render();
+        } else if ($e instanceof LaravelQueryException) {
+            return (new QueryException($e->getMessage()))->render();
+        } else if ($e instanceof ModelNotFoundException) {
+            return $e->render();
+        }
+        return parent::render($request, $e);
     }
 }

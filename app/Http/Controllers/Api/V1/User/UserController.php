@@ -2,32 +2,38 @@
 
 namespace App\Http\Controllers\Api\V1\User;
 
-use App\Http\Controllers\Api\V1\BaseApiController;
-use App\Http\Requests\Api\V1\UserRequest;
+use App\Models\User;
+use App\Traits\GeneralTrait;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Resources\User\UserResource;
+use App\Http\Requests\Api\V1\User\UserUpdateRequest;
 
 
-class UserController extends BaseApiController
+class UserController
 {
+    use GeneralTrait;
 
-    private $service;
-
-    public function __construct(UserService $service)
+    public function __construct(private UserService $userService)
     {
-        parent::__construct();
-        $this->service = $service;
     }
 
-    public function getProfile($id)
+    public function show(User $user): JsonResponse
     {
-        $user = $this->service->getProfile((int) $id);
-        return response()->json($user);
+        return $this->returnDate(
+            new UserResource($user),
+            'User data send successfully.'
+        );
     }
 
-    public function updateProfile($id, UserRequest $request)
+    public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
-        $user = $this->service->updateProfile((int) $id, $data);
-        return response()->json($user);
+        $user = $this->userService->updateProfile($user->id, $data);
+
+        return $this->returnDate(
+            new UserResource($user),
+            'success'
+        );
     }
 }

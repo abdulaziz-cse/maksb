@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::redirect('/', 'http://maksb.sa');
+Route::redirect('/', 'https://staging.maksb.sa/');
