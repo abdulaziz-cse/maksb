@@ -13,4 +13,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::Route('/', 'welcome');//https://staging.maksb.sa/
+Route::get('/', function () {
+    return view('welcome');
+});//https://staging.maksb.sa/
