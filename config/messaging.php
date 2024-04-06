@@ -13,12 +13,12 @@ return [
             'height' => 200,
         ],
         'medium' => [
-            'fit_mode' => \Spatie\Image\Manipulations::FIT_CROP,
+            'fit_mode' => 'crop',
             'width' => 360,
             'height' => 360,
         ],
         'large' => [
-            'fit_mode' => \Spatie\Image\Manipulations::FIT_MAX,
+            'fit_mode' => 'max',
             'width' => 600,
             'height' => 600,
         ],

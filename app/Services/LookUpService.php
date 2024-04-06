@@ -46,5 +46,4 @@ class LookUpService
     {
         return $this->lookUpRepository->buyerStatus();
     }
-
 }

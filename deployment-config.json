@@ -1,0 +1,11 @@
+[
+    {
+        "name": "maksb-backend",
+        "ip": "3.88.20.119",
+        "username": "ubuntu",
+        "port": "22",
+        "beforeHooks": "echo $GITHUB_SHA",
+        "afterhooks": "cd $ACTIVE_RELEASE_PATH && php artisan migrate && php artisan cache:clear",
+        "path": "/var/www/html"
+    }
+]
