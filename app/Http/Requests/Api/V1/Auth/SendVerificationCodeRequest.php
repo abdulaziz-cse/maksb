@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\Auth;
 
 use App\Enums\VerificationAction;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VerifyCodeRequest extends FormRequest
+class SendVerificationCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,8 @@ class VerifyCodeRequest extends FormRequest
         $verificationActionsStr = implode(',', $verificationActions);
 
         return [
-            'phone' => 'required|string|max:20|exists:verification_codes',
-            'code' => 'required|string|min:4|max:6',
-            'action' => 'required|string|in:'.$verificationActionsStr,
+            'phone' => 'required|string|exists:users,phone|max:20',
+            'action' => 'nullable|string|in:' . $verificationActionsStr,
         ];
     }
 }

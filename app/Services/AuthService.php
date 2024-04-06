@@ -2,15 +2,22 @@
 
 namespace App\Services;
 
-use App\Contracts\Repositories\UserRepositoryInterface;
-use App\Enums\VerificationAction;
-use App\Models\VerificationCode;
 use App\Models\User;
+use Twilio\Rest\Client;
+use App\Enums\TwilioType;
+use App\Models\VerificationCode;
+use App\Enums\VerificationAction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Redis;
+use App\Services\Auth\VerificationService;
+use App\Contracts\Repositories\UserRepositoryInterface;
 
 class AuthService
 {
+    private string $twilioSid;
+    private string $twilioAuthToken;
+    private string $twilioVerifySid;
+
     public const VERIFICATION_CODE_EXPIRED = 'expired';
     public const VERIFICATION_CODE_INVALID = 'invalid';
     public const VERIFICATION_CODE_VALID = 'valid';
@@ -19,11 +26,11 @@ class AuthService
 
     private $sinchSmsApiUrl = 'https://us.sms.api.sinch.com/xms/v1';
 
-    private $userRepository;
-
-    public function __construct(UserRepositoryInterface $userRepository)
-    {
-        $this->userRepository = $userRepository;
+    public function __construct(
+        private UserRepositoryInterface $userRepository,
+        private VerificationService $verificationService,
+    ) {
+        $this->loadTwilioCredentials();
     }
 
     public function sendVerificationCode(string $phone, string $action): bool
@@ -37,9 +44,9 @@ class AuthService
             'created_at' => now(),
         ]);
 
-        $successful = $this->sendOtpSms($phone, $code, $action.'-'.$code);
+        $successful = $this->sendOtpSms($phone, $code, $action . '-' . $code);
 
-        if (! $successful) {
+        if (!$successful) {
             throw new \Exception('Failed to send verification code');
         }
 
@@ -55,7 +62,7 @@ class AuthService
             isset($sinchVerifyResult['status'], $sinchVerifyResult['reference']) &&
             $sinchVerifyResult['status'] === 'SUCCESSFUL';
 
-        if (! $sinchSuccess) {
+        if (!$sinchSuccess) {
             return self::VERIFICATION_CODE_INVALID;
         }
 
@@ -63,7 +70,7 @@ class AuthService
 
         $data['code'] = $ourCode;
         $verificationCode = VerificationCode::where($data)->latest()->first();
-        if (! $verificationCode) {
+        if (!$verificationCode) {
             return self::VERIFICATION_CODE_INVALID;
         }
 
@@ -84,7 +91,7 @@ class AuthService
             $userId = auth('sanctum')->id();
             // Store a redis key for 24 hours that this phone is verified
             // Used for profile update
-            Redis::set('user_'.$userId.'_verified_'.$data['phone'], 1, 'EX', 24 * 60 * 60);
+            Redis::set('user_' . $userId . '_verified_' . $data['phone'], 1, 'EX', 24 * 60 * 60);
         }
 
         return self::VERIFICATION_CODE_VALID;
@@ -123,11 +130,11 @@ class AuthService
         $sinchKey = config('maksb.sinch_key');
         $sinchSecret = config('maksb.sinch_secret');
 
-       $phone = $this->formatPhoneNumber($phone);
+        $phone = $this->formatPhoneNumber($phone);
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Basic '.base64_encode($sinchKey.':'.$sinchSecret),
+            'Authorization' => 'Basic ' . base64_encode($sinchKey . ':' . $sinchSecret),
         ])->post($this->sinchVerificationUrl, [
             'method' => 'sms',
             'identity' => [
@@ -145,12 +152,12 @@ class AuthService
         $sinchKey = config('maksb.sinch_key');
         $sinchSecret = config('maksb.sinch_secret');
 
-       $phone = $this->formatPhoneNumber($phone);
+        $phone = $this->formatPhoneNumber($phone);
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Basic '.base64_encode($sinchKey.':'.$sinchSecret),
-        ])->put($this->sinchVerificationUrl.'/number/'.$phone, [
+            'Authorization' => 'Basic ' . base64_encode($sinchKey . ':' . $sinchSecret),
+        ])->put($this->sinchVerificationUrl . '/number/' . $phone, [
             'method' => 'sms',
             'sms' => [
                 'code' => $code,
@@ -169,9 +176,68 @@ class AuthService
         } elseif (strpos($phone, '+9660') === 0) {
             return preg_replace('/\+9660/', '+966', $phone, 1);
         } elseif (strpos($phone, '+966') === false) {
-            return '+966'.$phone;
+            return '+966' . $phone;
         }
 
         return $phone;
+    }
+
+    private function loadTwilioCredentials()
+    {
+        $this->twilioSid = getenv("TWILIO_SID");
+        $this->twilioAuthToken = getenv("TWILIO_AUTH_TOKEN");
+        $this->twilioVerifySid = getenv("TWILIO_VERIFY_SID");
+    }
+
+    public function sendOTPByPhoneNumber($requestData)
+    {
+        $phone = $requestData['phone'];
+
+        $twilio = new Client($this->twilioSid, $this->twilioAuthToken);
+        $verification  =  $twilio->verify->v2->services($this->twilioVerifySid)
+            ->verifications
+            ->create(
+                $phone,
+                TwilioType::TWILIO_SMS->value
+            );
+
+        if (!$verification) {
+            throw new \Exception('Failed to send verification code. try agiain later');
+        }
+
+        $verificationData = [
+            'phone' => $phone,
+            'status' => $verification?->status,
+        ];
+        $this->verificationService->createOne($verificationData);
+    }
+
+    public function VerifyOTP($requestData)
+    {
+        $phone = $requestData['phone'];
+        $code = $requestData['code'];
+
+        $verificationCode = $this->verificationService->getOneByPhone($phone);
+
+        if (!$verificationCode) {
+            throw new \Exception('the phone you are trying to verify is not exists!');
+        }
+
+        $twilio = new Client($this->twilioSid, $this->twilioAuthToken);
+
+        $verification = $twilio->verify->v2->services($this->twilioVerifySid)
+            ->verificationChecks
+            ->create(array('to' => $phone, 'code' => $code));
+
+        if (!$verification) {
+            throw new \Exception('Failed to verify code. try agiain later');
+        }
+
+        $verificationData = [
+            'phone' => $phone,
+            'status' => $verification?->status,
+            'code' => $code,
+        ];
+        $this->verificationService->updateOne($verificationData, $verificationCode);
     }
 }
