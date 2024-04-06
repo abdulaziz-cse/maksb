@@ -209,6 +209,7 @@ class AuthService
         $verificationData = [
             'phone' => $phone,
             'status' => $verification?->status,
+            'created_at' => now()
         ];
         $this->verificationService->createOne($verificationData);
     }
