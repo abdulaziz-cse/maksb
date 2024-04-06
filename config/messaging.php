@@ -8,7 +8,7 @@ return [
     // Define conversions for images
     'image_conversions' => [
         'small' => [
-            'fit_mode' => \Spatie\Image\Manipulations::FIT_CROP,
+            'fit_mode' => 'crop',
             'width' => 200,
             'height' => 200,
         ],
