@@ -192,6 +192,7 @@ class AuthService
     public function sendOTPByPhoneNumber($requestData)
     {
         $phone = $requestData['phone'];
+        $phone = $this->formatPhoneNumber($phone);
 
         $twilio = new Client($this->twilioSid, $this->twilioAuthToken);
         $verification  =  $twilio->verify->v2->services($this->twilioVerifySid)
