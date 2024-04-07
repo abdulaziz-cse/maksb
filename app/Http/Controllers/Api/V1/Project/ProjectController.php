@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
-use App\Http\Controllers\Api\V1\BaseApiController;
-use App\Http\Requests\Api\V1\ProjectRequest;
-use App\Services\ProjectService;
 use Illuminate\Http\Request;
+use App\Services\ProjectService;
+use App\Http\Controllers\Api\V1\BaseApiController;
+use App\Http\Requests\Api\V1\Project\ProjectManageRequest;
 
 
 class ProjectController extends BaseApiController
@@ -22,7 +22,7 @@ class ProjectController extends BaseApiController
         return response()->json($projects);
     }
 
-    public function store(ProjectRequest $request)
+    public function store(ProjectManageRequest $request)
     {
         $data = $request->validated();
         $project = $this->projectService->store($data);
