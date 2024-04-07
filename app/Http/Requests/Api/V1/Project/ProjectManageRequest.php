@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\Project;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 
-class ProjectRequest extends FormRequest
+class ProjectManageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,6 @@ class ProjectRequest extends FormRequest
     {
         return [
             'name' => 'string|required|min:3|max:255',
-//            'user_id' => 'required|integer',
             'type_id' => 'required|integer',
             'category_id' => 'required|integer',
             'website' => 'required|string',
@@ -47,14 +46,14 @@ class ProjectRequest extends FormRequest
             'description' => 'required|string',
             'video_url' => 'url',
             'price' => 'required|string',
-            'package_id' => 'required|integer',
-            'billing_info' => 'required|json',
+            'package_id' => 'nullable|integer',
+            'billing_info' => 'nullable|json',
             'revenue_sources' => 'required|array',
             'platforms' => 'required|array',
             'assets' => 'required|array',
             'image1' => 'image',
-            'image2' =>'image',
-            'image3' =>'image',
+            'image2' => 'image',
+            'image3' => 'image',
             'file1' => [File::types(['docx', 'pdf'])],
             'file2' => [File::types(['docx', 'pdf'])],
             'file3' => [File::types(['docx', 'pdf'])]

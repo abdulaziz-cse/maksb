@@ -27,6 +27,7 @@ class VerifyCodeRequest extends FormRequest
 
         return [
             'phone' => 'required|string|max:20',
+            // 'phone' => 'required|string|exists:users,phone|max:20',
             'code' => 'required|string|min:6|max:6',
             'action' => 'required|string|in:' . $verificationActionsStr,
         ];

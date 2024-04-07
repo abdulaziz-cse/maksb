@@ -27,6 +27,7 @@ class SendVerificationCodeRequest extends FormRequest
 
         return [
             'phone' => 'required|string|max:20',
+            // 'phone' => 'required|string|exists:users,phone|max:20',
             'action' => 'nullable|string|in:' . $verificationActionsStr,
         ];
     }

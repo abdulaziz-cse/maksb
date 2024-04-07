@@ -14,9 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'v1', 'as' => 'api.v1.', 'namespace' => 'V1'], function () {
+Route::group(['prefix' => 'v1'], function () { //, 'as' => 'api.v1.', 'namespace' => 'V1'
     Route::prefix('auth')->group(base_path('routes/v1/auth.php'));
-    Route::prefix('users')->group(base_path('routes/v1/users.php'));
+    Route::prefix('user')->group(base_path('routes/v1/user.php'));
     Route::prefix('categories')->group(base_path('routes/v1/categories.php'));
     Route::prefix('lookups')->group(base_path('routes/v1/lookups.php'));
     Route::prefix('projects')->group(base_path('routes/v1/projects.php'));
