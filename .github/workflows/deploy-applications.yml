@@ -45,8 +45,6 @@ jobs:
           JSON="${JSON//$'\n'/'%0A'}"
           JSON="${JSON//$'\r'/'%0D'}"
           echo "::set-output name=deployment-matrix::$JSON"
-
-
   prepare-release-on-servers:
     name: Prepare release on server
     runs-on: ubuntu-latest
@@ -82,7 +80,6 @@ jobs:
           script: |
             mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
             tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
-
             rm -rf ${{ matrix.server.path }}/releases/${GITHUB_SHA}/storage
             mkdir -p ${{ matrix.server.path }}/storage/app
             mkdir -p ${{ matrix.server.path }}/storage/public
@@ -93,8 +90,6 @@ jobs:
             mkdir -p ${{ matrix.server.path }}/storage/framework/testing
             mkdir -p ${{ matrix.server.path }}/storage/framework/views
             mkdir -p ${{ matrix.server.path }}/storage/framework/cache/data
-
-
   run-before-hooks:
     name: Before hooks
     runs-on: ubuntu-latest
@@ -119,8 +114,6 @@ jobs:
           envs: GITHUB_SHA, RELEASE_PATH, ACTIVE_RELEASE_PATH, STORAGE_PATH, BASE_PATH
           script: |
             ${{ matrix.server.beforeHooks }}
-
-
   activate-release:
     name: Activate release
     runs-on: ubuntu-latest
@@ -150,7 +143,6 @@ jobs:
             ln -s -f $STORAGE_PATH $RELEASE_PATH
             ln -s -n -f $RELEASE_PATH $ACTIVE_RELEASE_PATH
             sudo service php8.2-fpm reload
-
   run-after-hooks:
     name: After hooks
     runs-on: ubuntu-latest
@@ -175,7 +167,6 @@ jobs:
           envs: GITHUB_SHA, RELEASE_PATH, ACTIVE_RELEASE_PATH, STORAGE_PATH, BASE_PATH
           script: |
             ${{ matrix.server.afterHooks }}
-
   clean-up:
     name: Clean Up
     runs-on: ubuntu-latest

@@ -16,6 +16,8 @@ class VerificationCode extends Model
         'code',
         'action',
         'created_at',
+        'user_id',
+        'status',
     ];
 
     protected $casts = [
