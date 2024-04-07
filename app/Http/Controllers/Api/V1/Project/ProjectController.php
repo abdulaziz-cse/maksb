@@ -10,25 +10,22 @@ use Illuminate\Http\Request;
 
 class ProjectController extends BaseApiController
 {
-    private $service;
-
-    public function __construct(ProjectService $service)
+    public function __construct(private ProjectService $projectService)
     {
         parent::__construct();
-        $this->service = $service;
     }
 
     public function getListForUser(Request $request)
     {
         $user_id = $request->user()->id;
-        $projects = $this->service->getList($user_id);
+        $projects = $this->projectService->getList($user_id);
         return response()->json($projects);
     }
 
     public function store(ProjectRequest $request)
     {
         $data = $request->validated();
-        $project = $this->service->store($data);
+        $project = $this->projectService->store($data);
         return response()->json($project);
     }
 
@@ -37,13 +34,13 @@ class ProjectController extends BaseApiController
         $data['name'] = $request->name;
         $data['category'] = $request->category;
         $data['sorting'] = $request->sorting;
-        $projects = $this->service->index($data);
+        $projects = $this->projectService->index($data);
         return response()->json($projects);
     }
 
     public function destroy(int $id)
     {
-        $this->service->destroy($id);
+        $this->projectService->destroy($id);
         return response()->json([
             'message' => 'Project removed successfully',
         ]);
@@ -51,8 +48,7 @@ class ProjectController extends BaseApiController
 
     public function show(int $id)
     {
-        $project = $this->service->show($id);
+        $project = $this->projectService->show($id);
         return response()->json($project);
     }
-
 }

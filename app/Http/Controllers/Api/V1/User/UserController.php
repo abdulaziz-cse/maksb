@@ -7,15 +7,17 @@ use App\Traits\GeneralTrait;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\User\UserResource;
+use App\Http\Controllers\Api\V1\BaseApiController;
 use App\Http\Requests\Api\V1\User\UserUpdateRequest;
 
 
-class UserController
+class UserController extends BaseApiController
 {
     use GeneralTrait;
 
     public function __construct(private UserService $userService)
     {
+        parent::__construct();
     }
 
     public function show(User $user): JsonResponse

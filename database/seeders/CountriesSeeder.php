@@ -2,18 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use Database\Seeders\BaseSeeder;
 use Illuminate\Support\Facades\DB;
 
-class CountriesSeeder extends Seeder
+class CountriesSeeder extends BaseSeeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $data = [['id'=>'1','name'=>'السعودية']];
+        $data = [['id' => '1', 'name' => 'السعودية']];
         DB::table('countries')->insert($data);
     }
 }
