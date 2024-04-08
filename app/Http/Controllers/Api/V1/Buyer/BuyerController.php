@@ -2,40 +2,49 @@
 
 namespace App\Http\Controllers\Api\V1\Buyer;
 
+use App\Models\Buyer;
+use App\Traits\GeneralTrait;
+use Illuminate\Http\JsonResponse;
+use App\Services\Buyer\BuyerService;
+use App\Http\Resources\Buyer\BuyerResource;
+use App\Http\Resources\Buyer\BuyerIndexResource;
 use App\Http\Controllers\Api\V1\BaseApiController;
-use App\Http\Requests\Api\V1\BuyerRequest;
-use App\Services\BuyerService;
-use Illuminate\Http\Request;
-
+use App\Http\Requests\Api\V1\Buyer\BuyerIndexRequest;
+use App\Http\Requests\Api\V1\Buyer\BuyerManageRequest;
 
 class BuyerController extends BaseApiController
 {
-    private $service;
+    use GeneralTrait;
 
-    public function __construct(BuyerService $service)
+    public function __construct(private BuyerService $buyerService)
     {
         parent::__construct();
-        $this->service = $service;
     }
 
-    public function store(BuyerRequest $request)
+    public function index(BuyerIndexRequest $request)
     {
-        $data = $request->validated();
-        $buyer =  $this->service->store($data);
+        $buyers = $this->buyerService->getMany($request);
+
+        return $this->returnDateWithPaginate(
+            $buyers,
+            'success',
+            BuyerIndexResource::class
+        );
+    }
+
+    public function store(BuyerManageRequest $request): JsonResponse
+    {
+        $requestData = $request->validated();
+        $buyer =  $this->buyerService->createOne($requestData);
+
         return response()->json($buyer);
     }
 
-    public function getListForUser(Request $request)
+    public function show(Buyer $buyer): JsonResponse
     {
-        $user_id = $request->user()->id;
-        $buyers = $this->service->getList($user_id);
-        return response()->json($buyers);
+        return $this->returnDate(
+            new BuyerResource($buyer),
+            'Buyer data send successfully.'
+        );
     }
-
-    public function show(int $id)
-    {
-        $buyer = $this->service->show($id);
-        return response()->json($buyer);
-    }
-
 }
