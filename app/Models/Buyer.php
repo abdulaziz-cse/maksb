@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Buyer extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, SearchableTrait, InteractsWithMedia;
+
     protected $fillable = [
         'offer',
         'message',
@@ -22,10 +24,19 @@ class Buyer extends Model implements HasMedia
         'user_id'
     ];
 
+    /**
+     * SearchableTrait attributes
+     *
+     * @return string[]
+     */
+    public array $searchable = [
+        'user.id',
+    ];
+
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class,'projects_buyers','buyer_id','project_id')
-            ->With(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user']);
+        return $this->belongsToMany(Project::class, 'projects_buyers', 'buyer_id', 'project_id')
+            ->With(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user']);
     }
 
     public function file()
@@ -36,17 +47,16 @@ class Buyer extends Model implements HasMedia
 
     public function user(): HasOne
     {
-        return $this->hasOne(User::class,'id','user_id');
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     public function type(): HasOne
     {
-        return $this->hasOne(BuyerType::class,'id','consultant_type');
+        return $this->hasOne(BuyerType::class, 'id', 'consultant_type');
     }
 
     public function status(): HasOne
     {
-        return $this->hasOne(BuyerStatus::class,'id','status_id');
+        return $this->hasOne(BuyerStatus::class, 'id', 'status_id');
     }
-
 }

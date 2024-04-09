@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\Buyer;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\File;
 
-class BuyerRequest extends FormRequest
+class BuyerManageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,11 +28,9 @@ class BuyerRequest extends FormRequest
             'law' => 'string|required',
             'nda' => 'boolean|required',
             'consultant_type' => 'required|integer',
-            'status_id' => 'required|integer',
-            'project_id' => 'required|integer',
-            'file' => [File::types(['docx', 'pdf']),'required'],
-
-
+            'status_id' => 'required|integer|exists:buyers_status,id',
+            'project_id' => 'required|integer|exists:projects,id',
+            'file' => [File::types(['docx', 'pdf']), 'required'],
         ];
     }
 }

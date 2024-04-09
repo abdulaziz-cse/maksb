@@ -22,7 +22,7 @@ Route::group(['prefix' => 'v1'], function () { //, 'as' => 'api.v1.', 'namespace
     Route::prefix('projects')->group(base_path('routes/v1/projects.php'));
     Route::prefix('messaging')->group(base_path('routes/v1/messaging.php'));
     Route::prefix('notifications')->group(base_path('routes/v1/notifications.php'));
-    Route::prefix('buyers')->group(base_path('routes/v1/buyers.php'));
+    Route::prefix('buyer')->group(base_path('routes/v1/buyers.php'));
     Route::prefix('favourites')->group(base_path('routes/v1/favourites.php'));
     Route::prefix('payments')->group(base_path('routes/v1/payments.php'));
 });

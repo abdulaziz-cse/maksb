@@ -4,7 +4,7 @@ namespace App\Constants;
 
 class App
 {
-    const API_GUARD = 'api';
+    const API_GUARD = 'sanctum';
 
     const EXPIRATION_TIME = 480;
 
