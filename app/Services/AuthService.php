@@ -57,8 +57,6 @@ class AuthService
     {
         // $data = ['phone' => '', 'code' => '', 'action' => ''];
         $phone = $data['phone'];
-        $phone = $this->formatPhoneNumber($phone);
-        $code = $data['code'];
 
         $verificationCode = $this->verificationService->getOneByPhone($phone);
 
@@ -66,61 +64,38 @@ class AuthService
             return self::VERIFICATION_CODE_INVALID;
         }
 
-        $twilio = new Client($this->twilioSid, $this->twilioAuthToken);
-
-        $verification = $twilio->verify->v2->services($this->twilioVerifySid)
-            ->verificationChecks
-            ->create(array('to' => $phone, 'code' => $code));
-
-        if (!$verification) {
+        $verificationCode = VerificationCode::where($data)->latest()->first();
+        if (!$verificationCode) {
             return self::VERIFICATION_CODE_INVALID;
         }
-
-        return self::VERIFICATION_CODE_VALID;
-
-        // $sinchVerifyResult = $this->sinchVerifyOtp($data['phone'], $data['code']);
-
-        // $sinchSuccess = is_array($sinchVerifyResult) &&
-        //     isset($sinchVerifyResult['status'], $sinchVerifyResult['reference']) &&
-        //     $sinchVerifyResult['status'] === 'SUCCESSFUL';
-
-        // if (!$sinchSuccess) {
-        //     return self::VERIFICATION_CODE_INVALID;
-        // }
-
-        // $ourCode = substr(strrchr($sinchVerifyResult['reference'], '-'), 1);
-
-        // $data['code'] = $ourCode;
-        // $verificationCode = VerificationCode::where($data)->latest()->first();
-        // if (!$verificationCode) {
-        //     return self::VERIFICATION_CODE_INVALID;
-        // }
 
         // if ($verificationCode->created_at->lt(now()->subMinutes(1))) {
         //     // 1 minutes passed, code expired
         //     return self::VERIFICATION_CODE_EXPIRED;
         // }
 
-        // if (
-        //     $verificationCode->action === VerificationAction::VERIFY_PHONE->value &&
-        //     $user = $this->userRepository->getFirst('phone', $data['phone'])
-        // ) {
-        //     $user->phone_verified_at = now();
-        //     $user->save();
-        // }
+        if (
+            $verificationCode->action === VerificationAction::VERIFY_PHONE->value &&
+            $user = $this->userRepository->getFirst('phone', $data['phone'])
+        ) {
+            $user->phone_verified_at = now();
+            $user->save();
+        }
 
-        // if (auth('sanctum')->check()) {
-        //     $userId = auth('sanctum')->id();
-        //     // Store a redis key for 24 hours that this phone is verified
-        //     // Used for profile update
-        //     Redis::set('user_' . $userId . '_verified_' . $data['phone'], 1, 'EX', 24 * 60 * 60);
-        // }
+        if (auth('sanctum')->check()) {
+            $userId = auth('sanctum')->id();
+            // Store a redis key for 24 hours that this phone is verified
+            // Used for profile update
+            Redis::set('user_' . $userId . '_verified_' . $data['phone'], 1, 'EX', 24 * 60 * 60);
+        }
 
-        // return self::VERIFICATION_CODE_VALID;
+        return self::VERIFICATION_CODE_VALID;
     }
 
     public function resetPassword($data): void
     {
+        $data['phone'] = $this->formatPhoneNumber($data['phone']);
+
         $verifyCode = $this->verifyCode([
             'phone' => $data['phone'],
             'code' => $data['code'],
@@ -231,8 +206,10 @@ class AuthService
         $verificationData = [
             'phone' => $phone,
             'status' => $verification?->status,
+            'action' => $requestData['action'],
             'created_at' => now()
         ];
+
         $this->verificationService->createOne($verificationData);
     }
 
