@@ -12,15 +12,17 @@ Route::group([
     // Route::get('/getlist', 'ProjectController@getListForUser')->name('project.getList');
     // Route::delete('/destroy/{id}', 'ProjectController@destroy')->name('project.destroy');
 
-    Route::post('/store', [ProjectController::class, 'store'])->name('project.store');
-    Route::get('/getlist', [ProjectController::class, 'getListForUser'])->name('project.getList');
-    Route::delete('/destroy/{id}', [ProjectController::class, 'destroy'])->name('project.destroy');
+    // Route::post('/store', [ProjectController::class, 'store'])->name('project.store');
+    // Route::get('/getlist', [ProjectController::class, 'getListForUser'])->name('project.getList');
+    // Route::delete('/destroy/{id}', [ProjectController::class, 'destroy'])->name('project.destroy');
+
+    Route::apiResource('/projects', ProjectController::class)->only(['index', 'store', 'show', 'destroy']);
 });
 
-Route::group([
-    // 'namespace' => 'Project',
-    // 'as' => 'projects.',
-], function () {
-    Route::post('/', [ProjectController::class, 'index'])->name('project.index');
-    Route::get('/{id}', [ProjectController::class, 'show'])->name('project.show');
-});
+// Route::group([
+//     // 'namespace' => 'Project',
+//     // 'as' => 'projects.',
+// ], function () {
+//     Route::post('/', [ProjectController::class, 'index'])->name('project.index');
+//     Route::get('/{id}', [ProjectController::class, 'show'])->name('project.show');
+// });

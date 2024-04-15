@@ -12,7 +12,9 @@ Route::group([
     // Route::get('/getlist', 'FavouriteController@index')->name('favourite.index');
     // Route::delete('/{id}', 'FavouriteController@destroy')->name('favourite.destroy');
 
-    Route::post('/save', [FavouriteController::class, 'store'])->name('favourite.store');
-    Route::get('/getlist', [FavouriteController::class, 'index'])->name('favourite.index');
-    Route::delete('/{id}', [FavouriteController::class, 'destroy'])->name('favourite.destroy');
+    // Route::post('/save', [FavouriteController::class, 'store'])->name('favourite.store');
+    // Route::get('/getlist', [FavouriteController::class, 'index'])->name('favourite.index');
+    // Route::delete('/{id}', [FavouriteController::class, 'destroy'])->name('favourite.destroy');
+
+    Route::apiResource('/favourites', FavouriteController::class)->only(['index', 'store', 'destroy']);
 });
