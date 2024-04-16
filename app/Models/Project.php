@@ -4,10 +4,10 @@ namespace App\Models;
 
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
-use function PHPUnit\Framework\isEmpty;
 use Illuminate\Database\Eloquent\Model;
-use PHPUnit\Framework\Constraint\Count;
+use App\Models\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, SearchableTrait;
+    use HasFactory, InteractsWithMedia, SearchableTrait, SoftDeletes;
 
     protected $guarded = [];
 
@@ -68,7 +68,7 @@ class Project extends Model implements HasMedia
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(ProjectType::class);
+        return $this->belongsTo(PredefinedValue::class, 'type_id');
     }
 
     public function category(): HasOne

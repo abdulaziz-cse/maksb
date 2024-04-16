@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\Settings\CreatePredefinedValueSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,7 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TypesSeeder::class,
             RolesAndPermissionsSeeder::class,
-            ProjectTypeSeeder::class,
             CountriesSeeder::class,
             PlatformsSeeder::class,
             CurrenciesSeeder::class,
@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             PackagesSeeder::class,
             RevenueSourcesSeeder::class,
             BuyerStatus::class,
-            BuyerTypes::class
+            BuyerTypes::class,
+            CreatePredefinedValueSeeder::class,
         ]);
     }
 }
