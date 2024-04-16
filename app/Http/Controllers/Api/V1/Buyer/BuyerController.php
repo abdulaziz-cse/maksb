@@ -21,9 +21,10 @@ class BuyerController extends BaseApiController
         parent::__construct();
     }
 
-    public function index(BuyerIndexRequest $request)
+    public function index(BuyerIndexRequest $request): JsonResponse
     {
-        $buyers = $this->buyerService->getMany($request);
+        $buyerFilters = $request->validated();
+        $buyers = $this->buyerService->getMany($buyerFilters);
 
         return $this->returnDateWithPaginate(
             $buyers,

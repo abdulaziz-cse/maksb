@@ -15,15 +15,15 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
 
     public function getList(int $user_id)
     {
-        return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite'])->where('user_id',$user_id)->get();
+        return $this->model::with(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user', 'currentUserFavorite'])->where('user_id', $user_id)->get();
     }
 
     public function get(int $id)
     {
-        return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite'])->where('id',$id)->first();
+        return $this->model::with(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user', 'currentUserFavorite'])->where('id', $id)->first();
     }
 
-    public function store(array $data,array $projectData) : Project
+    public function store(array $data, array $projectData): Project
     {
         DB::beginTransaction();
 
@@ -51,24 +51,22 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
             // something went wrong
             dd($e);
         }
-
     }
 
     public function index(array $data)
     {
-        $result = $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite']);
+        $result = $this->model::with(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user', 'currentUserFavorite']);
         if (!empty($data['name']))
-            $result = $result->where('name', 'like', '%'.$data['name'].'%');
+            $result = $result->where('name', 'like', '%' . $data['name'] . '%');
         if (!empty($data['category']))
-            $result = $result->whereIn('category_id',$data['category']);
-        if (!empty($data['sorting']) and $data['sorting']==='DESC')
-            $result = $result->orderBy('created_at','desc');
+            $result = $result->whereIn('category_id', $data['category']);
+        if (!empty($data['sorting']) and $data['sorting'] === 'DESC')
+            $result = $result->orderBy('created_at', 'desc');
         else
             $result = $result->orderBy('created_at');
         $result = $result->paginate('10');
 
         return $result;
-
     }
 
 
@@ -83,11 +81,9 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
             $project->assets()->detach();
             $project->delete();
             DB::commit();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             // something went wrong
         }
     }
-
 }

@@ -19,11 +19,11 @@ Route::group(['prefix' => 'v1'], function () { //, 'as' => 'api.v1.', 'namespace
     Route::prefix('user')->group(base_path('routes/v1/user.php'));
     Route::prefix('categories')->group(base_path('routes/v1/categories.php'));
     Route::prefix('lookups')->group(base_path('routes/v1/lookups.php'));
-    Route::prefix('projects')->group(base_path('routes/v1/projects.php'));
+    Route::prefix('project')->group(base_path('routes/v1/projects.php'));
     Route::prefix('messaging')->group(base_path('routes/v1/messaging.php'));
     Route::prefix('notifications')->group(base_path('routes/v1/notifications.php'));
     Route::prefix('buyer')->group(base_path('routes/v1/buyers.php'));
-    Route::prefix('favourites')->group(base_path('routes/v1/favourites.php'));
+    Route::prefix('favourite')->group(base_path('routes/v1/favourites.php'));
     Route::prefix('payments')->group(base_path('routes/v1/payments.php'));
 });
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\Favourite;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FavouriteRequest extends FormRequest
+class FavouriteManageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,7 +22,7 @@ class FavouriteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_id' => 'required|integer'
+            'project_id' => 'required|integer|exists:projects,id'
         ];
     }
 }
