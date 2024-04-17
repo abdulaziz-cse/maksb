@@ -25,13 +25,13 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
 
     public function store(array $data, array $projectData): Project
     {
-        DB::beginTransaction();
+        return DB::transaction(function () use ($projectData, $data) {
 
-        try {
             $project = $this->create($projectData);
             $project->revenueSources()->attach($data['revenue_sources']);
             $project->platforms()->attach($data['platforms']);
             $project->assets()->attach($data['assets']);
+
             if (!empty($data['image1']))
                 $project->addMedia($data['image1'])->toMediaCollection('images');
             if (!empty($data['image2']))
@@ -44,13 +44,9 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
                 $project->addMedia($data['file2'])->toMediaCollection('attachments');
             if (!empty($data['file3']))
                 $project->addMedia($data['file3'])->toMediaCollection('attachments');
-            DB::commit();
-            return $project;
-        } catch (\Exception $e) {
-            DB::rollback();
-            // something went wrong
-            dd($e);
-        }
+
+            return $project->refresh();
+        });
     }
 
     public function index(array $data)

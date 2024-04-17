@@ -23,28 +23,28 @@ class ProjectManageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required|min:3|max:255',
+            'name' => 'required|string|min:3|max:255',
             'type_id' => 'required|integer',
             'category_id' => 'required|integer',
             'website' => 'required|string',
             'establishment_date' => 'required|date',
-            'country_id' => 'required|integer',
+            'country_id' => 'required|integer|exists:countries,id',
             'other_platform' => 'sometimes|required|string',
-            'currency_id' => 'required|integer',
-            'yearly' => 'required|boolean',
-            'incoming' => 'required|json',
-            'cost' => 'required|json',
-            'revenue' => 'required|json',
+            'currency_id' => 'required|integer|exists:currencies,id',
+            'yearly' => 'nullable|boolean',
+            'incoming' => 'nullable|json',
+            'cost' => 'nullable|json',
+            'revenue' => 'nullable|json',
             'expenses' => 'required|json',
             'other_assets' => 'sometimes|required|string',
             'is_supported' => 'boolean',
             'support' => 'sometimes|required|string',
             'social_media' => 'required|json',
-            'email_subscribers' => 'string',
+            'email_subscribers' => 'nullable|string',
             'other_social_media' => 'sometimes|required|string',
             'short_description' => 'required|string',
             'description' => 'required|string',
-            'video_url' => 'url',
+            'video_url' => 'nullable|url',
             'price' => 'required|string',
             'package_id' => 'nullable|integer',
             'billing_info' => 'nullable|json',
@@ -57,7 +57,6 @@ class ProjectManageRequest extends FormRequest
             'file1' => [File::types(['docx', 'pdf'])],
             'file2' => [File::types(['docx', 'pdf'])],
             'file3' => [File::types(['docx', 'pdf'])]
-
         ];
     }
 }
