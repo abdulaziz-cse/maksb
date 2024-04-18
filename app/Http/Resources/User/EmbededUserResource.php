@@ -13,6 +13,10 @@ class EmbededUserResource extends JsonResource
             'name' => $this->name ?? null,
             'email' => $this->email ?? null,
             'phone' => $this->phone ?? null,
+            'photo' => $this->photo ?? null,
+            'about' => $this->about ?? null,
+            'phone_verified_at' => $this->phone_verified_at ?? null,
+            'email_verified_at' => $this->email_verified_at ?? null,
         ];
     }
 }
