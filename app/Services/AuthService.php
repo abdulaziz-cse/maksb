@@ -94,6 +94,7 @@ class AuthService
 
     public function resetPassword($data): void
     {
+        $basic_phone = $data['phone'];
         $data['phone'] = $this->formatPhoneNumber($data['phone']);
 
         $verifyCode = $this->verifyCode([
@@ -106,7 +107,7 @@ class AuthService
             abort(403, 'Reset code ' . $verifyCode);
         }
 
-        User::where('phone', $data['phone'])->update([
+        User::where('phone', $basic_phone)->update([
             'password' => \Hash::make($data['password']),
         ]);
 
