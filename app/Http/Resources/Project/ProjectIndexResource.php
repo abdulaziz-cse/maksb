@@ -33,6 +33,7 @@ class ProjectIndexResource extends JsonResource
             'is_supported' => $this->is_supported ?? null,
             'support' => $this->support ?? null,
             'social_media' => $this->social_media ?? null,
+            'price' => $this->price ?? null,
         ];
     }
 }
