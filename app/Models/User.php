@@ -55,6 +55,7 @@ class User extends Authenticatable implements HasMedia
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
@@ -71,7 +72,6 @@ class User extends Authenticatable implements HasMedia
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class,'favourites','user_id','project_id');
+        return $this->belongsToMany(Project::class, 'favourites', 'user_id', 'project_id');
     }
-
 }
