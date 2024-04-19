@@ -5,6 +5,7 @@ namespace App\Http\Resources\Project;
 use App\Http\Resources\Media\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
 
 class EmbededProjectResource extends JsonResource
 {
@@ -22,6 +23,7 @@ class EmbededProjectResource extends JsonResource
             'cost' => $this->cost ?? null,
             'images' => $this->images ? MediaResource::collection($this->images) : null,
             'category' => $this->category ? new CategoryResource($this->category) : null,
+            'currency' => $this->currency ? new EmbededCurrencyResource($this->currency) : null,
         ];
     }
 }
