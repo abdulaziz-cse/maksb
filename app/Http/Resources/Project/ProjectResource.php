@@ -5,6 +5,7 @@ namespace App\Http\Resources\Project;
 use App\Http\Resources\User\EmbededUserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Media\MediaResource;
 use App\Http\Resources\Settings\Country\EmbededCountryResource;
 use App\Http\Resources\Project\EmbededProjectTypeResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
@@ -42,8 +43,8 @@ class ProjectResource extends JsonResource
             'package_id' => $this->package_id ?? null,
             'billing_info' => $this->billing_info ?? null,
             'isFavorite' => $this->isFavorite ?? null,
-            'images' => $this->images ?? null,
-            'attachments' => $this->attachments ?? null,
+            'images' => $this->images ? MediaResource::collection($this->images) : null,
+            'attachments' => $this->attachments ? MediaResource::collection($this->attachments) : null,
             'revenue_sources' => $this->revenueSources ?? null,
             'platforms' => $this->platforms ?? null,
             'assets' => $this->assets ?? null,
