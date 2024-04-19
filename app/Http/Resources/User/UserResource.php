@@ -3,6 +3,7 @@
 namespace App\Http\Resources\User;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Project\EmbededProjectResource;
 
 class UserResource extends JsonResource
 {
