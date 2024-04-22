@@ -3,6 +3,7 @@
 namespace App\Services\Buyer;
 
 use App\Models\Buyer;
+use App\Constants\App;
 use App\Services\BuilderService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Contracts\Repositories\BuyerRepositoryInterface;
@@ -31,11 +32,6 @@ class BuyerService
 
     private function buildGetManyQuery($buyerFilters, $builder)
     {
-        $user_id = $buyerFilters['user_id'];
-
-        if (isset($user_id)) {
-            $builder->where('user_id', $user_id);
-        }
     }
 
     public function createOne(array $data): Buyer

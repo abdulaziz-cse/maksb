@@ -48,11 +48,32 @@ class ProjectController extends BaseApiController
         );
     }
 
-    public function destroy(int $id)
+    public function destroy(Project $project): JsonResponse
     {
-        $this->projectService->destroy($id);
-        return response()->json([
-            'message' => 'Project removed successfully',
-        ]);
+        $this->projectService->deleteOne($project);
+
+        return $this->returnSuccessMessage('Project deleted successfully');
+    }
+
+    public function getAll(ProjectIndexRequest $request): JsonResponse
+    {
+        $projectFilters = $request->validated();
+        $projects = $this->projectService->getAll($projectFilters);
+
+        return $this->returnDateWithPaginate(
+            $projects,
+            'success',
+            ProjectResource::class
+        );
+    }
+
+    public function getOne(int $projectId): JsonResponse
+    {
+        $project = $this->projectService->getOne($projectId);
+
+        return $this->returnDate(
+            new ProjectResource($project),
+            'Project data send successfully.'
+        );
     }
 }

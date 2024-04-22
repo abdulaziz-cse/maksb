@@ -4,18 +4,16 @@ namespace App\Models;
 
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
-use function PHPUnit\Framework\isEmpty;
 use Illuminate\Database\Eloquent\Model;
-use PHPUnit\Framework\Constraint\Count;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia, SearchableTrait;
+    use HasFactory, InteractsWithMedia, SearchableTrait, SoftDeletes;
 
     protected $guarded = [];
 
@@ -26,7 +24,6 @@ class Project extends Model implements HasMedia
         'expenses' => 'array',
         'social_media' => 'array',
         'billing_info' => 'array'
-
     ];
 
     protected $appends = [
@@ -39,7 +36,8 @@ class Project extends Model implements HasMedia
      * @return string[]
      */
     public array $searchable = [
-        'user.id', 'category.id',
+        'user.id',
+        'category.id',
     ];
 
     public function getIsFavoriteAttribute()
@@ -71,19 +69,24 @@ class Project extends Model implements HasMedia
         return $this->belongsTo(ProjectType::class);
     }
 
-    public function category(): HasOne
+    public function category(): BelongsTo
     {
-        return $this->hasOne(Category::class, 'id', 'category_id');
+        return $this->belongsTo(Category::class);
     }
 
-    public function country(): HasOne
+    public function country(): BelongsTo
     {
-        return $this->hasOne(Country::class, 'id', 'country_id');
+        return $this->belongsTo(Country::class);
     }
 
-    public function currency(): HasOne
+    public function currency(): BelongsTo
     {
-        return $this->hasOne(Currency::class, 'id', 'currency_id');
+        return $this->belongsTo(Currency::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function images()
@@ -96,11 +99,6 @@ class Project extends Model implements HasMedia
     {
         return $this->morphMany('App\Models\Media', 'model')
             ->where('collection_name', 'attachments');
-    }
-
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
     }
 
     public function buyers(): BelongsToMany

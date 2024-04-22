@@ -2,6 +2,7 @@
 
 namespace App\Services\Project;
 
+use App\Constants\App;
 use App\Models\Project;
 use App\Services\BuilderService;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -18,26 +19,40 @@ class ProjectService
 
     public function getMany($projectFilters): LengthAwarePaginator
     {
-        $paginate = $projectFilters['paginate'] ?? request()->paginate;
-        $builder = Project::select();
-        $this->buildGetManyQuery($projectFilters, $builder);
+        $userId = auth(App::API_GUARD)->id();
 
-        // Prepare sort & search filter if provided
-        BuilderService::prepareFilters($projectFilters, $builder);
-        BuilderService::prepareSort($projectFilters, $builder);
+        $paginate = $projectFilters['paginate'] ?? request()->paginate;
+        $builder = Project::where('user_id', $userId)->select();
+
+        $this->prepareQuery($projectFilters, $builder);
 
         return $builder->paginate($paginate);
+    }
+
+    public function getAll($projectFilters): LengthAwarePaginator
+    {
+
+        $paginate = $projectFilters['paginate'] ?? request()->paginate;
+        $builder = Project::select();
+
+        $this->prepareQuery($projectFilters, $builder);
+
+        return $builder->paginate($paginate);
+    }
+
+    private function prepareQuery($projectFilters, $builder)
+    {
+        $this->buildGetManyQuery($projectFilters, $builder);
+
+        // Use a single method to prepare sort and filter
+        BuilderService::prepareFilters($projectFilters, $builder);
+        BuilderService::prepareSort($projectFilters, $builder);
     }
 
     private function buildGetManyQuery($projectFilters, $builder)
     {
         $name = $projectFilters['name'];
-        $user_id = $projectFilters['user_id'];
         $category_id = $projectFilters['category_id'];
-
-        if (isset($user_id)) {
-            $builder->where('user_id', $user_id);
-        }
 
         if (isset($category_id)) {
             $builder->where('category_id', $category_id);
@@ -62,5 +77,19 @@ class ProjectService
     public function destroy(int $id)
     {
         return $this->projectRepository->destroy($id);
+    }
+
+    public function getOne($projectId): ?Project
+    {
+        return Project::findOrFail($projectId);
+    }
+
+    public function deleteOne(Project $project): bool
+    {
+        $project->revenueSources()->detach();
+        $project->platforms()->detach();
+        $project->assets()->detach();
+
+        return $project->delete();
     }
 }
