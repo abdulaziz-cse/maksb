@@ -7,7 +7,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('/projects', ProjectController::class)->only(['index', 'store', 'show', 'destroy']);
 });
 
-Route::prefix('/projects-all')->controller(ProjectController::class)->group(function () {
-    Route::get('/', 'getAll');
+Route::prefix('/projects/data')->controller(ProjectController::class)->group(function () {
+    Route::get('/all', 'getAll');
     Route::get('/{id}', 'getOne');
 });
