@@ -40,8 +40,10 @@ class ProjectController extends BaseApiController
         return response()->json($project);
     }
 
-    public function show(Project $project): JsonResponse
+    public function show(int $projectId): JsonResponse
     {
+        $project = $this->projectService->getOne($projectId);
+
         return $this->returnDate(
             new ProjectResource($project),
             'Project data send successfully.'
@@ -53,27 +55,5 @@ class ProjectController extends BaseApiController
         $this->projectService->deleteOne($project);
 
         return $this->returnSuccessMessage('Project deleted successfully');
-    }
-
-    public function getAll(ProjectIndexRequest $request): JsonResponse
-    {
-        $projectFilters = $request->validated();
-        $projects = $this->projectService->getAll($projectFilters);
-
-        return $this->returnDateWithPaginate(
-            $projects,
-            'success',
-            ProjectResource::class
-        );
-    }
-
-    public function getOne(int $projectId): JsonResponse
-    {
-        $project = $this->projectService->getOne($projectId);
-
-        return $this->returnDate(
-            new ProjectResource($project),
-            'Project data send successfully.'
-        );
     }
 }

@@ -4,14 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\Messageable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements HasMedia
 {
@@ -73,5 +75,10 @@ class User extends Authenticatable implements HasMedia
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'favourites', 'user_id', 'project_id');
+    }
+
+    public function buyers(): HasMany
+    {
+        return $this->hasMany(Buyer::class);
     }
 }

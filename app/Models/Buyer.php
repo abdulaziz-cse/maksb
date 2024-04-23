@@ -24,7 +24,7 @@ class Buyer extends Model implements HasMedia
         'law',
         'consultant_type',
         'status_id',
-        'user_id'
+        'user_id',
     ];
 
     /**
@@ -38,8 +38,7 @@ class Buyer extends Model implements HasMedia
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'projects_buyers', 'buyer_id', 'project_id')
-            ->With(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user']);
+        return $this->belongsToMany(Project::class);
     }
 
     public function file()

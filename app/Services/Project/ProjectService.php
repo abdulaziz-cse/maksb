@@ -19,38 +19,21 @@ class ProjectService
 
     public function getMany($projectFilters): LengthAwarePaginator
     {
-        $userId = auth(App::API_GUARD)->id();
-
-        $paginate = $projectFilters['paginate'] ?? request()->paginate;
-        $builder = Project::where('user_id', $userId)->select();
-
-        $this->prepareQuery($projectFilters, $builder);
-
-        return $builder->paginate($paginate);
-    }
-
-    public function getAll($projectFilters): LengthAwarePaginator
-    {
-
         $paginate = $projectFilters['paginate'] ?? request()->paginate;
         $builder = Project::select();
 
-        $this->prepareQuery($projectFilters, $builder);
-
-        return $builder->paginate($paginate);
-    }
-
-    private function prepareQuery($projectFilters, $builder)
-    {
         $this->buildGetManyQuery($projectFilters, $builder);
 
         // Use a single method to prepare sort and filter
         BuilderService::prepareFilters($projectFilters, $builder);
         BuilderService::prepareSort($projectFilters, $builder);
+
+        return $builder->paginate($paginate);
     }
 
     private function buildGetManyQuery($projectFilters, $builder)
     {
+        $userId = $projectFilters['user_id'];
         $name = $projectFilters['name'];
         $category_id = $projectFilters['category_id'];
 
@@ -60,6 +43,10 @@ class ProjectService
 
         if (isset($name)) {
             $builder->where('name', 'like', '%' . $name . '%');
+        }
+
+        if (isset($userId)) {
+            $builder->where('user_id', $userId);
         }
     }
 

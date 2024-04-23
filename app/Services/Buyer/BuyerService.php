@@ -3,7 +3,6 @@
 namespace App\Services\Buyer;
 
 use App\Models\Buyer;
-use App\Constants\App;
 use App\Services\BuilderService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Contracts\Repositories\BuyerRepositoryInterface;
@@ -32,6 +31,11 @@ class BuyerService
 
     private function buildGetManyQuery($buyerFilters, $builder)
     {
+        $userId = $buyerFilters['user_id'];
+
+        if (isset($userId)) {
+            $builder->where('user_id', $userId);
+        }
     }
 
     public function createOne(array $data): Buyer
@@ -42,5 +46,17 @@ class BuyerService
         $buyer = $this->buyerRepository->store($data, $buyerData);
         $buyer->load(['projects', 'file']);
         return $buyer;
+    }
+
+    public function deleteOne(Buyer $buyer): bool
+    {
+        $this->detachProjects($buyer);
+
+        return $buyer->delete();
+    }
+
+    private function detachProjects(Buyer $buyer): void
+    {
+        $buyer->projects()->detach();
     }
 }

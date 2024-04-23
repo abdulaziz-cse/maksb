@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
+use App\Constants\App;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model implements HasMedia
 {
@@ -103,11 +104,12 @@ class Project extends Model implements HasMedia
 
     public function buyers(): BelongsToMany
     {
-        return $this->belongsToMany(Buyer::class, 'projects_buyers', 'project_id', 'buyer_id');
+        return $this->belongsToMany(Buyer::class);
     }
 
     public function currentUserFavorite()
     {
-        return $this->hasMany(Favourite::class, 'project_id', 'id')->where('favourites.user_id', auth('sanctum')->id());
+        return $this->hasMany(Favourite::class, 'project_id', 'id')
+            ->where('favourites.user_id', auth(App::API_GUARD)->id());
     }
 }

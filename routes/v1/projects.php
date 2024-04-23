@@ -4,10 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Project\ProjectController;
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::apiResource('/projects', ProjectController::class)->only(['index', 'store', 'show', 'destroy']);
+    Route::apiResource('/projects', ProjectController::class)->only(['store', 'destroy']);
 });
 
-Route::prefix('/projects-data')->controller(ProjectController::class)->group(function () {
-    Route::get('/all', 'getAll');
-    Route::get('/{id}', 'getOne');
+Route::prefix('/projects')->controller(ProjectController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/{id}', 'show');
 });
