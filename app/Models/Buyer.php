@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Buyer extends Model implements HasMedia
 {
-    use HasFactory, SearchableTrait, InteractsWithMedia;
+    use HasFactory, SearchableTrait, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'offer',
@@ -23,7 +24,7 @@ class Buyer extends Model implements HasMedia
         'law',
         'consultant_type',
         'status_id',
-        'user_id'
+        'user_id',
     ];
 
     /**
@@ -37,8 +38,7 @@ class Buyer extends Model implements HasMedia
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class, 'projects_buyers', 'buyer_id', 'project_id')
-            ->With(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user']);
+        return $this->belongsToMany(Project::class);
     }
 
     public function file()
@@ -57,8 +57,8 @@ class Buyer extends Model implements HasMedia
         return $this->hasOne(BuyerType::class, 'id', 'consultant_type');
     }
 
-    public function status(): HasOne
+    public function status(): BelongsTo
     {
-        return $this->hasOne(BuyerStatus::class, 'id', 'status_id');
+        return $this->belongsTo(BuyerStatus::class);
     }
 }

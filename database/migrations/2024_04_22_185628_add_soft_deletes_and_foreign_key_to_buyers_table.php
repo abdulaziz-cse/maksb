@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id')->nullable()->change();
+        Schema::table('buyers', function (Blueprint $table) {
+            $table->softDeletes();
+            $table->unsignedBigInteger('user_id')->after('id')->nullable()->change();
 
             $table->foreign('user_id')->on('users')->references('id')
                 ->cascadeOnDelete()->cascadeOnUpdate();
@@ -24,12 +25,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->dropForeign('projects_user_id_foreign');
+        Schema::table('buyers', function (Blueprint $table) {
+            $table->dropForeign('buyers_user_id_foreign');
         });
 
-        Schema::table('projects', function (Blueprint $table) {
-            $table->integer('user_id')->nullable(false)->change();
+        Schema::table('buyers', function (Blueprint $table) {
+            $table->bigInteger('user_id')->nullable(false)->change();
+            $table->dropSoftDeletes();
         });
     }
 };

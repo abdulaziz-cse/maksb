@@ -2,6 +2,7 @@
 
 namespace App\Services\Project;
 
+use App\Constants\App;
 use App\Models\Project;
 use App\Services\BuilderService;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -20,9 +21,10 @@ class ProjectService
     {
         $paginate = $projectFilters['paginate'] ?? request()->paginate;
         $builder = Project::select();
+
         $this->buildGetManyQuery($projectFilters, $builder);
 
-        // Prepare sort & search filter if provided
+        // Use a single method to prepare sort and filter
         BuilderService::prepareFilters($projectFilters, $builder);
         BuilderService::prepareSort($projectFilters, $builder);
 
@@ -31,8 +33,8 @@ class ProjectService
 
     private function buildGetManyQuery($projectFilters, $builder)
     {
-        $name = $projectFilters['name'];
         $user_id = $projectFilters['user_id'];
+        $name = $projectFilters['name'];
         $category_id = $projectFilters['category_id'];
 
         if (isset($user_id)) {
@@ -62,5 +64,19 @@ class ProjectService
     public function destroy(int $id)
     {
         return $this->projectRepository->destroy($id);
+    }
+
+    public function getOne($projectId): ?Project
+    {
+        return Project::findOrFail($projectId);
+    }
+
+    public function deleteOne(Project $project): bool
+    {
+        $project->revenueSources()->detach();
+        $project->platforms()->detach();
+        $project->assets()->detach();
+
+        return $project->delete();
     }
 }

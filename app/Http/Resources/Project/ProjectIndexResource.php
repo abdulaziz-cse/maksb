@@ -34,6 +34,7 @@ class ProjectIndexResource extends JsonResource
             'support' => $this->support ?? null,
             'social_media' => $this->social_media ?? null,
             'price' => $this->price ?? null,
+            'current_user_favorite' => $this->currentUserFavorite ?? null,
         ];
     }
 }

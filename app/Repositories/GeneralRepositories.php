@@ -15,35 +15,35 @@ class GeneralRepositories implements GeneralRepositoryInterface
         $this->model = $model;
     }
 
-    public function GetAll() :Model
+    public function GetAll(): Model
     {
-      return $this->model::all();
+        return $this->model::all();
     }
 
-    public function getOne($id) :Model
+    public function getOne($id): Model
     {
-       return $this->model::findOrFail($id);
+        return $this->model::findOrFail($id);
     }
 
-    public function deleteOne($id) :Model
+    public function deleteOne($id): Model
     {
-       return $this->model::destroy($id);
+        return $this->model::destroy($id);
     }
 
-    public function create(array $Details) :Model
+    public function create(array $Details): Model
     {
-       return $this->model::create($Details);
+        return $this->model::create($Details);
     }
 
-    public function update(int $id,array $Details) :Model
+    public function update(int $id, array $Details): Model
     {
         $model = $this->getOne($id);
         $model->update($Details);
         return $model;
     }
 
-    public function getFirst($columnName,$value)
+    public function getFirst($columnName, $value)
     {
-        return $this->model::where($columnName,$value)->first();
+        return $this->model::where($columnName, $value)->first();
     }
 }

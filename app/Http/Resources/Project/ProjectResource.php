@@ -2,12 +2,13 @@
 
 namespace App\Http\Resources\Project;
 
+use App\Http\Resources\Media\MediaResource;
 use App\Http\Resources\User\EmbededUserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Category\CategoryResource;
-use App\Http\Resources\Media\MediaResource;
-use App\Http\Resources\Settings\Country\EmbededCountryResource;
+use App\Http\Resources\Buyer\EmbeddedBuyerResource;
 use App\Http\Resources\Project\EmbededProjectTypeResource;
+use App\Http\Resources\Settings\Country\EmbededCountryResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
 
 class ProjectResource extends JsonResource
@@ -49,6 +50,7 @@ class ProjectResource extends JsonResource
             'platforms' => $this->platforms ?? null,
             'assets' => $this->assets ?? null,
             'current_user_favorite' => $this->currentUserFavorite ?? null,
+            'buyers' => $this->buyers ? EmbeddedBuyerResource::collection($this->buyers) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at ?? null,
         ];

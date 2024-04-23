@@ -48,4 +48,11 @@ class BuyerController extends BaseApiController
             'Buyer data send successfully.'
         );
     }
+
+    public function destroy(Buyer $buyer): JsonResponse
+    {
+        $this->buyerService->deleteOne($buyer);
+
+        return $this->returnSuccessMessage('Buyer deleted successfully');
+    }
 }
