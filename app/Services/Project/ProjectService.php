@@ -33,9 +33,13 @@ class ProjectService
 
     private function buildGetManyQuery($projectFilters, $builder)
     {
-        $userId = $projectFilters['user_id'];
+        $user_id = $projectFilters['user_id'];
         $name = $projectFilters['name'];
         $category_id = $projectFilters['category_id'];
+
+        if (isset($user_id)) {
+            $builder->where('user_id', $user_id);
+        }
 
         if (isset($category_id)) {
             $builder->where('category_id', $category_id);
@@ -43,10 +47,6 @@ class ProjectService
 
         if (isset($name)) {
             $builder->where('name', 'like', '%' . $name . '%');
-        }
-
-        if (isset($userId)) {
-            $builder->where('user_id', $userId);
         }
     }
 

@@ -31,10 +31,10 @@ class BuyerService
 
     private function buildGetManyQuery($buyerFilters, $builder)
     {
-        $userId = $buyerFilters['user_id'];
+        $user_id = $buyerFilters['user_id'];
 
-        if (isset($userId)) {
-            $builder->where('user_id', $userId);
+        if (isset($user_id)) {
+            $builder->where('user_id', $user_id);
         }
     }
 
