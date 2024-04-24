@@ -2,7 +2,6 @@
 
 namespace App\Services\Project;
 
-use App\Constants\App;
 use App\Models\Project;
 use App\Services\BuilderService;
 use Illuminate\Pagination\LengthAwarePaginator;
