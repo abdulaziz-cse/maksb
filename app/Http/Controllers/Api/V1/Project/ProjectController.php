@@ -33,26 +33,27 @@ class ProjectController extends BaseApiController
         );
     }
 
-    public function store(ProjectManageRequest $request)
+    public function store(ProjectManageRequest $request): JsonResponse
     {
         $data = $request->validated();
         $project = $this->projectService->store($data);
         return response()->json($project);
     }
 
-    public function show(Project $project): JsonResponse
+    public function show(int $projectId): JsonResponse
     {
+        $project = $this->projectService->getOne($projectId);
+
         return $this->returnDate(
             new ProjectResource($project),
             'Project data send successfully.'
         );
     }
 
-    public function destroy(int $id)
+    public function destroy(Project $project): JsonResponse
     {
-        $this->projectService->destroy($id);
-        return response()->json([
-            'message' => 'Project removed successfully',
-        ]);
+        $this->projectService->deleteOne($project);
+
+        return $this->returnSuccessMessage('Project deleted successfully');
     }
 }

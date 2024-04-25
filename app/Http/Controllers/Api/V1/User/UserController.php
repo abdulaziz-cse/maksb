@@ -31,7 +31,7 @@ class UserController extends BaseApiController
     public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
-        $user = $this->userService->updateProfile($user->id, $data);
+        $user = $this->userService->updateProfile($user, $data);
 
         return $this->returnDate(
             new UserResource($user),

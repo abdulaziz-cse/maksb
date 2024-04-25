@@ -22,7 +22,7 @@ class FavouriteIndexRequest extends SearchPaginateRequest
     public function rules(): array
     {
         return array_merge(parent::baseRules(), [
-            'project_id' => 'nullable|integer|exists:projects,id',
+            'project_id' => 'nullable|integer|exists:projects,id,deleted_at,NULL',
             'user_id' => 'nullable|integer|exists:users,id',
         ]);
     }

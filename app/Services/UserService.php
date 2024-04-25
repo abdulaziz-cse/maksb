@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Contracts\Repositories\UserRepositoryInterface;
@@ -17,21 +18,6 @@ class UserService
         $this->userRepository = $userRepository;
     }
 
-    public function getProfile(int $userId): User
-    {
-        $user = $this->userRepository->getOne($userId);
-
-
-        if (! $user) {
-            abort(404, 'User not found');
-        }
-
-        $user->load('photo');
-
-        return $user;
-    }
-
-
     public function create(array $data): User
     {
         // Create user
@@ -43,18 +29,14 @@ class UserService
         return $user;
     }
 
-    public function updateProfile(int $userId,array $data): User
+    public function updateProfile(User $user, array $data): User
     {
-        $user = $this->userRepository->getOne($userId);
-        if (! $user) {
-            abort(404, 'User not found');
-        }
-
         $oldPhone = $user->phone;
         $oldEmail = $user->email;
+
         if (isset($data['phone']) && $data['phone'] !== $oldPhone) {
-            $isPhoneVerified = (bool) Redis::get('user_'.$user->id.'_verified_'.$data['phone']);
-            if (! $isPhoneVerified) {
+            $isPhoneVerified = $user->phone_verified_at; //(bool) Redis::get('user_' . $user->id . '_verified_' . $data['phone']);
+            if (!$isPhoneVerified) {
                 abort(400, 'Phone not verified.');
             }
         }
@@ -77,8 +59,6 @@ class UserService
         $user->load('photo');
 
         return $user;
-
-
     }
 
     public function updatePhoto(User $user, array $data): User
@@ -98,11 +78,11 @@ class UserService
     {
         $currentUser = auth()->user();
 
-        if (! isset($data['password'], $currentUser)) {
+        if (!isset($data['password'], $currentUser)) {
             return $user;
         }
 
-        if (! isset($data['oldpassword'])) {
+        if (!isset($data['oldpassword'])) {
             $message = $currentUser->isAdmin() ?
                 'Your admin password is incorrect' :
                 'Please provide old password';
@@ -113,7 +93,7 @@ class UserService
         }
 
         // Check for old password or admin password for admins
-        if ( ! \Hash::check($data['oldpassword'], $currentUser->password)) {
+        if (!\Hash::check($data['oldpassword'], $currentUser->password)) {
             $message = $currentUser->isAdmin() ?
                 'Your admin password is incorrect' :
                 'Old password is incorrect';
@@ -127,5 +107,4 @@ class UserService
 
         return $user;
     }
-
 }

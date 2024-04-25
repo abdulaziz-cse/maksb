@@ -47,4 +47,16 @@ class BuyerService
         $buyer->load(['projects', 'file']);
         return $buyer;
     }
+
+    public function deleteOne(Buyer $buyer): bool
+    {
+        $this->detachProjects($buyer);
+
+        return $buyer->delete();
+    }
+
+    private function detachProjects(Buyer $buyer): void
+    {
+        $buyer->projects()->detach();
+    }
 }

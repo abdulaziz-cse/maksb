@@ -22,22 +22,4 @@ class PredefinedValue extends Model
     {
         return $this->hasMany(self::class, 'parent_id');
     }
-
-    // recursive, loads all descendants
-    public function childrenRecursive()
-    {
-        return $this->children()->with('childrenRecursive');
-    }
-
-    // parent
-    public function parent()
-    {
-        return $this->belongsTo(self::class, 'parent_id');
-    }
-
-    // all ascendants
-    public function parentRecursive()
-    {
-        return $this->parent()->with('parentRecursive');
-    }
 }

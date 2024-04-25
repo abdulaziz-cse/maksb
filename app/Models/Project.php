@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Constants\App;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -26,7 +26,6 @@ class Project extends Model implements HasMedia
         'expenses' => 'array',
         'social_media' => 'array',
         'billing_info' => 'array'
-
     ];
 
     protected $appends = [
@@ -39,7 +38,8 @@ class Project extends Model implements HasMedia
      * @return string[]
      */
     public array $searchable = [
-        'user.id', 'category.id',
+        'user.id',
+        'category.id',
     ];
 
     public function getIsFavoriteAttribute()
@@ -71,19 +71,24 @@ class Project extends Model implements HasMedia
         return $this->belongsTo(PredefinedValue::class, 'type_id');
     }
 
-    public function category(): HasOne
+    public function category(): BelongsTo
     {
-        return $this->hasOne(Category::class, 'id', 'category_id');
+        return $this->belongsTo(Category::class);
     }
 
-    public function country(): HasOne
+    public function country(): BelongsTo
     {
-        return $this->hasOne(Country::class, 'id', 'country_id');
+        return $this->belongsTo(Country::class);
     }
 
-    public function currency(): HasOne
+    public function currency(): BelongsTo
     {
-        return $this->hasOne(Currency::class, 'id', 'currency_id');
+        return $this->belongsTo(Currency::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function images()
@@ -98,18 +103,14 @@ class Project extends Model implements HasMedia
             ->where('collection_name', 'attachments');
     }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
     public function buyers(): BelongsToMany
     {
-        return $this->belongsToMany(Buyer::class, 'projects_buyers', 'project_id', 'buyer_id');
+        return $this->belongsToMany(Buyer::class);
     }
 
     public function currentUserFavorite()
     {
-        return $this->hasMany(Favourite::class, 'project_id', 'id')->where('favourites.user_id', auth('sanctum')->id());
+        return $this->hasMany(Favourite::class, 'project_id', 'id')
+            ->where('favourites.user_id', auth(App::API_GUARD)->id());
     }
 }
