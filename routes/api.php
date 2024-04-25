@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'v1'], function () { //, 'as' => 'api.v1.', 'namespace' => 'V1'
+Route::group(['prefix' => 'v1'], function () {
     Route::prefix('auth')->group(base_path('routes/v1/auth.php'));
     Route::prefix('user')->group(base_path('routes/v1/user.php'));
     Route::prefix('categories')->group(base_path('routes/v1/categories.php'));
@@ -26,6 +26,7 @@ Route::group(['prefix' => 'v1'], function () { //, 'as' => 'api.v1.', 'namespace
     Route::prefix('favourite')->group(base_path('routes/v1/favourites.php'));
     Route::prefix('payments')->group(base_path('routes/v1/payments.php'));
 });
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

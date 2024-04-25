@@ -1,11 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\V2;
 
+use App\Models\User;
+use App\Models\Asset;
+use App\Models\Buyer;
 use App\Constants\App;
+use App\Models\Country;
+use App\Models\Category;
+use App\Models\Currency;
+use App\Models\Platform;
+use App\Models\Favourite;
+use App\Models\RevenueSource;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -67,7 +77,7 @@ class Project extends Model implements HasMedia
 
     public function type(): BelongsTo
     {
-        return $this->belongsTo(ProjectType::class);
+        return $this->belongsTo(PredefinedValue::class, 'type_id');
     }
 
     public function category(): BelongsTo

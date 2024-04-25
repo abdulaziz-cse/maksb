@@ -5,9 +5,9 @@ namespace App\Http\Resources\Project;
 use App\Http\Resources\User\EmbededUserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Project\EmbededProjectTypeResource;
 use App\Http\Resources\Settings\Country\EmbededCountryResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
-use App\Http\Resources\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
 class ProjectIndexResource extends JsonResource
 {
@@ -17,7 +17,7 @@ class ProjectIndexResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name ?? null,
             'user' => $this->user ? new EmbededUserResource($this->user) : null,
-            'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
+            'type' => $this->type ? new EmbededProjectTypeResource($this->type) : null,
             'category' => $this->category ? new CategoryResource($this->category) : null,
             'website' => $this->website ?? null,
             'establishment_date' => $this->establishment_date ?? null,
