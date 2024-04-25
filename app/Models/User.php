@@ -11,7 +11,6 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -72,13 +71,18 @@ class User extends Authenticatable implements HasMedia
         return false;
     }
 
-    public function projects(): BelongsToMany
+    public function projects(): HasMany
     {
-        return $this->belongsToMany(Project::class, 'favourites', 'user_id', 'project_id');
+        return $this->hasMany(Project::class);
     }
 
     public function buyers(): HasMany
     {
         return $this->hasMany(Buyer::class);
+    }
+
+    public function favourites(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'favourites', 'user_id', 'project_id');
     }
 }

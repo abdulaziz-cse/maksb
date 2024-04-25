@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources\User;
 
-use App\Http\Resources\Buyer\BuyerResource;
 use App\Http\Resources\Project\ProjectResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Buyer\EmbeddedBuyerResource;
+use App\Http\Resources\Project\EmbededProjectResource;
 
 class UserResource extends JsonResource
 {
@@ -29,6 +29,7 @@ class UserResource extends JsonResource
             'photo' => $this->photo ?? null,
             'projects' => $this->projects ? ProjectResource::collection($this->projects) : null,
             'buyers' => $this->buyers ? EmbeddedBuyerResource::collection($this->buyers) : null,
+            'favourites' => $this->favourites ? EmbededProjectResource::collection($this->favourites) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at ?? null,
         ];

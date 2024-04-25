@@ -33,7 +33,7 @@ class ProjectController extends BaseApiController
         );
     }
 
-    public function store(ProjectManageRequest $request)
+    public function store(ProjectManageRequest $request): JsonResponse
     {
         $data = $request->validated();
         $project = $this->projectService->store($data);

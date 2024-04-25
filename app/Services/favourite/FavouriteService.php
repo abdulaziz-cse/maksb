@@ -2,20 +2,14 @@
 
 namespace App\Services\favourite;
 
+use App\Constants\App;
 use App\Models\Favourite;
 use App\Services\BuilderService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Contracts\Repositories\FavouriteRepositoryInterface;
 
-class FavouriteService
+class FavouriteService implements FavouriteRepositoryInterface
 {
-    private $favouriteRepository;
-
-    public function __construct(FavouriteRepositoryInterface $favouriteRepository)
-    {
-        $this->favouriteRepository = $favouriteRepository;
-    }
-
     public function getMany($projectFilters): LengthAwarePaginator
     {
         $paginate = $projectFilters['paginate'] ?? request()->paginate;
@@ -43,15 +37,17 @@ class FavouriteService
         }
     }
 
-    public function store(array $data): Favourite
+    public function createOne(array $favouriteData): Favourite
     {
-        $data['user_id'] = auth('sanctum')->user()->id;
-        $favourite = $this->favouriteRepository->store($data);
-        return $favourite;
+        $favouriteData['user_id'] = auth(App::API_GUARD)->user()->id;
+
+        return Favourite::create($favouriteData)->fresh();
     }
 
-    public function destroy($id)
+    public function deleteOne(int $id): bool
     {
-        return $this->favouriteRepository->destroy($id);
+        $user = auth(App::API_GUARD)->user();
+
+        return $user->favourites()->detach($id);
     }
 }
