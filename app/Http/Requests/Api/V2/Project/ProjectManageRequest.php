@@ -25,7 +25,7 @@ class ProjectManageRequest extends FormRequest
         return [
             'name' => 'required|string|min:3|max:255',
             'type_id' => 'required|integer|exists:predefined_values,id,deleted_at,NULL',
-            'category_id' => 'required|integer',
+            'category_id' => 'required|integer|exists:categories,id',
             'website' => 'required|string',
             'establishment_date' => 'required|date',
             'country_id' => 'required|integer|exists:countries,id',

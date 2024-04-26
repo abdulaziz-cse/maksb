@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api\V2\Project;
 use App\Models\V2\Project;
 use App\Traits\GeneralTrait;
 use App\Services\V2\Project\ProjectService;
-use App\Http\Resources\Project\ProjectResource;
 use App\Http\Controllers\Api\V1\BaseApiController;
+use App\Http\Resources\V2\Project\ProjectResource;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Http\Resources\V2\Project\ProjectIndexResource;
 use App\Http\Requests\Api\V2\Project\ProjectIndexRequest;
@@ -36,8 +36,12 @@ class ProjectController extends BaseApiController
     public function store(ProjectManageRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $project = $this->projectService->store($data);
-        return response()->json($project);
+        $project = $this->projectService->createOne($data);
+
+        return $this->returnDate(
+            new ProjectResource($project),
+            'success'
+        );
     }
 
     public function show(int $projectId): JsonResponse

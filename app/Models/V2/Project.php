@@ -62,7 +62,7 @@ class Project extends Model implements HasMedia
 
     public function revenueSources(): BelongsToMany
     {
-        return $this->belongsToMany(RevenueSource::class, 'projects_revenue_sources', 'project_id', 'revenue_source_id');
+        return $this->belongsToMany(RevenueSource::class);
     }
 
     public function platforms(): BelongsToMany
