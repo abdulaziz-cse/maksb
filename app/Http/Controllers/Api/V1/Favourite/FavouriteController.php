@@ -2,44 +2,50 @@
 
 namespace App\Http\Controllers\Api\V1\Favourite;
 
+use App\Traits\GeneralTrait;
+use Illuminate\Http\JsonResponse;
+use App\Services\favourite\FavouriteService;
 use App\Http\Controllers\Api\V1\BaseApiController;
-use App\Http\Requests\Api\V1\FavouriteRequest;
-use App\Services\FavouriteService;
-use Illuminate\Http\Request;
-
+use App\Http\Resources\Favourite\FavouriteResource;
+use App\Http\Requests\Api\V1\Favourite\FavouriteIndexRequest;
+use App\Http\Requests\Api\V1\Favourite\FavouriteManageRequest;
 
 class FavouriteController extends BaseApiController
 {
-    private $service;
+    use GeneralTrait;
 
-    public function __construct(FavouriteService $service)
+    public function __construct(private FavouriteService $favouriteService)
     {
         parent::__construct();
-        $this->service = $service;
     }
 
-
-    public function index()
+    public function index(FavouriteIndexRequest $request): JsonResponse
     {
-        $favourites = $this->service->getList();
-        return response()->json($favourites);
+        $favouriteFilters = $request->validated();
+        $favourites = $this->favouriteService->getMany($favouriteFilters);
+
+        return $this->returnDateWithPaginate(
+            $favourites,
+            'success',
+            FavouriteResource::class
+        );
     }
 
-    public function store(FavouriteRequest $request)
+    public function store(FavouriteManageRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $favourite =  $this->service->store($data);
-        return response()->json($favourite);
+        $favourite =  $this->favouriteService->createOne($data);
+
+        return $this->returnDate(
+            new FavouriteResource($favourite),
+            'success'
+        );
     }
 
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
-        $this->service->destroy($id);
-        return response()->json([
-            'message' => 'Favourite removed successfully',
-        ]);
+        $this->favouriteService->deleteOne($id);
+
+        return $this->returnSuccessMessage('Favourite removed successfully');
     }
-
-
-
 }

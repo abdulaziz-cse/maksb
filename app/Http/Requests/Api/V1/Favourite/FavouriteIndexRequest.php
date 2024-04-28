@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V1\Favourite;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Api\V1\SearchPaginateData\SearchPaginateRequest;
 
-class FavouriteRequest extends FormRequest
+class FavouriteIndexRequest extends SearchPaginateRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,8 +21,9 @@ class FavouriteRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'project_id' => 'required|integer'
-        ];
+        return array_merge(parent::baseRules(), [
+            'project_id' => 'nullable|integer|exists:projects,id,deleted_at,NULL',
+            'user_id' => 'nullable|integer|exists:users,id',
+        ]);
     }
 }

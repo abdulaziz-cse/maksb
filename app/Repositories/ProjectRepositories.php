@@ -15,23 +15,23 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
 
     public function getList(int $user_id)
     {
-        return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite'])->where('user_id',$user_id)->get();
+        return $this->model::with(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user', 'currentUserFavorite'])->where('user_id', $user_id)->get();
     }
 
     public function get(int $id)
     {
-        return $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite'])->where('id',$id)->first();
+        return $this->model::with(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user', 'currentUserFavorite'])->where('id', $id)->first();
     }
 
-    public function store(array $data,array $projectData) : Project
+    public function store(array $data, array $projectData): Project
     {
-        DB::beginTransaction();
+        return DB::transaction(function () use ($projectData, $data) {
 
-        try {
             $project = $this->create($projectData);
             $project->revenueSources()->attach($data['revenue_sources']);
             $project->platforms()->attach($data['platforms']);
             $project->assets()->attach($data['assets']);
+
             if (!empty($data['image1']))
                 $project->addMedia($data['image1'])->toMediaCollection('images');
             if (!empty($data['image2']))
@@ -44,31 +44,25 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
                 $project->addMedia($data['file2'])->toMediaCollection('attachments');
             if (!empty($data['file3']))
                 $project->addMedia($data['file3'])->toMediaCollection('attachments');
-            DB::commit();
-            return $project;
-        } catch (\Exception $e) {
-            DB::rollback();
-            // something went wrong
-            dd($e);
-        }
 
+            return $project->refresh();
+        });
     }
 
     public function index(array $data)
     {
-        $result = $this->model::with(['images','attachments','revenueSources','platforms','assets','type','category','country','currency','user','currentUserFavorite']);
+        $result = $this->model::with(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user', 'currentUserFavorite']);
         if (!empty($data['name']))
-            $result = $result->where('name', 'like', '%'.$data['name'].'%');
+            $result = $result->where('name', 'like', '%' . $data['name'] . '%');
         if (!empty($data['category']))
-            $result = $result->whereIn('category_id',$data['category']);
-        if (!empty($data['sorting']) and $data['sorting']==='DESC')
-            $result = $result->orderBy('created_at','desc');
+            $result = $result->whereIn('category_id', $data['category']);
+        if (!empty($data['sorting']) and $data['sorting'] === 'DESC')
+            $result = $result->orderBy('created_at', 'desc');
         else
             $result = $result->orderBy('created_at');
         $result = $result->paginate('10');
 
         return $result;
-
     }
 
 
@@ -83,11 +77,9 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
             $project->assets()->detach();
             $project->delete();
             DB::commit();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
             // something went wrong
         }
     }
-
 }

@@ -2,53 +2,58 @@
 
 namespace App\Http\Controllers\Api\V1\Project;
 
-use Illuminate\Http\Request;
-use App\Services\ProjectService;
+use App\Models\Project;
+use App\Traits\GeneralTrait;
+use App\Services\Project\ProjectService;
+use App\Http\Resources\Project\ProjectResource;
 use App\Http\Controllers\Api\V1\BaseApiController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Http\Resources\Project\ProjectIndexResource;
+use App\Http\Requests\Api\V1\Project\ProjectIndexRequest;
 use App\Http\Requests\Api\V1\Project\ProjectManageRequest;
-
 
 class ProjectController extends BaseApiController
 {
+    use GeneralTrait;
+
     public function __construct(private ProjectService $projectService)
     {
         parent::__construct();
     }
 
-    public function getListForUser(Request $request)
+    public function index(ProjectIndexRequest $request): JsonResponse
     {
-        $user_id = $request->user()->id;
-        $projects = $this->projectService->getList($user_id);
-        return response()->json($projects);
+        $projectFilters = $request->validated();
+        $projects = $this->projectService->getMany($projectFilters);
+
+        return $this->returnDateWithPaginate(
+            $projects,
+            'success',
+            ProjectIndexResource::class
+        );
     }
 
-    public function store(ProjectManageRequest $request)
+    public function store(ProjectManageRequest $request): JsonResponse
     {
         $data = $request->validated();
         $project = $this->projectService->store($data);
         return response()->json($project);
     }
 
-    public function index(Request $request)
+    public function show(int $projectId): JsonResponse
     {
-        $data['name'] = $request->name;
-        $data['category'] = $request->category;
-        $data['sorting'] = $request->sorting;
-        $projects = $this->projectService->index($data);
-        return response()->json($projects);
+        $project = $this->projectService->getOne($projectId);
+
+        return $this->returnDate(
+            new ProjectResource($project),
+            'Project data send successfully.'
+        );
     }
 
-    public function destroy(int $id)
+    public function destroy(Project $project): JsonResponse
     {
-        $this->projectService->destroy($id);
-        return response()->json([
-            'message' => 'Project removed successfully',
-        ]);
-    }
+        $this->projectService->deleteOne($project);
 
-    public function show(int $id)
-    {
-        $project = $this->projectService->show($id);
-        return response()->json($project);
+        return $this->returnSuccessMessage('Project deleted successfully');
     }
 }

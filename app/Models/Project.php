@@ -2,78 +2,92 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use PHPUnit\Framework\Constraint\Count;
+use App\Constants\App;
+use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use function PHPUnit\Framework\isEmpty;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model implements HasMedia
 {
-    use HasFactory, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SearchableTrait, SoftDeletes;
 
-    protected $guarded=[];
+    protected $guarded = [];
 
     protected $casts = [
         'incoming' => 'array',
         'cost' => 'array',
         'revenue' => 'array',
-        'expenses'=> 'array',
+        'expenses' => 'array',
         'social_media' => 'array',
         'billing_info' => 'array'
-
     ];
 
     protected $appends = [
         'isFavorite'
-        ];
+    ];
+
+    /**
+     * SearchableTrait attributes
+     *
+     * @return string[]
+     */
+    public array $searchable = [
+        'user.id',
+        'category.id',
+    ];
 
     public function getIsFavoriteAttribute()
     {
         $relations = $this->getRelations();
-        if(isset($relations['currentUserFavorite']))
-        return count($relations['currentUserFavorite']);
+        if (isset($relations['currentUserFavorite']))
+            return count($relations['currentUserFavorite']);
         else
             return 0;
     }
 
     public function revenueSources(): BelongsToMany
     {
-        return $this->belongsToMany(RevenueSource::class,'projects_revenue_sources','project_id','revenue_source_id');
+        return $this->belongsToMany(RevenueSource::class, 'projects_revenue_sources', 'project_id', 'revenue_source_id');
     }
 
     public function platforms(): BelongsToMany
     {
-        return $this->belongsToMany(Platform::class,'projects_platforms','project_id','platform_id');
+        return $this->belongsToMany(Platform::class, 'projects_platforms', 'project_id', 'platform_id');
     }
 
     public function assets(): BelongsToMany
     {
-        return $this->belongsToMany(Asset::class,'projects_assets','project_id','asset_id');
+        return $this->belongsToMany(Asset::class, 'projects_assets', 'project_id', 'asset_id');
     }
 
-    public function type(): HasOne
+    public function type(): BelongsTo
     {
-        return $this->hasOne(ProjectType::class,'id','type_id');
+        return $this->belongsTo(ProjectType::class);
     }
 
-
-    public function category(): HasOne
+    public function category(): BelongsTo
     {
-        return $this->hasOne(Category::class,'id','category_id');
+        return $this->belongsTo(Category::class);
     }
 
-    public function country(): HasOne
+    public function country(): BelongsTo
     {
-        return $this->hasOne(Country::class,'id','country_id');
+        return $this->belongsTo(Country::class);
     }
 
-    public function currency(): HasOne
+    public function currency(): BelongsTo
     {
-        return $this->hasOne(Currency::class,'id','currency_id');
+        return $this->belongsTo(Currency::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function images()
@@ -88,20 +102,14 @@ class Project extends Model implements HasMedia
             ->where('collection_name', 'attachments');
     }
 
-    public function user(): HasOne
-    {
-        return $this->hasOne(User::class,'id','user_id');
-    }
-
     public function buyers(): BelongsToMany
     {
-        return $this->belongsToMany(Buyer::class,'projects_buyers','project_id','buyer_id');
+        return $this->belongsToMany(Buyer::class);
     }
 
     public function currentUserFavorite()
     {
-        return $this->hasMany(Favourite::class,'project_id','id')->where('favourites.user_id',auth('sanctum')->id());
+        return $this->hasMany(Favourite::class, 'project_id', 'id')
+            ->where('favourites.user_id', auth(App::API_GUARD)->id());
     }
-
-
 }

@@ -32,7 +32,7 @@ class UserController extends BaseApiController
     {
         dd('here');
         $data = $request->validated();
-        $user = $this->userService->updateProfile($user->id, $data);
+        $user = $this->userService->updateProfile($user, $data);
 
         return $this->returnDate(
             new UserResource($user),

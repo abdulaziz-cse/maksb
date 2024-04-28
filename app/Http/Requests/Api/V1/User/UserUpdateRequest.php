@@ -17,7 +17,7 @@ class UserUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->check() && auth()->id() === (int) $this->route('id');
+        return true; //auth()->check() && auth()->id() === (int) $this->route('id');
     }
 
     /**

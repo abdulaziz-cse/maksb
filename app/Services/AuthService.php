@@ -8,7 +8,7 @@ use App\Enums\TwilioType;
 use App\Models\VerificationCode;
 use App\Enums\VerificationAction;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Redis;
+// use Illuminate\Support\Facades\Redis;
 use App\Services\Auth\VerificationService;
 use App\Contracts\Repositories\UserRepositoryInterface;
 
@@ -86,7 +86,7 @@ class AuthService
             $userId = auth('sanctum')->id();
             // Store a redis key for 24 hours that this phone is verified
             // Used for profile update
-            Redis::set('user_' . $userId . '_verified_' . $data['phone'], 1, 'EX', 24 * 60 * 60);
+            // Redis::set('user_' . $userId . '_verified_' . $data['phone'], 1, 'EX', 24 * 60 * 60);
         }
 
         return self::VERIFICATION_CODE_VALID;
