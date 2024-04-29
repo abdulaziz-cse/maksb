@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\V2\Settings;
+namespace App\Http\Resources\V2\Settings\Platform;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EmbededCategoryResource extends JsonResource
+class EmbededPlatformResource extends JsonResource
 {
     public function toArray($request): array
     {

@@ -2,11 +2,12 @@
 
 namespace App\Services\V2\Project;
 
+use App\Constants\App;
 use App\Models\V2\Project;
 use App\Services\BuilderService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Contracts\Repositories\V2\ProjectRepositoryInterface;
+use App\Interfaces\ProjectRepositoryInterface;
 
 class ProjectService implements ProjectRepositoryInterface
 {
@@ -57,27 +58,20 @@ class ProjectService implements ProjectRepositoryInterface
             $this->upsertAssets($data, $project);
 
             // Add media files
-            // $this->handleMediaFiles($project, $data);
+            $this->addImageMediaFiles($data, $project);
+            $this->addAttachmentMediaFiles($data, $project);
 
             return $project->refresh();
         });
-
-        //        array_splice($projectData,-9);
-        // unset($projectData['file1'], $projectData['file2'], $projectData['file3'], $projectData['image1'], $projectData['image2'], $projectData['image3'], $projectData['assets'], $projectData['platforms'], $projectData['revenue_sources']);
-        // $projectData['user_id'] = auth('sanctum')->user()->id;
-        // $project = $this->projectRepository->store($data, $projectData);
-        // $project->load(['images', 'attachments', 'revenueSources', 'platforms', 'assets', 'type', 'category', 'country', 'currency', 'user']);
-        // return $project;
     }
 
     private function prepareProjectData($data): array
     {
         $projectData = array_diff_key($data, array_flip(['file1', 'file2', 'file3', 'image1', 'image2', 'image3', 'assets', 'platforms', 'revenue_sources']));
-        $projectData['user_id'] = auth('sanctum')->user()->id;
+        $projectData['user_id'] = auth(App::API_GUARD)->user()->id;
 
         return $projectData;
     }
-
 
     private function upsertRevenueSources(array $data, Project $project): void
     {
@@ -89,7 +83,7 @@ class ProjectService implements ProjectRepositoryInterface
     private function upsertPlatforms(array $data, Project $project): void
     {
         if (isset($data['platforms'])) {
-            $project->revenueSources()->sync($data['platforms']);
+            $project->platforms()->sync($data['platforms']);
         }
     }
 
@@ -114,56 +108,23 @@ class ProjectService implements ProjectRepositoryInterface
         return $project->delete();
     }
 
-    // public function createOne($projectData): Project
-    // {
-    //     return Project::create($verificationData)->fresh();
-    // }
-
-
-    // public function store(array $data, array $projectData): Project
-    // {
-    //     return DB::transaction(function () use ($projectData, $data) {
-
-    //         $project = $this->create($projectData);
-    //         $project->revenueSources()->attach($data['revenue_sources']);
-    //         $project->platforms()->attach($data['platforms']);
-    //         $project->assets()->attach($data['assets']);
-
-    //         if (!empty($data['image1']))
-    //             $project->addMedia($data['image1'])->toMediaCollection('images');
-    //         if (!empty($data['image2']))
-    //             $project->addMedia($data['image2'])->toMediaCollection('images');
-    //         if (!empty($data['image3']))
-    //             $project->addMedia($data['image3'])->toMediaCollection('images');
-    //         if (!empty($data['file1']))
-    //             $project->addMedia($data['file1'])->toMediaCollection('attachments');
-    //         if (!empty($data['file2']))
-    //             $project->addMedia($data['file2'])->toMediaCollection('attachments');
-    //         if (!empty($data['file3']))
-    //             $project->addMedia($data['file3'])->toMediaCollection('attachments');
-
-    //         return $project->refresh();
-    //     });
-    // }
-
-    private function handleMediaFiles(Project $project, array $data)
+    private function addImageMediaFiles(array $data, Project $project)
     {
-        // Define arrays for images and attachments
         $images = ['image1', 'image2', 'image3'];
+
+        foreach ($images as $image) {
+            if (!empty($data[$image]))
+                $project->addMedia($data[$image])->toMediaCollection('images');
+        }
+    }
+
+    private function addAttachmentMediaFiles(array $data, Project $project): void
+    {
         $attachments = ['file1', 'file2', 'file3'];
 
-        // Add images to media collection
-        foreach ($images as $image) {
-            if (!empty($data[$image])) {
-                $project->addMedia($data[$image])->toMediaCollection('images');
-            }
-        }
-
-        // Add attachments to media collection
         foreach ($attachments as $attachment) {
-            if (!empty($data[$attachment])) {
+            if (!empty($data[$attachment]))
                 $project->addMedia($data[$attachment])->toMediaCollection('attachments');
-            }
         }
     }
 }

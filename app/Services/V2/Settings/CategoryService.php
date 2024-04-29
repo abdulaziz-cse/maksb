@@ -4,7 +4,7 @@ namespace App\Services\V2\Settings;
 
 use App\Models\V2\Settings\Category;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Contracts\Repositories\V2\CategoryRepositoryInterface;
+use App\Interfaces\CategoryRepositoryInterface;
 
 class CategoryService implements CategoryRepositoryInterface
 {

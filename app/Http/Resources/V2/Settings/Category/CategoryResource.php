@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Resources\V2\Settings;
+namespace App\Http\Resources\V2\Settings\Category;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\V2\Settings\Category\EmbededCategoryResource;
 
 class CategoryResource extends JsonResource
 {

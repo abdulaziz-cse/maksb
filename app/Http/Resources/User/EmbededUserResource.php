@@ -10,13 +10,13 @@ class EmbededUserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name ?? null,
-            'email' => $this->email ?? null,
-            'phone' => $this->phone ?? null,
-            'photo' => $this->photo ?? null,
-            'about' => $this->about ?? null,
-            'phone_verified_at' => $this->phone_verified_at ?? null,
-            'email_verified_at' => $this->email_verified_at ?? null,
+            'name' => $this->name,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'photo' => $this->photo,
+            'about' => $this->about,
+            'phone_verified_at' => $this->phone_verified_at,
+            'email_verified_at' => $this->email_verified_at,
         ];
     }
 }

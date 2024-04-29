@@ -6,7 +6,7 @@ use App\Traits\GeneralTrait;
 use Illuminate\Http\JsonResponse;
 use App\Services\V2\Settings\CategoryService;
 use App\Http\Controllers\Api\V1\BaseApiController;
-use App\Http\Resources\V2\Settings\CategoryResource;
+use App\Http\Resources\V2\Settings\Category\CategoryResource;
 
 class CategoryController extends BaseApiController
 {
