@@ -10,7 +10,7 @@ class PlatformResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name ?? null,
+            'name' => $this->name,
         ];
     }
 }

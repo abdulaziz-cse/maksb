@@ -10,11 +10,11 @@ class EmbededMediaResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name ?? null,
-            'mime_type' => $this->mime_type ?? null,
-            'collection_name' => $this->uuid ?? null,
-            'conversions_disk' => $this->conversions_disk ?? null,
-            'original_url' => $this->original_url ?? null,
+            'name' => $this->name,
+            'mime_type' => $this->mime_type,
+            'collection_name' => $this->uuid,
+            'conversions_disk' => $this->conversions_disk,
+            'original_url' => $this->original_url,
         ];
     }
 }

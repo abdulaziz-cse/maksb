@@ -11,7 +11,7 @@ class CategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name ?? null,
+            'name' => $this->name,
             'group' => $this->group ? new EmbededCategoryResource($this->group) : null,
             'childerns' => $this->childrenRecursive ? EmbededCategoryResource::collection($this->childrenRecursive) : null,
             'created_at' => $this->created_at,

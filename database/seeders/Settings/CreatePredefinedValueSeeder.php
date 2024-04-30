@@ -19,7 +19,7 @@ class CreatePredefinedValueSeeder extends BaseSeeder
     {
         $parentId = PredefinedValue::factory()->create([
             'name' => 'project types',
-            'slug' => null,
+            'slug' => 'projectType',
         ])?->id;
 
         $predefinedValues = [
