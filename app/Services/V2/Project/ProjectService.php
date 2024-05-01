@@ -10,7 +10,6 @@ class ProjectService
 {
     public function __construct(private ProjectRepositoryInterface $projectRepositoryInterface)
     {
-        $this->projectRepositoryInterface = $projectRepositoryInterface;
     }
 
     public function getMany($projectFilters): LengthAwarePaginator

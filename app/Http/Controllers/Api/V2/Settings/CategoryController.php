@@ -2,29 +2,36 @@
 
 namespace App\Http\Controllers\Api\V2\Settings;
 
-use App\Traits\GeneralTrait;
 use Illuminate\Http\JsonResponse;
+use App\Models\V2\Settings\Category;
 use App\Services\V2\Settings\CategoryService;
-use App\Http\Controllers\Api\V1\BaseApiController;
+use App\Http\Controllers\Api\V2\BaseApiController;
 use App\Http\Resources\V2\Settings\Category\CategoryResource;
+use App\Http\Requests\Api\V2\Settings\Category\CategoryIndexRequest;
 
 class CategoryController extends BaseApiController
 {
-    use GeneralTrait;
-
     public function __construct(private CategoryService $categoryService)
     {
-        parent::__construct();
     }
 
-    public function index(): JsonResponse
+    public function index(CategoryIndexRequest $request): JsonResponse
     {
-        $categories = $this->categoryService->getMany();
+        $categoryFilters = $request->validated();
+        $regions = $this->categoryService->getMany($categoryFilters);
 
         return $this->returnDateWithPaginate(
-            $categories,
+            $regions,
             'success',
             CategoryResource::class
+        );
+    }
+
+    public function show(Category $category): JsonResponse
+    {
+        return $this->returnDate(
+            new CategoryResource($category),
+            'success'
         );
     }
 }

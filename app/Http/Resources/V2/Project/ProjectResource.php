@@ -7,10 +7,10 @@ use App\Http\Resources\User\EmbededUserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Buyer\EmbeddedBuyerResource;
 use App\Http\Resources\V2\Settings\Asset\AssetResource;
-use App\Http\Resources\Settings\Country\EmbededCountryResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
-use App\Http\Resources\V2\Settings\Category\EmbededCategoryResource;
+use App\Http\Resources\V2\Settings\Region\EmbeddedRegionResource;
 use App\Http\Resources\V2\Settings\Platform\EmbededPlatformResource;
+use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
 use App\Http\Resources\V2\Settings\RevenueSource\EmbededRevenueSourceResource;
 use App\Http\Resources\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
@@ -29,10 +29,10 @@ class ProjectResource extends JsonResource
             'name' => $this->name,
             'user' => $this->user ? new EmbededUserResource($this->user) : null,
             'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
-            'category' => $this->category ? new EmbededCategoryResource($this->category) : null,
+            'category' => $this->category ? new EmbeddedCategoryResource($this->category) : null,
             'website' => $this->website,
             'establishment_date' => $this->establishment_date,
-            'country' => $this->country ? new EmbededCountryResource($this->country) : null,
+            'country' => $this->region ? new EmbeddedRegionResource($this->region) : null,
             'currency' => $this->currency ? new EmbededCurrencyResource($this->currency) : null,
             'yearly' => $this->yearly,
             'incoming' => $incoming,

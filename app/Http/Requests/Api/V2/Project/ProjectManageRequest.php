@@ -28,7 +28,7 @@ class ProjectManageRequest extends FormRequest
             'category_id' => 'required|integer|exists:categories,id',
             'website' => 'required|string',
             'establishment_date' => 'required|date',
-            'country_id' => 'required|integer|exists:countries,id',
+            'country_id' => 'required|integer|exists:regions,id',
             'other_platform' => 'sometimes|required|string',
             'currency_id' => 'required|integer|exists:currencies,id',
             'yearly' => 'nullable|boolean',

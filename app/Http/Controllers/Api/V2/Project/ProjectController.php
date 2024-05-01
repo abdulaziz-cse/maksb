@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api\V2\Project;
 
 use App\Models\V2\Project;
-use App\Traits\GeneralTrait;
 use App\Services\V2\Project\ProjectService;
-use App\Http\Controllers\Api\V1\BaseApiController;
+use App\Http\Controllers\Api\V2\BaseApiController;
 use App\Http\Resources\V2\Project\ProjectResource;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Http\Resources\V2\Project\ProjectIndexResource;
@@ -14,11 +13,8 @@ use App\Http\Requests\Api\V2\Project\ProjectManageRequest;
 
 class ProjectController extends BaseApiController
 {
-    use GeneralTrait;
-
     public function __construct(private ProjectService $projectService)
     {
-        parent::__construct();
     }
 
     public function index(ProjectIndexRequest $request): JsonResponse

@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Asset;
 use App\Models\Buyer;
 use App\Constants\App;
-use App\Models\Country;
 use App\Models\Category;
 use App\Models\Currency;
 use App\Models\Platform;
@@ -15,7 +14,8 @@ use App\Models\RevenueSource;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Settings\PredefinedValue;
+use App\Models\V2\Settings\PredefinedValue;
+use App\Models\V2\Settings\Region;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -85,9 +85,9 @@ class Project extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
-    public function country(): BelongsTo
+    public function region(): BelongsTo
     {
-        return $this->belongsTo(Country::class);
+        return $this->belongsTo(Region::class);
     }
 
     public function currency(): BelongsTo

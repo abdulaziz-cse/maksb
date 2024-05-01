@@ -114,7 +114,7 @@ class ProjectReposiotry implements ProjectRepositoryInterface
 
         foreach ($images as $image) {
             if (!empty($data[$image]))
-                $project->addMedia($data[$image])->toMediaCollection('images');
+                $project->addMedia($data[$image])->toMediaCollection('images', 's3');
         }
     }
 
@@ -124,7 +124,7 @@ class ProjectReposiotry implements ProjectRepositoryInterface
 
         foreach ($attachments as $attachment) {
             if (!empty($data[$attachment]))
-                $project->addMedia($data[$attachment])->toMediaCollection('attachments');
+                $project->addMedia($data[$attachment])->toMediaCollection('attachments', 's3');
         }
     }
 }

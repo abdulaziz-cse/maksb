@@ -3,11 +3,12 @@
 namespace App\Models\V2\Settings;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Region extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ['name', 'parent_id'];
 
@@ -17,16 +18,17 @@ class Category extends Model
 
     public function group()
     {
-        return $this->belongsTo(Category::class, 'parent_id');
+        return $this->belongsTo(Region::class, 'parent_id');
     }
 
-    public function childern()
+    public function children()
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(self::class, 'parent_id');
     }
 
+    // recursive, loads all descendants
     public function childrenRecursive()
     {
-        return $this->childern()->with('childrenRecursive');
+        return $this->children()->with('childrenRecursive');
     }
 }

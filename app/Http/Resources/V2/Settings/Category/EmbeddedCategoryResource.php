@@ -4,7 +4,7 @@ namespace App\Http\Resources\V2\Settings\Category;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EmbededCategoryResource extends JsonResource
+class EmbeddedCategoryResource extends JsonResource
 {
     public function toArray($request): array
     {

@@ -2,21 +2,21 @@
 
 namespace App\Services\V2\Settings;
 
-use App\Models\V2\Settings\Category;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\V2\Settings\Region;
 use App\Interfaces\SettingRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
-class CategoryService
+class RegionService
 {
     public function __construct(private SettingRepositoryInterface $settingRepositoryInterface)
     {
     }
 
-    public function getMany($categoryFilters): LengthAwarePaginator
+    public function getMany($regionFilters): LengthAwarePaginator
     {
         return $this->settingRepositoryInterface->getMany(
-            $categoryFilters,
-            Category::class
+            $regionFilters,
+            Region::class
         );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders\Settings;
 
-use App\Models\Settings\PredefinedValue;
+use App\Models\V2\Settings\PredefinedValue;
 use Database\Seeders\BaseSeeder;
 
 class CreatePredefinedValueSeeder extends BaseSeeder

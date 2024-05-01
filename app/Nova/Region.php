@@ -8,14 +8,14 @@ use Laravel\Nova\Fields\DateTime;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
-class PredefinedValue extends Resource
+class Region extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var class-string<\App\Models\Category>
      */
-    public static $model = \App\Models\V2\Settings\PredefinedValue::class;
+    public static $model = \App\Models\V2\Settings\Region::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -51,8 +51,7 @@ class PredefinedValue extends Resource
         return [
             ID::make()->sortable(),
             Text::make('Name')->sortable()->required()->showOnPreview(),
-            Text::make('Slug')->sortable()->required()->showOnPreview(),
-            BelongsTo::make('PredefinedValue', 'group')->sortable()->nullable()->showOnPreview(),
+            BelongsTo::make('Region', 'group')->sortable()->nullable()->showOnPreview(),
             DateTime::make('Created At', 'created_at')->sortable()->showOnPreview()->hide(),
             DateTime::make('Updated At', 'updated_at')->sortable()->showOnPreview()->hide(),
 
