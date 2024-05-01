@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Resources\User\UserResource;
 use App\Http\Controllers\Api\V1\BaseApiController;
 use App\Http\Requests\Api\V1\User\UserUpdateRequest;
-
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends BaseApiController
 {
@@ -30,6 +30,10 @@ class UserController extends BaseApiController
 
     public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
+        // Store new photo
+        // $path = $request->file('photo')->store('photos');
+        // dd(Storage::disk('s3')->url($path));
+
         $data = $request->validated();
         $user = $this->userService->updateProfile($user, $data);
 

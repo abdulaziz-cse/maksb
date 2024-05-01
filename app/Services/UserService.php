@@ -64,7 +64,7 @@ class UserService
     public function updatePhoto(User $user, array $data): User
     {
         if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
-            $user->addMedia($data['photo'])->toMediaCollection('avatars');
+            $user->addMedia($data['photo'])->toMediaCollection('avatars','s3');
         } elseif (array_key_exists('photo', $data) && empty($data['photo'])) {
             // Delete all user media
             // As there is only one collection - avatars
