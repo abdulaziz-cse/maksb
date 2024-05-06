@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->unsignedBigInteger('parent_id')->nullable();
-            $table->boolean('is_active')->default(1);
             $table->timestamps();
             $table->softDeletes();
 

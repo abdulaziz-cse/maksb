@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories\Settings;
+namespace Database\Factories\V2\Settings;
 
-use App\Models\Settings\PredefinedValue;
+use App\Models\V2\Settings\PredefinedValue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\ProjectTypeSeeder;
+use Database\Seeders\Settings\CreateRegionSeeder;
 use Database\Seeders\Settings\CreatePredefinedValueSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +26,8 @@ class DatabaseSeeder extends Seeder
             BuyerStatus::class,
             BuyerTypes::class,
             CreatePredefinedValueSeeder::class,
+            CreateRegionSeeder::class,
+            ProjectTypeSeeder::class,
         ]);
     }
 }
