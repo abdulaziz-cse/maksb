@@ -2,11 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Models\Asset;
 use Database\Seeders\BaseSeeder;
 use Illuminate\Support\Facades\DB;
 
 class AssetsSeeder extends BaseSeeder
 {
+    public function __construct()
+    {
+        parent::__construct(Asset::class);
+    }
+
     /**
      * Run the database seeds.
      */

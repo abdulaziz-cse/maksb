@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\BaseSeeder;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class ProjectTypeSeeder extends BaseSeeder
+class ProjectTypeSeeder extends Seeder
 {
     /**
      * Run the database seeds.

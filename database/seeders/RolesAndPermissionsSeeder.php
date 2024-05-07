@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Seeder;
 use Database\Seeders\BaseSeeder;
 use Spatie\Permission\Models\Role;
 
-class RolesAndPermissionsSeeder extends BaseSeeder
+class RolesAndPermissionsSeeder extends Seeder
 {
     /**
      * Run the database seeds.

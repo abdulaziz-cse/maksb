@@ -5,8 +5,8 @@ namespace App\Http\Resources\Project;
 use App\Http\Resources\User\EmbededUserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Category\CategoryResource;
-use App\Http\Resources\Settings\Country\EmbededCountryResource;
 use App\Http\Resources\Project\EmbededProjectTypeResource;
+use App\Http\Resources\Settings\Country\EmbededCountryResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
 
 class ProjectIndexResource extends JsonResource
