@@ -56,9 +56,9 @@ class ProjectManageRequest extends FormRequest
             'image1' => 'nullable|image|max:2048|mimes:jpeg,png,jpg',
             'image2' => 'nullable|image|max:2048|mimes:jpeg,png,jpg',
             'image3' => 'nullable|image|max:2048|mimes:jpeg,png,jpg',
-            'file1' => 'nullable|file|max:10240|mimes:pdf,docx',
-            'file2' => 'nullable|file|max:10240|mimes:pdf,docx',
-            'file3' => 'nullable|file|max:10240|mimes:pdf,docx',
+            'file1' => 'nullable|file|max:2048|mimes:pdf,docx',
+            'file2' => 'nullable|file|max:2048|mimes:pdf,docx',
+            'file3' => 'nullable|file|max:2048|mimes:pdf,docx',
         ];
     }
 }
