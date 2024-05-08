@@ -23,7 +23,6 @@ class BuyerResource extends JsonResource
             'user' => $this->user ? new EmbededUserResource($this->user) : null,
             'projects' => $this->projects ? EmbededProjectResource::collection($this->projects) : null,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at ?? null,
         ];
     }
 }

@@ -5,11 +5,11 @@ namespace App\Http\Resources\V2\Project;
 use App\Http\Resources\Media\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
-use App\Http\Resources\V2\Settings\Category\EmbededCategoryResource;
+use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
 use App\Http\Resources\V2\Settings\RevenueSource\EmbededRevenueSourceResource;
 use App\Http\Resources\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
-class EmbededProjectResource extends JsonResource
+class EmbeddedProjectResource extends JsonResource
 {
     public function toArray($request): array
     {
@@ -27,7 +27,7 @@ class EmbededProjectResource extends JsonResource
             'price' => $this->price,
             'cost' => $cost,
             'images' => $this->images ? MediaResource::collection($this->images) : null,
-            'category' => $this->category ? new EmbededCategoryResource($this->category) : null,
+            'category' => $this->category ? new EmbeddedCategoryResource($this->category) : null,
             'currency' => $this->currency ? new EmbededCurrencyResource($this->currency) : null,
         ];
     }
