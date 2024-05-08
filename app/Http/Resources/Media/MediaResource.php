@@ -24,7 +24,6 @@ class MediaResource extends JsonResource
             'order_column' => $this->order_column,
             'original_url' => $this->original_url,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

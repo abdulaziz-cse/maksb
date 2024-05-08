@@ -17,19 +17,34 @@ class BuyerRepositories extends GeneralRepositories implements BuyerRepositoryIn
 
     public function store(array $data, array $BuyertData): Buyer
     {
-        DB::beginTransaction();
+        return DB::transaction(function () use ($BuyertData, $data) {
 
-        try {
             $buyer = $this->create($BuyertData);
+
             $buyer->projects()->attach($data['project_id']);
+
             if (!empty($data['file']))
                 $buyer->addMedia($data['file'])->toMediaCollection('files', 's3');
-            DB::commit();
-            return $buyer;
-        } catch (\Exception $e) {
-            DB::rollback();
-            // something went wrong
-            dd($e);
-        }
+
+            return $buyer->refresh();
+        });
     }
+
+    // public function store(array $data, array $BuyertData): Buyer
+    // {
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $buyer = $this->create($BuyertData);
+    //         $buyer->projects()->attach($data['project_id']);
+    //         if (!empty($data['file']))
+    //             $buyer->addMedia($data['file'])->toMediaCollection('files', 's3');
+    //         DB::commit();
+    //         return $buyer;
+    //     } catch (\Exception $e) {
+    //         DB::rollback();
+    //         // something went wrong
+    //         dd($e);
+    //     }
+    // }
 }
