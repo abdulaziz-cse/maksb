@@ -30,7 +30,7 @@ class BuyerManageRequest extends FormRequest
             'consultant_type' => 'required|integer',
             'status_id' => 'required|integer|exists:buyers_status,id',
             'project_id' => 'required|integer|exists:projects,id',
-            'file' => 'required|file|max:2048|mimes:pdf,docx',
+            'file' => 'required|file|max:1048|mimes:pdf,docx',
         ];
     }
 }
