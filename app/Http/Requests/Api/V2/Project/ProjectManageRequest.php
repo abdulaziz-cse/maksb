@@ -53,12 +53,12 @@ class ProjectManageRequest extends FormRequest
             'platforms.*' => 'required|integer|exists:platforms,id',
             'assets' => 'required|array',
             'assets.*' => 'required|integer|exists:assets,id',
-            'image1' => 'image',
-            'image2' => 'image',
-            'image3' => 'image',
-            'file1' => [File::types(['docx', 'pdf'])],
-            'file2' => [File::types(['docx', 'pdf'])],
-            'file3' => [File::types(['docx', 'pdf'])]
+            'image1' => 'nullable|image|max:2048|mimes:jpeg,png,jpg',
+            'image2' => 'nullable|image|max:2048|mimes:jpeg,png,jpg',
+            'image3' => 'nullable|image|max:2048|mimes:jpeg,png,jpg',
+            'file1' => 'nullable|file|max:10240|mimes:pdf,docx',
+            'file2' => 'nullable|file|max:10240|mimes:pdf,docx',
+            'file3' => 'nullable|file|max:10240|mimes:pdf,docx',
         ];
     }
 }

@@ -30,7 +30,7 @@ class BuyerManageRequest extends FormRequest
             'consultant_type' => 'required|integer',
             'status_id' => 'required|integer|exists:buyers_status,id',
             'project_id' => 'required|integer|exists:projects,id',
-            'file' => [File::types(['docx', 'pdf']), 'required'],
+            'file' => 'required|file|max:10240|mimes:pdf,docx',
         ];
     }
 }
