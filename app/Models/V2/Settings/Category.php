@@ -22,7 +22,7 @@ class Category extends Model
 
     public function childern()
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     public function childrenRecursive()

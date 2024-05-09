@@ -26,6 +26,34 @@ class Project extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, SearchableTrait, SoftDeletes;
 
+    protected $fillable = [
+        'name',
+        'user_id',
+        'type_id',
+        'website',
+        'establishment_date',
+        'country_id',
+        'other_platform',
+        'currency_id',
+        'category_id',
+        'yearly',
+        'other_assets',
+        'is_supported',
+        'support',
+        'email_subscribers',
+        'video_url',
+        'price',
+        'package_id',
+        'description',
+        'short_description',
+        'expenses',
+        'social_media',
+        'billing_info',
+        'incoming',
+        'cost',
+        'revenue',
+    ];
+
     protected $guarded = [];
 
     protected $casts = [
@@ -34,7 +62,8 @@ class Project extends Model implements HasMedia
         'revenue' => 'array',
         'expenses' => 'array',
         'social_media' => 'array',
-        'billing_info' => 'array'
+        'billing_info' => 'array',
+        'establishment_date' => 'date',
     ];
 
     protected $appends = [

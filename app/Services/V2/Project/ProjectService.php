@@ -3,8 +3,8 @@
 namespace App\Services\V2\Project;
 
 use App\Models\V2\Project;
-use Illuminate\Pagination\LengthAwarePaginator;
 use App\Interfaces\ProjectRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProjectService
 {
@@ -17,9 +17,14 @@ class ProjectService
         return $this->projectRepositoryInterface->getMany($projectFilters);
     }
 
-    public function createOne(array $data): Project
+    public function create(array $data): Project
     {
-        return $this->projectRepositoryInterface->createOne($data);
+        return $this->projectRepositoryInterface->create($data);
+    }
+
+    public function update(array $projectData, Project $project): Project
+    {
+        return $this->projectRepositoryInterface->update($projectData, $project);
     }
 
     public function getOne($projectId): ?Project

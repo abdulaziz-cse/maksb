@@ -10,17 +10,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Http\Resources\V2\Project\ProjectIndexResource;
 use App\Http\Requests\Api\V2\Project\ProjectIndexRequest;
 use App\Http\Requests\Api\V2\Project\ProjectManageRequest;
+use App\Http\Requests\Api\V2\Project\ProjectUpdateRequest;
 
 class ProjectController extends BaseApiController
 {
-    public function __construct(private ProjectService $projectService)
+    public function __construct(private ProjectService $service)
     {
     }
 
     public function index(ProjectIndexRequest $request): JsonResponse
     {
         $projectFilters = $request->validated();
-        $projects = $this->projectService->getMany($projectFilters);
+        $projects = $this->service->getMany($projectFilters);
 
         return $this->returnDateWithPaginate(
             $projects,
@@ -31,8 +32,19 @@ class ProjectController extends BaseApiController
 
     public function store(ProjectManageRequest $request): JsonResponse
     {
-        $data = $request->validated();
-        $project = $this->projectService->createOne($data);
+        $projectData = $request->validated();
+        $project = $this->service->create($projectData);
+
+        return $this->returnDate(
+            new ProjectResource($project),
+            'success'
+        );
+    }
+
+    public function update(ProjectUpdateRequest $request, Project $project): JsonResponse
+    {
+        $projectData = $request->validated();
+        $project = $this->service->update($projectData, $project);
 
         return $this->returnDate(
             new ProjectResource($project),
@@ -42,7 +54,7 @@ class ProjectController extends BaseApiController
 
     public function show(int $projectId): JsonResponse
     {
-        $project = $this->projectService->getOne($projectId);
+        $project = $this->service->getOne($projectId);
 
         return $this->returnDate(
             new ProjectResource($project),
@@ -52,8 +64,8 @@ class ProjectController extends BaseApiController
 
     public function destroy(Project $project): JsonResponse
     {
-        $this->projectService->deleteOne($project);
+        $this->service->deleteOne($project);
 
-        return $this->returnSuccessMessage('Project deleted successfully');
+        return $this->returnSuccessMessage('Project deleted successfully.');
     }
 }

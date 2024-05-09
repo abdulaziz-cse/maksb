@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\V2\Settings\Region;
+namespace App\Http\Requests\Api\V2\Settings\PredefinedValue;
 
 use App\Http\Requests\Api\V1\SearchPaginateData\SearchPaginateRequest;
 
-class RegionIndexRequest extends SearchPaginateRequest
+class PredefinedValueIndexRequest extends SearchPaginateRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,8 @@ class RegionIndexRequest extends SearchPaginateRequest
     {
         return array_merge(parent::baseRules(), [
             'name' => 'nullable|string',
-            'parent_id' => 'nullable|integer|exists:regions,id,deleted_at,NULL',
+            'parent_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
+            'slug' => 'nullable|string',
         ]);
     }
 }

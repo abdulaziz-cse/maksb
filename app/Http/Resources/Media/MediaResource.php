@@ -17,11 +17,6 @@ class MediaResource extends JsonResource
             'uuid' => $this->uuid,
             'collection_name' => $this->uuid,
             'conversions_disk' => $this->conversions_disk,
-            'manipulations' => $this->manipulations,
-            'custom_properties' => $this->custom_properties,
-            'generated_conversions' => $this->generated_conversions,
-            'responsive_images' => $this->responsive_images,
-            'order_column' => $this->order_column,
             'original_url' => $this->original_url,
             'created_at' => $this->created_at,
         ];

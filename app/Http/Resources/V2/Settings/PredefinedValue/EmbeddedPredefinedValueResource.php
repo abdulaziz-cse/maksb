@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Settings\PredefinedValue;
+namespace App\Http\Resources\V2\Settings\PredefinedValue;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 

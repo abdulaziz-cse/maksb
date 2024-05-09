@@ -3,24 +3,20 @@
 namespace App\Services\V2\Settings;
 
 use App\Models\V2\Settings\PredefinedValue;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use App\Interfaces\SettingRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class PredefinedValueService
 {
-    public function getOne($id): Builder|array|Collection|Model|null
+    public function __construct(private SettingRepositoryInterface $settingRepositoryInterface)
     {
-        $predefined = PredefinedValue::with('group')->find($id);
-        if (!$predefined) {
-            return null;
-        }
-
-        return $predefined;
     }
 
-    public function getBySlug(string $slug): ?PredefinedValue
+    public function getMany($predefinedValueFilters): LengthAwarePaginator
     {
-        return PredefinedValue::where('slug', $slug)->first();
+        return $this->settingRepositoryInterface->getMany(
+            $predefinedValueFilters,
+            PredefinedValue::class
+        );
     }
 }

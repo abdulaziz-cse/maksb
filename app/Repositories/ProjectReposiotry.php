@@ -2,10 +2,13 @@
 
 namespace App\Repositories;
 
+use ErrorException;
 use App\Constants\App;
 use App\Models\V2\Project;
 use App\Services\BuilderService;
+use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use App\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -44,13 +47,20 @@ class ProjectReposiotry implements ProjectRepositoryInterface
         }
     }
 
-    public function createOne(array $data): Project
+    /**
+     * Create a project
+     *
+     * @param  mixed  $benefitData
+     *
+     * @throws QueryException|ErrorException
+     */
+    public function create(array $data): Project
     {
         $projectData = $this->prepareProjectData($data);
 
         return DB::transaction(function () use ($projectData, $data) {
             // Create project
-            $project = Project::create($projectData)->fresh();
+            $project = $this->createOne($projectData);
 
             // Attach related data
             $this->upsertRevenueSources($data, $project);
@@ -126,5 +136,37 @@ class ProjectReposiotry implements ProjectRepositoryInterface
             if (!empty($data[$attachment]))
                 $project->addMedia($data[$attachment])->toMediaCollection('attachments', 's3');
         }
+    }
+
+    /**
+     * Update a project
+     *
+     * @param  mixed  $benefitData
+     *
+     * @throws QueryException|ErrorException
+     */
+    public function update(array $projectData, Project $project): Project
+    {
+        return DB::transaction(function () use ($projectData, $project) {
+            // Update project
+            $project = $this->updateOne($projectData, $project);
+
+            // Update related data
+            $this->upsertRevenueSources($projectData, $project);
+            $this->upsertPlatforms($projectData, $project);
+            $this->upsertAssets($projectData, $project);
+
+            return $project->refresh();
+        });
+    }
+
+    public function updateOne(array $projectData, Project $project): Project
+    {
+        return tap($project)->update($projectData);
+    }
+
+    public function createOne(array $projectData): Project
+    {
+        return Project::create($projectData)->fresh();
     }
 }

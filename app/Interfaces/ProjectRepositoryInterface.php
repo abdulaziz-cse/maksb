@@ -9,7 +9,9 @@ interface ProjectRepositoryInterface
 {
     function getMany($projectFilters): LengthAwarePaginator;
 
-    public function createOne(array $data): Project;
+    public function create(array $data): Project;
+
+    public function update(array $projectData, Project $project): Project;
 
     public function getOne($projectId): ?Project;
 
