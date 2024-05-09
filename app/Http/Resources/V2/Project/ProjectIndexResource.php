@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
 use App\Http\Resources\V2\Settings\Region\EmbeddedRegionResource;
 use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
-use App\Http\Resources\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
+use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
 class ProjectIndexResource extends JsonResource
 {
@@ -18,6 +18,7 @@ class ProjectIndexResource extends JsonResource
         $cost = json_decode($this->cost, true);
         $revenue = json_decode($this->revenue, true);
         $expenses = json_decode($this->expenses, true);
+        $social = json_decode($this->social_media, true);
 
         return [
             'id' => $this->id,
@@ -37,8 +38,9 @@ class ProjectIndexResource extends JsonResource
             'expenses' => $expenses,
             'other_assets' => $this->other_assets,
             'is_supported' => $this->is_supported,
+            'isFavorite' => $this->isFavorite,
             'support' => $this->support,
-            'social_media' => $this->social_media,
+            'social_media' => $social,
             'price' => $this->price,
             'current_user_favorite' => $this->currentUserFavorite,
         ];

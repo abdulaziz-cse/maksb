@@ -12,7 +12,7 @@ use App\Http\Resources\V2\Settings\Region\EmbeddedRegionResource;
 use App\Http\Resources\V2\Settings\Platform\EmbededPlatformResource;
 use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
 use App\Http\Resources\V2\Settings\RevenueSource\EmbededRevenueSourceResource;
-use App\Http\Resources\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
+use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
 class ProjectResource extends JsonResource
 {
@@ -23,6 +23,8 @@ class ProjectResource extends JsonResource
         $cost = json_decode($this->cost, true);
         $revenue = json_decode($this->revenue, true);
         $expenses = json_decode($this->expenses, true);
+        $social = json_decode($this->social_media, true);
+        $billing = json_decode($this->billing_info, true);
 
         return [
             'id' => $this->id,
@@ -42,7 +44,7 @@ class ProjectResource extends JsonResource
             'other_assets' => $this->other_assets,
             'is_supported' => $this->is_supported,
             'support' => $this->support,
-            'social_media' => $this->social_media,
+            'social_media' => $social,
             'email_subscribers' => $this->email_subscribers,
             'other_social_media' => $this->other_social_media,
             'short_description' => $this->short_description,
@@ -50,7 +52,7 @@ class ProjectResource extends JsonResource
             'video_url' => $this->video_url,
             'price' => $this->price,
             'package_id' => $this->package_id,
-            'billing_info' => $this->billing_info,
+            'billing_info' => $billing,
             'isFavorite' => $this->isFavorite,
             'images' => $this->images ? MediaResource::collection($this->images) : null,
             'attachments' => $this->attachments ? MediaResource::collection($this->attachments) : null,
@@ -61,7 +63,6 @@ class ProjectResource extends JsonResource
             'current_user_favorite' => $this->currentUserFavorite,
             'buyers' => $this->buyers ? EmbeddedBuyerResource::collection($this->buyers) : null,
             'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -22,7 +22,7 @@ class CategoryIndexRequest extends SearchPaginateRequest
     public function rules(): array
     {
         return array_merge(parent::baseRules(), [
-            'name' => 'nullable|string|min:3|max:255|exists:regions,name,deleted_at,NULL',
+            'name' => 'nullable|string',
             'parent_id' => 'nullable|integer|exists:regions,id,deleted_at,NULL',
         ]);
     }

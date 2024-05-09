@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
 use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
 use App\Http\Resources\V2\Settings\RevenueSource\EmbededRevenueSourceResource;
-use App\Http\Resources\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
+use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
 class EmbeddedProjectResource extends JsonResource
 {

@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\V2\Settings\{
 };
 
 Route::group(['prefix' => 'v2/settings', 'middleware' => ['auth:sanctum']], function () {
-    Route::apiResource('/predefined-values', PredefinedValueController::class)->only(['show']);
+    Route::apiResource('/predefined-values', PredefinedValueController::class)->only(['index', 'show']);
 
     Route::apiResource('/categories', CategoryController::class)->only(['index', 'show']);
 
