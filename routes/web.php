@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::redirect('/', 'https://staging.maksb.sa/');
+Route::redirect('/', env('APP_FRONT_URL'));

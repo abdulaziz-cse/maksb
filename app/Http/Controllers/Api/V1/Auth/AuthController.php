@@ -26,6 +26,13 @@ class AuthController extends BaseApiController
         if (Auth::attempt($data)) {
             $mode = config('sanctum.mode');
             $user = Auth::user();
+
+            if (!$user->phone_verified_at) {
+                return response()->json([
+                    'message' => 'Your phone is not verified yet.',
+                ], 403);
+            }
+
             if ($mode === 'token') {
                 $token = $user->createToken('biker');
                 $user->token = $token->plainTextToken;

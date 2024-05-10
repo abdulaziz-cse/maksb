@@ -5,10 +5,12 @@ namespace App\Services;
 use App\Models\User;
 use Twilio\Rest\Client;
 use App\Enums\TwilioType;
+use App\Services\UserService;
 use App\Models\VerificationCode;
 use App\Enums\VerificationAction;
-use Illuminate\Support\Facades\Http;
 // use Illuminate\Support\Facades\Redis;
+use App\Enums\Twilio\TwilioStatus;
+use Illuminate\Support\Facades\Http;
 use App\Services\Auth\VerificationService;
 use App\Contracts\Repositories\UserRepositoryInterface;
 
@@ -29,6 +31,7 @@ class AuthService
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private VerificationService $verificationService,
+        private UserService $userService,
     ) {
         $this->loadTwilioCredentials();
     }
@@ -187,7 +190,7 @@ class AuthService
         $this->twilioVerifySid = getenv("TWILIO_VERIFY_SID");
     }
 
-    public function sendOTPByPhoneNumber($requestData)
+    public function sendOTPByPhoneNumber($requestData): void
     {
         $phone = $requestData['phone'];
         $phone = $this->formatPhoneNumber($phone);
@@ -205,7 +208,7 @@ class AuthService
         }
 
         $verificationData = [
-            'phone' => $phone,
+            'phone' => $requestData['phone'],
             'status' => $verification?->status,
             'action' => $requestData['action'],
             'created_at' => now()
@@ -214,15 +217,16 @@ class AuthService
         $this->verificationService->createOne($verificationData);
     }
 
-    public function VerifyOTP($requestData)
+    public function VerifyOTP($requestData): void
     {
         $phone = $requestData['phone'];
         $phone = $this->formatPhoneNumber($phone);
         $code = $requestData['code'];
 
-        $verificationCode = $this->verificationService->getOneByPhone($phone);
+        $user = $this->userService->getOneByPhone($requestData['phone']);
+        $verificationCode = $this->verificationService->getOneByPhone($requestData['phone']);
 
-        if (!$verificationCode) {
+        if (!$verificationCode || !$user) {
             throw new \Exception('the phone you are trying to verify is not exists!');
         }
 
@@ -232,15 +236,17 @@ class AuthService
             ->verificationChecks
             ->create(array('to' => $phone, 'code' => $code));
 
-        if (!$verification) {
+        if (!$verification || $verification?->status != TwilioStatus::TWILIO_APPROVED->value) {
             throw new \Exception('Failed to verify code. try agiain later');
         }
 
         $verificationData = [
-            'phone' => $phone,
             'status' => $verification?->status,
             'code' => $code,
         ];
         $this->verificationService->updateOne($verificationData, $verificationCode);
+
+        $user->phone_verified_at = now();
+        $user->save();
     }
 }

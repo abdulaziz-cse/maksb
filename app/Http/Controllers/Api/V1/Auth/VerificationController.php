@@ -30,6 +30,6 @@ class VerificationController
 
         $this->authService->VerifyOTP($requestData);
 
-        return $this->returnSuccessMessage('Phone - ' . $requestData['phone'] . ' was verifed successfully.');
+        return $this->returnSuccessMessage('Phone No: ' . $requestData['phone'] . ' was verifed successfully.');
     }
 }
