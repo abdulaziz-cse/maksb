@@ -17,21 +17,56 @@ class CreatePredefinedValueSeeder extends BaseSeeder
      */
     public function run(): void
     {
-        $parentId = PredefinedValue::factory()->create([
+        $projectTypeParentId = PredefinedValue::factory()->create([
             'name' => 'project types',
             'slug' => 'projectType',
+        ])?->id;
+
+        $buyerTypeParentId = PredefinedValue::factory()->create([
+            'name' => 'buyer types',
+            'slug' => 'buyerType',
+        ])?->id;
+
+        $buyerStatusParentId = PredefinedValue::factory()->create([
+            'name' => 'buyer statues',
+            'slug' => 'buyerStatus',
         ])?->id;
 
         $predefinedValues = [
             [
                 'name' => 'اونلاين',
                 'slug' => 'projectType-online',
-                'parent_id' => $parentId,
+                'parent_id' => $projectTypeParentId,
             ],
             [
                 'name' => 'اوفلاين',
                 'slug' => 'projectType-offline',
-                'parent_id' => $parentId,
+                'parent_id' => $projectTypeParentId,
+            ],
+            [
+                'name' => 'PlatForm',
+                'slug' => 'buyerType-platform',
+                'parent_id' => $buyerTypeParentId,
+            ],
+            [
+                'name' => 'Outsourcing',
+                'slug' => 'buyerType-outsourcing',
+                'parent_id' => $buyerTypeParentId,
+            ],
+            [
+                'name' => 'Acquisition',
+                'slug' => 'buyerStatus-acquisition',
+                'parent_id' => $buyerStatusParentId,
+            ],
+            [
+                'name' => 'Waiting For Seller',
+                'slug' => 'buyerStatus-waiting-for-seller',
+                'parent_id' => $buyerStatusParentId,
+            ],
+            [
+                'name' => 'Incomplete',
+                'slug' => 'buyerStatus-incomplete',
+                'parent_id' => $buyerStatusParentId,
             ],
         ];
 
