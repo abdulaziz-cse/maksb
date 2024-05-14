@@ -33,17 +33,17 @@ class ProjectRepositories extends GeneralRepositories implements ProjectReposito
             $project->assets()->attach($data['assets']);
 
             if (!empty($data['image1']))
-                $project->addMedia($data['image1'])->toMediaCollection('images','s3');
+                $project->addMedia($data['image1'])->toMediaCollection('images');
             if (!empty($data['image2']))
-                $project->addMedia($data['image2'])->toMediaCollection('images','s3');
+                $project->addMedia($data['image2'])->toMediaCollection('images');
             if (!empty($data['image3']))
-                $project->addMedia($data['image3'])->toMediaCollection('images','s3');
+                $project->addMedia($data['image3'])->toMediaCollection('images');
             if (!empty($data['file1']))
-                $project->addMedia($data['file1'])->toMediaCollection('attachments','s3');
+                $project->addMedia($data['file1'])->toMediaCollection('attachments');
             if (!empty($data['file2']))
-                $project->addMedia($data['file2'])->toMediaCollection('attachments','s3');
+                $project->addMedia($data['file2'])->toMediaCollection('attachments');
             if (!empty($data['file3']))
-                $project->addMedia($data['file3'])->toMediaCollection('attachments','s3');
+                $project->addMedia($data['file3'])->toMediaCollection('attachments');
 
             return $project->refresh();
         });
