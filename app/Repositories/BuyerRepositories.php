@@ -24,7 +24,7 @@ class BuyerRepositories extends GeneralRepositories implements BuyerRepositoryIn
             $buyer->projects()->attach($data['project_id']);
 
             if (!empty($data['file']))
-                $buyer->addMedia($data['file'])->toMediaCollection('files', 's3');
+                $buyer->addMedia($data['file'])->toMediaCollection('files');
 
             return $buyer->refresh();
         });
