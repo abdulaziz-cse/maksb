@@ -15,5 +15,5 @@ Route::group(['prefix' => 'v2/settings', 'middleware' => ['auth:sanctum']], func
 
     Route::apiResource('/regions', RegionController::class)->only(['index', 'show']);
 
-    Route::apiResource('/uploads', UploadController::class)->only(['store']);
+    Route::post('/uploads', [UploadController::class, 'upload']);
 });
