@@ -116,7 +116,7 @@ class Project extends Model implements HasMedia
 
     public function region(): BelongsTo
     {
-        return $this->belongsTo(Region::class);
+        return $this->belongsTo(Region::class, 'country_id');
     }
 
     public function currency(): BelongsTo
