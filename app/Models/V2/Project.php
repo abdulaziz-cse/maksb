@@ -82,11 +82,14 @@ class Project extends Model implements HasMedia
 
     public function getIsFavoriteAttribute()
     {
-        $relations = $this->getRelations();
-        if (isset($relations['currentUserFavorite']))
-            return count($relations['currentUserFavorite']);
-        else
-            return 0;
+        // $relations = $this->getRelations();
+        // dd($relations['currentUserFavorite']);
+        // if (isset($relations['currentUserFavorite']))
+        //     return count($relations['currentUserFavorite']);
+        // else
+        //     return 0;
+
+        return $this->currentUserFavorite()->count();
     }
 
     public function revenueSources(): BelongsToMany
@@ -116,7 +119,7 @@ class Project extends Model implements HasMedia
 
     public function region(): BelongsTo
     {
-        return $this->belongsTo(Region::class);
+        return $this->belongsTo(Region::class, 'country_id');
     }
 
     public function currency(): BelongsTo

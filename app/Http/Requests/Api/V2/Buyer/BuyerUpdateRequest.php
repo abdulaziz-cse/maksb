@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Api\V2\Buyer;
 
-use App\Http\Requests\Api\V1\SearchPaginateData\SearchPaginateRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
-class BuyerIndexRequest extends SearchPaginateRequest
+class BuyerUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,10 +21,15 @@ class BuyerIndexRequest extends SearchPaginateRequest
      */
     public function rules(): array
     {
-        return array_merge(parent::baseRules(), [
+        return [
+            'offer' => 'nullable|string|min:3|max:255',
+            'message' => 'nullable|string|min:3|max:255',
+            'law' => 'nullable|string',
+            'nda' => 'nullable|boolean',
             'consultant_type_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
             'status_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
-            'user_id' => 'nullable|integer|exists:users,id',
-        ]);
+            'project_ids' => 'nullable|array',
+            'project_ids.*' => 'nullable|integer|exists:projects,id,deleted_at,NULL',
+        ];
     }
 }

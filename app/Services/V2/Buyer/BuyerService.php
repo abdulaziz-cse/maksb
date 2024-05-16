@@ -2,61 +2,33 @@
 
 namespace App\Services\V2\Buyer;
 
-use App\Models\Buyer;
-use App\Services\BuilderService;
+use App\Models\V2\Buyer\Buyer;
+use App\Interfaces\BuyerRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
-use App\Contracts\Repositories\BuyerRepositoryInterface;
 
 class BuyerService
 {
-    // private $buyerRepository;
-
-    // public function __construct(BuyerRepositoryInterface $buyerRepository)
-    // {
-    //     $this->buyerRepository = $buyerRepository;
-    // }
+    public function __construct(private BuyerRepositoryInterface $buyerRepositoryInterface)
+    {
+    }
 
     public function getMany($buyerFilters): LengthAwarePaginator
     {
-        $paginate = $buyerFilters['paginate'] ?? request()->paginate;
-        $builder = Buyer::select();
-        $this->buildGetManyQuery($buyerFilters, $builder);
-
-        // Prepare sort & search filter if provided
-        BuilderService::prepareFilters($buyerFilters, $builder);
-        BuilderService::prepareSort($buyerFilters, $builder);
-
-        return $builder->paginate($paginate);
+        return $this->buyerRepositoryInterface->getMany($buyerFilters);
     }
 
-    private function buildGetManyQuery($buyerFilters, $builder)
+    public function create(array $data): Buyer
     {
-        $user_id = $buyerFilters['user_id'];
-
-        if (isset($user_id)) {
-            $builder->where('user_id', $user_id);
-        }
+        return $this->buyerRepositoryInterface->create($data);
     }
 
-    public function createOne(array $data): Buyer
+    public function update(array $buyerData, Buyer $buyer): Buyer
     {
-        $buyerData = $data;
-        unset($buyerData['file'], $buyerData['project_id']);
-        $buyerData['user_id'] = auth('sanctum')->user()->id;
-        $buyer = $this->buyerRepository->store($data, $buyerData);
-        $buyer->load(['projects', 'file']);
-        return $buyer;
+        return $this->buyerRepositoryInterface->update($buyerData, $buyer);
     }
 
     public function deleteOne(Buyer $buyer): bool
     {
-        $this->detachProjects($buyer);
-
-        return $buyer->delete();
-    }
-
-    private function detachProjects(Buyer $buyer): void
-    {
-        $buyer->projects()->detach();
+        return $this->buyerRepositoryInterface->deleteOne($buyer);
     }
 }

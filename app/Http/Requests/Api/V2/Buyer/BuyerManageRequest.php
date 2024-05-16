@@ -22,13 +22,14 @@ class BuyerManageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'offer' => 'string|required|min:3|max:255',
-            'message' => 'string|required|min:3|max:255',
-            'law' => 'string|required',
-            'nda' => 'boolean|required',
-            'consultant_type' => 'required|integer',
-            'status_id' => 'required|integer|exists:buyers_status,id',
-            'project_id' => 'required|integer|exists:projects,id',
+            'offer' => 'required|string|min:3|max:255',
+            'message' => 'required|string|min:3|max:255',
+            'law' => 'required|string',
+            'nda' => 'required|boolean',
+            'consultant_type_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
+            'status_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
+            'project_ids' => 'nullable|array',
+            'project_ids.*' => 'nullable|integer|exists:projects,id,deleted_at,NULL',
             'file' => 'required|file|max:2048|mimes:pdf,docx',
         ];
     }

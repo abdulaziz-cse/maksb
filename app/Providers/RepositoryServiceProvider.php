@@ -19,6 +19,7 @@ use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\LookUpRepositoryInterface;
 use App\Contracts\Repositories\ProjectRepositoryInterface;
 use App\Contracts\Repositories\CategoryRepositoryInterface;
+use App\Repositories\BuyerReposiotry;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -37,6 +38,7 @@ class RepositoryServiceProvider extends ServiceProvider
 
         $this->app->bind(\App\Interfaces\ProjectRepositoryInterface::class, ProjectReposiotry::class);
         $this->app->bind(\App\Interfaces\SettingRepositoryInterface::class, SettingReposiotry::class);
+        $this->app->bind(\App\Interfaces\BuyerRepositoryInterface::class, BuyerReposiotry::class);
     }
 
     /**

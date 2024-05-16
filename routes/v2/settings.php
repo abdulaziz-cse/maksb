@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\V2\Settings\{
     RegionController,
     CategoryController,
     PredefinedValueController,
-    UploadController
+    UploadController,
 };
 
 Route::group(['prefix' => 'v2/settings', 'middleware' => ['auth:sanctum']], function () {
@@ -15,5 +15,5 @@ Route::group(['prefix' => 'v2/settings', 'middleware' => ['auth:sanctum']], func
 
     Route::apiResource('/regions', RegionController::class)->only(['index', 'show']);
 
-    Route::post('/uploads', [UploadController::class, 'upload']);
+    Route::post('/upload', [UploadController::class, 'upload']);
 });

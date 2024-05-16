@@ -23,7 +23,7 @@ class Buyer extends Model implements HasMedia
         'message',
         'nda',
         'law',
-        'consultant_type',
+        'consultant_type_id',
         'status_id',
         'user_id',
     ];
