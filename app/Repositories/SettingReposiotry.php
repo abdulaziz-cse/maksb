@@ -8,23 +8,25 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class SettingReposiotry implements SettingRepositoryInterface
 {
-    public function getMany($regionFilters, $model): LengthAwarePaginator
+    public function getMany($resourceFilters, $model): LengthAwarePaginator
     {
-        $paginate = $regionFilters['paginate'] ?? request()->paginate;
+        $paginate = $resourceFilters['paginate'] ?? request()->paginate;
         $builder = $model::with('childrenRecursive')->select();
 
-        $this->buildGetManyQueries($regionFilters, $builder);
+        $this->buildGetManyQueries($resourceFilters, $builder);
 
-        builderService::prepareFilters($regionFilters, $builder);
-        builderService::prepareSort($regionFilters, $builder);
+        builderService::prepareFilters($resourceFilters, $builder);
+        builderService::prepareSort($resourceFilters, $builder);
 
         return $builder->paginate($paginate);
     }
 
-    private function buildGetManyQueries($regionFilters, $builder)
+    private function buildGetManyQueries($resourceFilters, $builder)
     {
-        $parent_id = $regionFilters['parent_id'];
-        $name = $regionFilters['name'];
+        $parent_id = $resourceFilters['parent_id'];
+        $name = $resourceFilters['name'];
+        $use_parent_id = $resourceFilters['use_parent'];
+        $slug = $resourceFilters['slug'];
 
         if (isset($name)) {
             $builder->where('name', $name);
@@ -32,6 +34,14 @@ class SettingReposiotry implements SettingRepositoryInterface
 
         if (isset($parent_id)) {
             $builder->where('parent_id', $parent_id);
+        }
+
+        if ($use_parent_id) {
+            $builder->whereNull('parent_id');
+        }
+
+        if (isset($slug)) {
+            $builder->where('slug', $slug);
         }
     }
 }
