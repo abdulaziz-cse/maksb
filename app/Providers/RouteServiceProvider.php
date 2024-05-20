@@ -34,6 +34,7 @@ class RouteServiceProvider extends ServiceProvider
                     base_path('routes/api.php'),
                     base_path('routes/v2/projects.php'),
                     base_path('routes/v2/settings.php'),
+                    base_path('routes/v2/buyers.php'),
                 ]);
 
             Route::middleware('web')

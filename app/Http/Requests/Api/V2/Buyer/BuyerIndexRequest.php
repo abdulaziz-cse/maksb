@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Api\V2\Settings\PredefinedValue;
+namespace App\Http\Requests\Api\V2\Buyer;
 
 use App\Http\Requests\Api\V1\SearchPaginateData\SearchPaginateRequest;
 
-class PredefinedValueIndexRequest extends SearchPaginateRequest
+class BuyerIndexRequest extends SearchPaginateRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,9 @@ class PredefinedValueIndexRequest extends SearchPaginateRequest
     public function rules(): array
     {
         return array_merge(parent::baseRules(), [
-            'name' => 'nullable|string',
-            'parent_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
-            'use_parent' => 'nullable|boolean',
-            'slug' => 'nullable|string',
+            'consultant_type_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
+            'status_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
+            'user_id' => 'nullable|integer|exists:users,id',
         ]);
     }
 }

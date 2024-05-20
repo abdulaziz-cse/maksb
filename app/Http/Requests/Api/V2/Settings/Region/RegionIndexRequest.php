@@ -24,6 +24,7 @@ class RegionIndexRequest extends SearchPaginateRequest
         return array_merge(parent::baseRules(), [
             'name' => 'nullable|string',
             'parent_id' => 'nullable|integer|exists:regions,id,deleted_at,NULL',
+            'use_parent' => 'nullable|boolean',
         ]);
     }
 }

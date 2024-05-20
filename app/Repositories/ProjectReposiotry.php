@@ -50,7 +50,7 @@ class ProjectReposiotry implements ProjectRepositoryInterface
     /**
      * Create a project
      *
-     * @param  mixed  $benefitData
+     * @param  mixed  $data
      *
      * @throws QueryException|ErrorException
      */

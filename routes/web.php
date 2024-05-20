@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::redirect('/', env('APP_FRONT_URL'));
+Route::redirect('/', env('APP_FRONT_URL', 'https://staging.maksb.sa/'));
