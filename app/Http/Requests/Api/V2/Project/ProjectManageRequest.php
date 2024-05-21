@@ -45,7 +45,7 @@ class ProjectManageRequest extends FormRequest
             'description' => 'required|string',
             'video_url' => 'nullable|url',
             'price' => 'required|numeric',
-            'package_id' => 'nullable|integer',
+            'package_id' => 'nullable|integer|exists:packages,id',
             'billing_info' => 'nullable|json',
             'revenue_sources' => 'required|array',
             'platforms' => 'required|array',
