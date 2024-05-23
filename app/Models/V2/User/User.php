@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\V2\User;
 
+use App\Models\V2\Project;
 use App\Traits\Messageable;
+use App\Models\V2\Buyer\Buyer;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use App\Models\V2\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -83,5 +87,15 @@ class User extends Authenticatable implements HasMedia
     public function favourites(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'favourites', 'user_id', 'project_id');
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(PredefinedValue::class, 'type_id');
+    }
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }

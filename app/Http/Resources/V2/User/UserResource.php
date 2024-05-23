@@ -6,6 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\V2\Project\ProjectResource;
 use App\Http\Resources\V2\Buyer\EmbeddedBuyerResource;
 use App\Http\Resources\V2\Project\EmbeddedProjectResource;
+use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
 class UserResource extends JsonResource
 {
@@ -18,7 +19,7 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'phone_verified_at' => $this->phone_verified_at,
             'email_verified_at' => $this->email_verified_at,
-            'type_id' => $this->type_id,
+            'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
             'about' => $this->about,
             'purchase_purpose' => $this->purchase_purpose,
             'favorite_value' => $this->favorite_value,

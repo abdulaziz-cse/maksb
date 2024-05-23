@@ -4,7 +4,6 @@ namespace App\Http\Resources\V2\Project;
 
 use App\Http\Resources\Media\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\V2\Buyer\EmbeddedBuyerResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
 use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
 use App\Http\Resources\V2\Settings\RevenueSource\EmbededRevenueSourceResource;

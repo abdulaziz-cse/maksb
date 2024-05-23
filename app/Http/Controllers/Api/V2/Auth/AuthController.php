@@ -3,11 +3,8 @@
 namespace App\Http\Controllers\Api\V2\Auth;
 
 use App\Constants\App;
-use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use App\Services\V2\Auth\AuthService;
-use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Resources\V2\Auth\AuthResource;
 use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V2\Auth\AuthRequest;
@@ -34,7 +31,6 @@ class AuthController extends BaseApiController
     public function login(AuthRequest $request): JsonResponse
     {
         $credentials = $request->only('phone', 'password');
-
         $data = $this->authService->login($credentials);
 
         $data['user'] = new AuthResource(auth(App::API_GUARD)->user());
@@ -56,53 +52,13 @@ class AuthController extends BaseApiController
         return $this->returnSuccessMessage('User successfully signed out');
     }
 
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+        $user = $this->authService->register($data);
 
-
-    // public function login(AuthRequest $request): JsonResponse
-    // {
-    //     $data = $request->validated();
-
-    //     if (Auth::attempt($data)) {
-    //         $mode = config('sanctum.mode');
-    //         $user = Auth::user();
-
-    //         if (!$user->phone_verified_at) {
-    //             return response()->json([
-    //                 'message' => 'Your phone is not verified yet.',
-    //             ], 403);
-    //         }
-
-    //         if ($mode === 'token') {
-    //             $token = $user->createToken('biker');
-    //             $user->token = $token->plainTextToken;
-    //         }
-
-    //         try {
-    //             $request->session()->regenerate();
-    //         } catch (\Exception $e) {
-    //             // Not able to start session
-    //             // Main reason is that request doesn't contain referer or origin header
-    //             // matching sanctum stateful domains config, therefore session is not started.
-    //         }
-
-    //         return response()->json($user);
-    //     }
-
-    //     return response()->json([
-    //         'message' => 'Invalid credentials',
-    //     ], 401);
-    // }
-
-    // public function register(RegisterRequest $request)
-    // {
-    //     $data = $request->validated();
-
-    //     $user = $this->userService->create($data);
-
-    //     //        $this->authService->sendVerificationCode($user->phone, VerificationAction::VERIFY_PHONE->value);
-
-    //     return response()->json($user);
-    // }
+        return $this->returnDate(new AuthResource($user), 'User register Successfully');
+    }
 
     // public function resetPassword(ResetPasswordRequest $request)
     // {

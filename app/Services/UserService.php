@@ -117,4 +117,10 @@ class UserService
     {
         return tap($user)->update($userData);
     }
+
+
+    public function createOne(array $userData): User
+    {
+        return User::create($userData)->fresh();
+    }
 }

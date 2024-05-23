@@ -2,17 +2,15 @@
 
 namespace App\Services\V2\Auth;
 
-use App\Models\User;
-use App\Constants\App;
 use Twilio\Rest\Client;
 use App\Enums\TwilioType;
-use App\Services\UserService;
+use App\Models\V2\User\User;
 use App\Models\VerificationCode;
-// use Illuminate\Support\Facades\Redis;
 use App\Enums\VerificationAction;
 use App\Enums\Twilio\TwilioStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use App\Services\V2\User\UserService;
 use App\Services\Auth\VerificationService;
 use App\Exceptions\InvalidCredentialsException;
 use App\Exceptions\InvalidPhoneCredentialsException;
@@ -73,13 +71,10 @@ class AuthService
         return [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => config('sanctum.expiration') * 60,
+            'expires_in' => config('sanctum.expiration', 60) * 60,
         ];
     }
 
-    /**
-     * Refresh a user's token.
-     */
     public function refreshToken(): array
     {
         // Get the authenticated user
@@ -97,9 +92,17 @@ class AuthService
         Auth::user()->currentAccessToken()->delete();
     }
 
+    public function register(array $userData): User
+    {
+        $userData['password'] = bcrypt($userData['password']);
 
+        $user = $this->userService->createOne($userData);
 
+        // Assign user role
+        $user->assignRole('consumer');
 
+        return $user;
+    }
 
 
 
