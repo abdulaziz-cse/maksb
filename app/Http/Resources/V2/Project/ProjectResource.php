@@ -8,9 +8,9 @@ use App\Http\Resources\V2\User\EmbeddedUserResource;
 use App\Http\Resources\V2\Buyer\EmbeddedBuyerResource;
 use App\Http\Resources\V2\Settings\Asset\AssetResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
-use App\Http\Resources\V2\Settings\Region\EmbeddedRegionResource;
 use App\Http\Resources\V2\Settings\Platform\EmbededPlatformResource;
 use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
+use App\Http\Resources\V2\Settings\Region\EmbeddedProjectRegionResource;
 use App\Http\Resources\V2\Settings\RevenueSource\EmbededRevenueSourceResource;
 use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
@@ -34,7 +34,7 @@ class ProjectResource extends JsonResource
             'category' => $this->category ? new EmbeddedCategoryResource($this->category) : null,
             'website' => $this->website,
             'establishment_date' => $this->establishment_date,
-            'country' => $this->region ? new EmbeddedRegionResource($this->region) : null,
+            'country' => $this->region ? new EmbeddedProjectRegionResource($this->region) : null,
             'currency' => $this->currency ? new EmbededCurrencyResource($this->currency) : null,
             'yearly' => $this->yearly,
             'incoming' => $incoming,

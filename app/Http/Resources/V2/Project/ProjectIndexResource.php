@@ -6,8 +6,8 @@ use App\Http\Resources\Media\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 // use App\Http\Resources\V2\User\EmbeddedUserResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
-use App\Http\Resources\V2\Settings\Region\EmbeddedRegionResource;
 use App\Http\Resources\V2\Settings\Category\EmbeddedCategoryResource;
+use App\Http\Resources\V2\Settings\Region\EmbeddedProjectRegionResource;
 use App\Http\Resources\V2\Settings\RevenueSource\EmbededRevenueSourceResource;
 use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
@@ -30,7 +30,7 @@ class ProjectIndexResource extends JsonResource
             'category' => $this->category ? new EmbeddedCategoryResource($this->category) : null,
             // 'website' => $this->website,
             // 'establishment_date' => $this->establishment_date,
-            'country' => $this->region ? new EmbeddedRegionResource($this->region) : null,
+            'country' => $this->region ? new EmbeddedProjectRegionResource($this->region) : null,
             'currency' => $this->currency ? new EmbededCurrencyResource($this->currency) : null,
             'other_platform' => $this->other_platform,
             'yearly' => $this->yearly,
