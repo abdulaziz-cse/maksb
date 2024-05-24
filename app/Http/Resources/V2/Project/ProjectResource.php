@@ -63,6 +63,7 @@ class ProjectResource extends JsonResource
             'current_user_favorite' => $this->currentUserFavorite,
             'buyers' => $this->buyers ? EmbeddedBuyerResource::collection($this->buyers) : null,
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
