@@ -8,6 +8,7 @@ use App\Models\V2\User\User;
 use App\Models\VerificationCode;
 use App\Enums\VerificationAction;
 use App\Enums\Twilio\TwilioStatus;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Services\V2\User\UserService;

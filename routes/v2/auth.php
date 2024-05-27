@@ -12,6 +12,7 @@ Route::group(['prefix' => 'v2/auth'], function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('reset-password', [AuthController::class, 'resetPassword']);
 });
 
 // Route::group([], function () {

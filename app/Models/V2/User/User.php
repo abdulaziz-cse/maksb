@@ -21,6 +21,8 @@ class User extends Authenticatable implements HasMedia
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, Messageable, InteractsWithMedia;
 
+    protected $guard_name = 'web';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -92,10 +94,5 @@ class User extends Authenticatable implements HasMedia
     public function type(): BelongsTo
     {
         return $this->belongsTo(PredefinedValue::class, 'type_id');
-    }
-
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
     }
 }

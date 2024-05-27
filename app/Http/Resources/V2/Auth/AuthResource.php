@@ -25,7 +25,6 @@ class AuthResource extends JsonResource
             'portfolio' => $this->portfolio,
             'website' => $this->website,
             'photo' => $this->photo,
-            'role' => $this->role ? new EmbeddedRoleResource($this->role) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -60,14 +60,14 @@ class AuthController extends BaseApiController
         return $this->returnDate(new AuthResource($user), 'User register Successfully');
     }
 
-    // public function resetPassword(ResetPasswordRequest $request)
-    // {
-    //     $data = $request->validated();
+    public function resetPassword(ResetPasswordRequest $request)
+    {
+        $data = $request->validated();
 
-    //     $this->authService->resetPassword($data);
+        $this->authService->resetPassword($data);
 
-    //     return response()->json([
-    //         'message' => 'Password reset successfully',
-    //     ]);
-    // }
+        return response()->json([
+            'message' => 'Password reset successfully',
+        ]);
+    }
 }
