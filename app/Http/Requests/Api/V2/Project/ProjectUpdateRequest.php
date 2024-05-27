@@ -35,7 +35,7 @@ class ProjectUpdateRequest extends FormRequest
             'description' => 'required|string',
             'video_url' => 'nullable|url',
             'price' => 'required|numeric',
-            'package_id' => 'nullable|integer',
+            'package_id' => 'nullable|integer|exists:packages,id',
             'revenue_sources' => 'required|array',
             'platforms' => 'required|array',
             'platforms.*' => 'required|integer|exists:platforms,id',
