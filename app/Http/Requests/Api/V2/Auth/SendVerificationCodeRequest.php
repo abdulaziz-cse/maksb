@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Api\V2\Auth;
 
+use App\Enums\VerificationAction;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class SendVerificationCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,13 +22,12 @@ class RegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $verificationActions = array_column(VerificationAction::cases(), 'value');
+        $verificationActionsStr = implode(',', $verificationActions);
+
         return [
-            'name' => 'required|string|min:3|max:64',
-            'phone' => 'required|string|max:20|unique:users,phone',
-            'email' => 'required|string|email|max:100|unique:users,email',
-            'password' => 'required|string|min:6|max:100',
-            'password_confirmation' => 'required_with:password|same:password|min:6|max:100',
-            'type_id' => 'required|integer|exists:predefined_values,id,deleted_at,NULL',
+            'phone' => 'required|string|exists:users,phone|max:20',
+            'action' => 'required|string|in:' . $verificationActionsStr,
         ];
     }
 }

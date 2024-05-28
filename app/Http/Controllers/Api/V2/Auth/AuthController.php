@@ -6,10 +6,10 @@ use App\Constants\App;
 use Illuminate\Http\JsonResponse;
 use App\Services\V2\Auth\AuthService;
 use App\Http\Resources\V2\Auth\AuthResource;
-use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V2\Auth\AuthRequest;
 use App\Http\Controllers\Api\V2\BaseApiController;
 use App\Http\Requests\Api\V1\ResetPasswordRequest;
+use App\Http\Requests\Api\V2\Auth\RegisterRequest;
 
 class AuthController extends BaseApiController
 {
@@ -60,14 +60,14 @@ class AuthController extends BaseApiController
         return $this->returnDate(new AuthResource($user), 'User register Successfully');
     }
 
-    public function resetPassword(ResetPasswordRequest $request)
-    {
-        $data = $request->validated();
+    // public function resetPassword(ResetPasswordRequest $request)
+    // {
+    //     $data = $request->validated();
 
-        $this->authService->resetPassword($data);
+    //     $this->authService->resetPassword($data);
 
-        return response()->json([
-            'message' => 'Password reset successfully',
-        ]);
-    }
+    //     return response()->json([
+    //         'message' => 'Password reset successfully',
+    //     ]);
+    // }
 }

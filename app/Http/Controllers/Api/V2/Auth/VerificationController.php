@@ -1,34 +1,31 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1\Auth;
+namespace App\Http\Controllers\Api\V2\Auth;
 
-use App\Traits\GeneralTrait;
-use App\Services\AuthService;
-use App\Http\Requests\Api\V1\Auth\VerifyCodeRequest;
-use App\Http\Requests\Api\V1\Auth\SendVerificationCodeRequest;
+use Illuminate\Http\JsonResponse;
+use App\Services\V2\Auth\VerificationService;
+use App\Http\Controllers\Api\V2\BaseApiController;
+use App\Http\Requests\Api\V2\Auth\VerifyCodeRequest;
+use App\Http\Requests\Api\V2\Auth\SendVerificationCodeRequest;
 
-class VerificationController
+class VerificationController extends BaseApiController
 {
-    use GeneralTrait;
-
-    public function __construct(private AuthService $authService)
+    public function __construct(private VerificationService $verificationService)
     {
     }
 
-    public function sendCode(SendVerificationCodeRequest $request)
+    public function sendOTP(SendVerificationCodeRequest $request): JsonResponse
     {
         $requestData = $request->validated();
-
-        $this->authService->sendOTPByPhoneNumber($requestData);
+        $this->verificationService->sendOTP($requestData);
 
         return $this->returnSuccessMessage('Verification code was sent successfully.');
     }
 
-    public function verifyCode(VerifyCodeRequest $request)
+    public function verifyOTP(VerifyCodeRequest $request): JsonResponse
     {
         $requestData = $request->validated();
-
-        $this->authService->VerifyOTP($requestData);
+        $this->verificationService->verifyOTP($requestData);
 
         return $this->returnSuccessMessage('Phone No: ' . $requestData['phone'] . ' was verifed successfully.');
     }

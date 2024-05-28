@@ -27,7 +27,7 @@ class RegisterRequest extends FormRequest
             'phone' => 'required|string|max:20|unique:users,phone',
             'password' => 'required|confirmed|min:6|max:100',
             'email' => 'required|string|max:100|unique:users,email',
-            'type_id' => 'required|integer|exists:predefined_values,id,deleted_at,NULL',
+            'type_id' => Rule::in([1, 2]),
         ];
     }
 }

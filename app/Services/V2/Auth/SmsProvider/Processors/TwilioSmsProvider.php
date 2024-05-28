@@ -42,7 +42,7 @@ class TwilioSmsProvider implements SmsProvider
 
             return $verification;
         } catch (\Exception $e) {
-            return false;
+            throw new \Exception('Failed to send verification code, ' . $e->getMessage());
         }
     }
 
@@ -65,8 +65,7 @@ class TwilioSmsProvider implements SmsProvider
 
             return $verification;
         } catch (\Exception $e) {
-            //  Handle the error
-            return false;
+            throw new \Exception('Failed to verify code, ' . $e->getMessage());
         }
     }
 
