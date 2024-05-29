@@ -28,6 +28,11 @@ class UserService
         return User::where('phone', $phone)->first();
     }
 
+    public function updateOne(array $userData, User $user): User
+    {
+        return tap($user)->update($userData);
+    }
+
     // public function create(array $data): User
     // {
     //     // Create user
@@ -120,10 +125,7 @@ class UserService
 
 
 
-    // public function updateOne(array $userData, User $user): User
-    // {
-    //     return tap($user)->update($userData);
-    // }
+
 
 
 

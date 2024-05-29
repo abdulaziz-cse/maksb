@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Http\JsonResponse;
+use App\Exceptions\ValidationException;
 use App\Exceptions\ModelNotFoundException;
 use App\Exceptions\InvalidCredentialsException;
 use App\Exceptions\InvalidPhoneCredentialsException;
@@ -47,6 +48,8 @@ class Handler extends ExceptionHandler
         } else if ($e instanceof InvalidCredentialsException) {
             return $e->render();
         } else if ($e instanceof InvalidPhoneCredentialsException) {
+            return $e->render();
+        } else if ($e instanceof ValidationException) {
             return $e->render();
         } else if ($e instanceof LaravelQueryException) {
             return (new QueryException($e->getMessage()))->render();

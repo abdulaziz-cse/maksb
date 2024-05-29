@@ -10,14 +10,14 @@ use App\Http\Requests\Api\V2\Auth\SendVerificationCodeRequest;
 
 class VerificationController extends BaseApiController
 {
-    public function __construct(private VerificationService $verificationService)
+    public function __construct(private VerificationService $service)
     {
     }
 
     public function sendOTP(SendVerificationCodeRequest $request): JsonResponse
     {
         $requestData = $request->validated();
-        $this->verificationService->sendOTP($requestData);
+        $this->service->sendOTP($requestData);
 
         return $this->returnSuccessMessage('Verification code was sent successfully.');
     }
@@ -25,7 +25,7 @@ class VerificationController extends BaseApiController
     public function verifyOTP(VerifyCodeRequest $request): JsonResponse
     {
         $requestData = $request->validated();
-        $this->verificationService->verifyOTP($requestData);
+        $this->service->verifyOTP($requestData);
 
         return $this->returnSuccessMessage('Phone No: ' . $requestData['phone'] . ' was verifed successfully.');
     }

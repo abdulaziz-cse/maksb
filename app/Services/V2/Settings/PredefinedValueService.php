@@ -19,4 +19,9 @@ class PredefinedValueService
             PredefinedValue::class
         );
     }
+
+    public function getOneBySlug($slug): ?PredefinedValue
+    {
+        return PredefinedValue::where('slug', $slug)->first();
+    }
 }

@@ -37,6 +37,11 @@ class CreatePredefinedValueSeeder extends BaseSeeder
             'slug' => 'buyerStatus',
         ])?->id;
 
+        $inquiryStatusParentId = PredefinedValue::factory()->create([
+            'name' => 'inquiry statues',
+            'slug' => 'inquiryStatus',
+        ])?->id;
+
         $predefinedValues = [
             [
                 'name' => 'اونلاين',
@@ -72,6 +77,21 @@ class CreatePredefinedValueSeeder extends BaseSeeder
                 'name' => 'Incomplete',
                 'slug' => 'buyerStatus-incomplete',
                 'parent_id' => $buyerStatusParentId,
+            ],
+            [
+                'name' => 'New',
+                'slug' => 'inquiryStatus-new',
+                'parent_id' => $inquiryStatusParentId,
+            ],
+            [
+                'name' => 'Active',
+                'slug' => 'inquiryStatus-active',
+                'parent_id' => $inquiryStatusParentId,
+            ],
+            [
+                'name' => 'Closed',
+                'slug' => 'inquiryStatus-closed',
+                'parent_id' => $inquiryStatusParentId,
             ],
             [
                 'name' => 'Buyer',

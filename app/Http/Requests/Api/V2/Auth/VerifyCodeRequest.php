@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Api\V2\Auth;
 
-use App\Enums\VerificationAction;
+use App\Enums\Auth\VerificationAction;
 use Illuminate\Foundation\Http\FormRequest;
 
 class VerifyCodeRequest extends FormRequest
