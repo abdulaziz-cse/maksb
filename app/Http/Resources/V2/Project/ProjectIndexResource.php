@@ -32,6 +32,7 @@ class ProjectIndexResource extends JsonResource
             // 'establishment_date' => $this->establishment_date,
             'country' => $this->region ? new EmbeddedProjectRegionResource($this->region) : null,
             'currency' => $this->currency ? new EmbededCurrencyResource($this->currency) : null,
+            'short_description' => $this->short_description,
             'other_platform' => $this->other_platform,
             'yearly' => $this->yearly,
             'incoming' => $incoming,
