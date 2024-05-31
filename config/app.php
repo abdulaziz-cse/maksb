@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\SmsServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -171,6 +172,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\RepositoryServiceProvider::class,
+        SmsServiceProvider::class,
     ])->toArray(),
 
     /*

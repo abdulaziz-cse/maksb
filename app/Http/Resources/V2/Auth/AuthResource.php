@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Http\Resources\V2\User;
+namespace App\Http\Resources\V2\Auth;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\V2\Project\ProjectResource;
-use App\Http\Resources\V2\Buyer\EmbeddedBuyerResource;
-use App\Http\Resources\V2\Project\EmbeddedProjectResource;
 use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
+use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class AuthResource extends JsonResource
 {
     public function toArray($request): array
     {
@@ -28,10 +25,8 @@ class UserResource extends JsonResource
             'portfolio' => $this->portfolio,
             'website' => $this->website,
             'photo' => $this->photo,
-            'projects' => $this->projects ? ProjectResource::collection($this->projects) : null,
-            'buyers' => $this->buyers ? EmbeddedBuyerResource::collection($this->buyers) : null,
-            'favourites' => $this->favourites ? EmbeddedProjectResource::collection($this->favourites) : null,
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

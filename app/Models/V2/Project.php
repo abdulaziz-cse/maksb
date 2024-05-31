@@ -2,7 +2,6 @@
 
 namespace App\Models\V2;
 
-use App\Models\User;
 use App\Models\Asset;
 use App\Models\Buyer;
 use App\Constants\App;
@@ -10,12 +9,13 @@ use App\Models\Category;
 use App\Models\Currency;
 use App\Models\Platform;
 use App\Models\Favourite;
+use App\Models\V2\User\User;
 use App\Models\RevenueSource;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
+use App\Models\V2\Settings\Region;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\V2\Settings\PredefinedValue;
-use App\Models\V2\Settings\Region;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

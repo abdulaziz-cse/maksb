@@ -17,6 +17,11 @@ class CreatePredefinedValueSeeder extends BaseSeeder
      */
     public function run(): void
     {
+        $userTypeParentId = PredefinedValue::factory()->create([
+            'name' => 'user types',
+            'slug' => 'userType',
+        ])?->id;
+
         $projectTypeParentId = PredefinedValue::factory()->create([
             'name' => 'project types',
             'slug' => 'projectType',
@@ -87,6 +92,16 @@ class CreatePredefinedValueSeeder extends BaseSeeder
                 'name' => 'Closed',
                 'slug' => 'inquiryStatus-closed',
                 'parent_id' => $inquiryStatusParentId,
+            ],
+            [
+                'name' => 'Buyer',
+                'slug' => 'userType-buyer',
+                'parent_id' => $userTypeParentId,
+            ],
+            [
+                'name' => 'Seller',
+                'slug' => 'userType-seller',
+                'parent_id' => $userTypeParentId,
             ],
         ];
 

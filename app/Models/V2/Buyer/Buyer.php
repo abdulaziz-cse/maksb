@@ -2,12 +2,13 @@
 
 namespace App\Models\V2\Buyer;
 
-use App\Models\User;
+
 use App\Models\V2\Project;
-use App\Models\V2\Settings\PredefinedValue;
+use App\Models\V2\User\User;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\V2\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

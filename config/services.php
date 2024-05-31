@@ -31,4 +31,18 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'sms' => [
+        'default' => env('SMS_PROVIDER', 'twilio'),
+    ],
+
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'verify_sid' => env('TWILIO_VERIFY_SID'),
+    ],
+
+    'sinch' => [
+        'sinch_key' => env('SINCH_KEY'),
+        'sinch_secret' => env('SINCH_SECRET'),
+    ],
 ];

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Requests\Api\V1;
+namespace App\Http\Requests\Api\V2\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class RegisterRequest extends FormRequest
 {
@@ -25,9 +24,9 @@ class RegisterRequest extends FormRequest
         return [
             'name' => 'required|string|min:3|max:64',
             'phone' => 'required|string|max:20|unique:users,phone',
-            'password' => 'required|confirmed|min:6|max:100',
-            'email' => 'required|string|max:100|unique:users,email',
-            'type_id' => Rule::in([1, 2]),
+            'email' => 'required|string|email|max:100|unique:users,email',
+            'password' => 'required|string|min:6|max:100|confirmed',
+            'type_id' => 'required|integer|exists:predefined_values,id,deleted_at,NULL',
         ];
     }
 }
