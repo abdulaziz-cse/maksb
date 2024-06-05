@@ -7,6 +7,7 @@ use App\Models\V2\Project;
 use App\Models\V2\User\User;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
+use App\Models\V2\Buyer\BuyerProject;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\V2\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -40,7 +41,9 @@ class Buyer extends Model implements HasMedia
 
     public function projects(): BelongsToMany
     {
-        return $this->belongsToMany(Project::class);
+        return $this->belongsToMany(Project::class)
+            ->withPivot('is_accepted')
+            ->using(BuyerProject::class);
     }
 
     public function file()

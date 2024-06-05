@@ -14,6 +14,7 @@ use App\Models\RevenueSource;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use App\Models\V2\Settings\Region;
+use App\Models\V2\Buyer\BuyerProject;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\V2\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -67,7 +68,7 @@ class Project extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'isFavorite'
+        'isFavorite',
     ];
 
     /**
@@ -146,7 +147,9 @@ class Project extends Model implements HasMedia
 
     public function buyers(): BelongsToMany
     {
-        return $this->belongsToMany(Buyer::class);
+        return $this->belongsToMany(Buyer::class)
+            ->withPivot('is_accepted')
+            ->using(BuyerProject::class);
     }
 
     public function currentUserFavorite()
