@@ -6,14 +6,21 @@ use ErrorException;
 use App\Constants\App;
 use App\Models\V2\Project;
 use App\Models\V2\Buyer\Buyer;
+use App\Enums\Buyer\BuyerStatus;
 use App\Services\BuilderService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use App\Interfaces\BuyerRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Services\V2\Settings\PredefinedValueService;
 
 class BuyerReposiotry implements BuyerRepositoryInterface
 {
+    public function __construct(
+        private PredefinedValueService $predefinedValueService,
+    ) {
+    }
+
     public function getMany($buyerFilters): LengthAwarePaginator
     {
         $paginate = $buyerFilters['paginate'] ?? request()->paginate;
@@ -47,7 +54,7 @@ class BuyerReposiotry implements BuyerRepositoryInterface
     }
 
     /**
-     * Create a project
+     * Create a buyer
      *
      * @param  mixed  $data
      *
@@ -55,7 +62,12 @@ class BuyerReposiotry implements BuyerRepositoryInterface
      */
     public function create(array $data): Buyer
     {
+        $statusId = $this->predefinedValueService->getOneBySlug(
+            BuyerStatus::PENDING->value
+        )?->id;
+
         $data['user_id'] = auth(App::API_GUARD)->id();
+        $data['status_id'] = $statusId;
 
         return DB::transaction(function () use ($data) {
             // Create buyer
@@ -85,7 +97,7 @@ class BuyerReposiotry implements BuyerRepositoryInterface
     }
 
     /**
-     * Update a project
+     * Update a buyer
      *
      * @param  mixed  $buyerData
      *

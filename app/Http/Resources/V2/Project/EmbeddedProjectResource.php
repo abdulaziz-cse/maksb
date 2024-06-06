@@ -20,6 +20,7 @@ class EmbeddedProjectResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
+            'status' => $this->status ? new EmbeddedPredefinedValueResource($this->status) : null,
             'description' => $this->description,
             'short_description' => $this->short_description,
             'revenue' => $revenue,

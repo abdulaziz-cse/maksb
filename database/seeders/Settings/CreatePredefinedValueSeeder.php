@@ -42,6 +42,11 @@ class CreatePredefinedValueSeeder extends BaseSeeder
             'slug' => 'inquiryStatus',
         ])?->id;
 
+        $projectStatusParentId = PredefinedValue::factory()->create([
+            'name' => 'project statues',
+            'slug' => 'projectStatus',
+        ])?->id;
+
         $predefinedValues = [
             [
                 'name' => 'اونلاين',
@@ -64,18 +69,18 @@ class CreatePredefinedValueSeeder extends BaseSeeder
                 'parent_id' => $buyerTypeParentId,
             ],
             [
-                'name' => 'Acquisition',
-                'slug' => 'buyerStatus-acquisition',
+                'name' => 'Pending',
+                'slug' => 'buyerStatus-pending',
                 'parent_id' => $buyerStatusParentId,
             ],
             [
-                'name' => 'Waiting For Seller',
-                'slug' => 'buyerStatus-waiting-for-seller',
+                'name' => 'Accepted',
+                'slug' => 'buyerStatus-accepted',
                 'parent_id' => $buyerStatusParentId,
             ],
             [
-                'name' => 'Incomplete',
-                'slug' => 'buyerStatus-incomplete',
+                'name' => 'rejected',
+                'slug' => 'buyerStatus-rejected',
                 'parent_id' => $buyerStatusParentId,
             ],
             [
@@ -102,6 +107,21 @@ class CreatePredefinedValueSeeder extends BaseSeeder
                 'name' => 'Seller',
                 'slug' => 'userType-seller',
                 'parent_id' => $userTypeParentId,
+            ],
+            [
+                'name' => 'Open',
+                'slug' => 'projectStatus-open',
+                'parent_id' => $projectStatusParentId,
+            ],
+            [
+                'name' => 'Accepted',
+                'slug' => 'projectStatus-accepted',
+                'parent_id' => $projectStatusParentId,
+            ],
+            [
+                'name' => 'Sold',
+                'slug' => 'projectStatus-sold',
+                'parent_id' => $projectStatusParentId,
             ],
         ];
 

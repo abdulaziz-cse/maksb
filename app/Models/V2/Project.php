@@ -14,7 +14,6 @@ use App\Models\RevenueSource;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use App\Models\V2\Settings\Region;
-use App\Models\V2\Buyer\BuyerProject;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\V2\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -53,6 +52,7 @@ class Project extends Model implements HasMedia
         'incoming',
         'cost',
         'revenue',
+        'status_id',
     ];
 
     protected $guarded = [];
@@ -147,14 +147,22 @@ class Project extends Model implements HasMedia
 
     public function buyers(): BelongsToMany
     {
-        return $this->belongsToMany(Buyer::class)
-            ->withPivot('is_accepted')
-            ->using(BuyerProject::class);
+        return $this->belongsToMany(Buyer::class);
     }
 
     public function currentUserFavorite()
     {
         return $this->hasMany(Favourite::class, 'project_id', 'id')
             ->where('favourites.user_id', auth(App::API_GUARD)->id());
+    }
+
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(PredefinedValue::class, 'status_id');
+    }
+
+    public function getOfferCountAttribute()
+    {
+        return $this->buyers()->count();
     }
 }

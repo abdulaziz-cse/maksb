@@ -23,7 +23,6 @@ class UpdateStatusRequest extends FormRequest
     {
         return [
             'is_accepted' => 'required|boolean',
-            'project_id' => 'required|integer|exists:projects,id,deleted_at,NULL',
         ];
     }
 }

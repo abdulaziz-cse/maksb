@@ -25,6 +25,7 @@ class ProjectIndexResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'status' => $this->status ? new EmbeddedPredefinedValueResource($this->status) : null,
             // 'user' => $this->user ? new EmbeddedUserResource($this->user) : null,
             'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
             'category' => $this->category ? new EmbeddedCategoryResource($this->category) : null,
@@ -47,6 +48,7 @@ class ProjectIndexResource extends JsonResource
             'price' => $this->price,
             'images' => $this->images ? MediaResource::collection($this->images) : null,
             'revenue_sources' => $this->revenueSources ? EmbededRevenueSourceResource::collection($this->revenueSources) : null,
+            'offer_count' => $this->offer_count,
             // 'current_user_favorite' => $this->currentUserFavorite,
         ];
     }
