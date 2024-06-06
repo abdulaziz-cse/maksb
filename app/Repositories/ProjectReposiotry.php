@@ -6,14 +6,20 @@ use ErrorException;
 use App\Constants\App;
 use App\Models\V2\Project;
 use App\Services\BuilderService;
-use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\DB;
+use App\Enums\Project\ProjectStatus;
 use Illuminate\Database\QueryException;
 use App\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Services\V2\Settings\PredefinedValueService;
 
 class ProjectReposiotry implements ProjectRepositoryInterface
 {
+    public function __construct(
+        private PredefinedValueService $predefinedValueService,
+    ) {
+    }
+
     public function getMany($projectFilters): LengthAwarePaginator
     {
         $paginate = $projectFilters['paginate'] ?? request()->paginate;
@@ -56,11 +62,16 @@ class ProjectReposiotry implements ProjectRepositoryInterface
      */
     public function create(array $data): Project
     {
-        $projectData = $this->prepareProjectData($data);
+        $statusId = $this->predefinedValueService->getOneBySlug(
+            ProjectStatus::OPEN->value
+        )?->id;
 
-        return DB::transaction(function () use ($projectData, $data) {
+        $data['user_id'] = auth(App::API_GUARD)->id();
+        $data['status_id'] = $statusId;
+
+        return DB::transaction(function () use ($data) {
             // Create project
-            $project = $this->createOne($projectData);
+            $project = $this->createOne($data);
 
             // Attach related data
             $this->upsertRevenueSources($data, $project);
@@ -73,14 +84,6 @@ class ProjectReposiotry implements ProjectRepositoryInterface
 
             return $project->refresh();
         });
-    }
-
-    private function prepareProjectData($data): array
-    {
-        $projectData = array_diff_key($data, array_flip(['file1', 'file2', 'file3', 'image1', 'image2', 'image3', 'assets', 'platforms', 'revenue_sources']));
-        $projectData['user_id'] = auth(App::API_GUARD)->user()->id;
-
-        return $projectData;
     }
 
     private function upsertRevenueSources(array $data, Project $project): void

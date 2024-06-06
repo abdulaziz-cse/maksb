@@ -52,6 +52,7 @@ class Project extends Model implements HasMedia
         'incoming',
         'cost',
         'revenue',
+        'status_id',
     ];
 
     protected $guarded = [];
@@ -67,7 +68,7 @@ class Project extends Model implements HasMedia
     ];
 
     protected $appends = [
-        'isFavorite'
+        'isFavorite',
     ];
 
     /**
@@ -153,5 +154,15 @@ class Project extends Model implements HasMedia
     {
         return $this->hasMany(Favourite::class, 'project_id', 'id')
             ->where('favourites.user_id', auth(App::API_GUARD)->id());
+    }
+
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(PredefinedValue::class, 'status_id');
+    }
+
+    public function getOfferCountAttribute()
+    {
+        return $this->buyers()->count();
     }
 }

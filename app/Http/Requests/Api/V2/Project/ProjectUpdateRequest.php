@@ -19,6 +19,7 @@ class ProjectUpdateRequest extends FormRequest
         return [
             'name' => 'required|string|min:3|max:255',
             'type_id' => 'required|integer|exists:predefined_values,id,deleted_at,NULL',
+            'status_id' => 'required|integer|exists:predefined_values,id,deleted_at,NULL',
             'category_id' => 'required|integer|exists:categories,id',
             'website' => 'required|string',
             'establishment_date' => 'required|date',

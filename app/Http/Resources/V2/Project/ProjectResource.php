@@ -31,6 +31,7 @@ class ProjectResource extends JsonResource
             'name' => $this->name,
             'user' => $this->user ? new EmbeddedUserResource($this->user) : null,
             'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
+            'status' => $this->status ? new EmbeddedPredefinedValueResource($this->status) : null,
             'category' => $this->category ? new EmbeddedCategoryResource($this->category) : null,
             'website' => $this->website,
             'establishment_date' => $this->establishment_date,
