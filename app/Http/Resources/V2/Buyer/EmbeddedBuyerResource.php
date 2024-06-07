@@ -3,7 +3,6 @@
 namespace App\Http\Resources\V2\Buyer;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\V2\Project\EmbeddedProjectResource;
 use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
 class EmbeddedBuyerResource extends JsonResource
@@ -18,7 +17,6 @@ class EmbeddedBuyerResource extends JsonResource
             'law' => $this->law,
             'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
             'status' => $this->status ? new EmbeddedPredefinedValueResource($this->status) : null,
-            'projects' => $this->projects ? EmbeddedProjectResource::collection($this->projects) : null,
         ];
     }
 }

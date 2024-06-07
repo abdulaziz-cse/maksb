@@ -3,7 +3,7 @@
 namespace App\Models\V2;
 
 use App\Models\Asset;
-use App\Models\Buyer;
+
 use App\Constants\App;
 use App\Models\Category;
 use App\Models\Currency;
@@ -11,6 +11,7 @@ use App\Models\Platform;
 use App\Models\Favourite;
 use App\Models\V2\User\User;
 use App\Models\RevenueSource;
+use App\Models\V2\Buyer\Buyer;
 use App\Traits\SearchableTrait;
 use Spatie\MediaLibrary\HasMedia;
 use App\Models\V2\Settings\Region;

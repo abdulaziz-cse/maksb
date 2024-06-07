@@ -61,8 +61,8 @@ class ProjectResource extends JsonResource
             'platforms' => $this->platforms ? EmbededPlatformResource::collection($this->platforms) : null,
             'other_platform' => $this->other_platform,
             'assets' => $this->assets ? AssetResource::collection($this->assets) : null,
-            'current_user_favorite' => $this->currentUserFavorite,
             'buyers' => $this->buyers ? EmbeddedBuyerResource::collection($this->buyers) : null,
+            'current_user_favorite' => $this->currentUserFavorite,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
