@@ -24,6 +24,7 @@ class ProjectIndexRequest extends SearchPaginateRequest
         return array_merge(parent::baseRules(), [
             'name' => 'nullable|string|min:3|max:255',
             'category_id' => 'nullable|integer|exists:categories,id',
+            'user_id' => 'nullable|integer|exists:users,id',
         ]);
     }
 }
