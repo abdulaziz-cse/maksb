@@ -9,6 +9,7 @@ use App\Services\BuilderService;
 use Illuminate\Support\Facades\DB;
 use App\Enums\Project\ProjectStatus;
 use Illuminate\Database\QueryException;
+use App\Validators\Project\ProjectValidator;
 use App\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\V2\Settings\PredefinedValueService;
@@ -114,10 +115,12 @@ class ProjectReposiotry implements ProjectRepositoryInterface
 
     public function deleteOne(Project $project): bool
     {
+        if ($project->buyers->isNotEmpty())
+            ProjectValidator::throwExceptionIfProjectHasOffers($project);
+
         $project->revenueSources()->detach();
         $project->platforms()->detach();
         $project->assets()->detach();
-        $project->buyers()->detach();
 
         return $project->delete();
     }
