@@ -117,6 +117,7 @@ class ProjectReposiotry implements ProjectRepositoryInterface
         $project->revenueSources()->detach();
         $project->platforms()->detach();
         $project->assets()->detach();
+        $project->buyers()->detach();
 
         return $project->delete();
     }
