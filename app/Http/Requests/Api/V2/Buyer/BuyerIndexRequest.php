@@ -24,7 +24,7 @@ class BuyerIndexRequest extends SearchPaginateRequest
         return array_merge(parent::baseRules(), [
             'consultant_type_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
             'status_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
-            'user_id' => 'nullable|integer|exists:users,id',
+            'user_id' => 'nullable|integer|exists:users,id,deleted_at,NULL',
         ]);
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use App\Models\V2\User\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Redis;
+use App\Validators\Auth\UserValidator;
 use Illuminate\Validation\ValidationException;
 use App\Contracts\Repositories\UserRepositoryInterface;
 
@@ -33,6 +34,11 @@ class UserService
         return tap($user)->update($userData);
     }
 
+    public function deleteOne(User $user): bool
+    {
+        return $user->delete();
+    }
+
     // public function create(array $data): User
     // {
     //     // Create user
@@ -44,37 +50,32 @@ class UserService
     //     return $user;
     // }
 
-    // public function updateProfile(User $user, array $data): User
-    // {
-    //     $oldPhone = $user->phone;
-    //     $oldEmail = $user->email;
+    public function updateProfile(array $userData, User $user): User
+    {
+        UserValidator::throwExceptionIfPhoneNotVerified($user);
 
-    //     if (isset($data['phone']) && $data['phone'] !== $oldPhone) {
-    //         $isPhoneVerified = $user->phone_verified_at; //(bool) Redis::get('user_' . $user->id . '_verified_' . $data['phone']);
-    //         if (!$isPhoneVerified) {
-    //             abort(400, 'Phone not verified.');
-    //         }
-    //     }
+        $oldPhone = $user?->phone;
+        $oldEmail = $user?->email;
 
-    //     // Update user profile
-    //     $user = $this->userRepository->update($user->id, Arr::except($data, ['password']));
+        $user = $this->updateOne($userData, $user);
 
-    //     if (isset($data['email']) && $data['email'] !== $oldEmail) {
-    //         // Send verification code
-    //         $user->email_verified_at = null;
-    //     }
+        if (isset($userData['phone']) && $userData['phone'] !== $oldPhone)
+            $user->phone_verified_at = null;
 
-    //     $user->save();
+        if (isset($userData['email']) && $userData['email'] !== $oldEmail)
+            $user->email_verified_at = null;
+
+        $user->save();
 
 
-    //     $this->updatePassword($user, $data);
+        // $this->updatePassword($user, $data);
 
-    //     $this->updatePhoto($user, $data);
+        // $this->updatePhoto($user, $data);
 
-    //     $user->load('photo');
+        // $user->load('photo');
 
-    //     return $user;
-    // }
+        return $user;
+    }
 
     // public function updatePhoto(User $user, array $data): User
     // {
