@@ -2,6 +2,7 @@
 
 namespace App\Validators\Auth;
 
+use Illuminate\Support\Facades\Hash;
 use App\Enums\Auth\VerificationAction;
 use App\Exceptions\ValidationException;
 
@@ -25,6 +26,15 @@ class UserValidator
     {
         if (is_null($user->phone_verified_at)) {
             throw new ValidationException('The Phone should be verified!');
+        }
+    }
+
+    public static function throwExceptionIfPasswordIsnotMatch($user, $oldPassword)
+    {
+        if (
+            !isset($oldPassword) || !Hash::check($oldPassword, $user->password)
+        ) {
+            throw new ValidationException('The Old Password doesn not match the current!');
         }
     }
 }

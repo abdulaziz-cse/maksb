@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\V2\User;
 
+use App\Http\Resources\Media\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
@@ -24,8 +25,9 @@ class UserResource extends JsonResource
             'owner_of' => $this->owner_of,
             'portfolio' => $this->portfolio,
             'website' => $this->website,
-            'photo' => $this->photo,
+            'photo' => $this->photo ? new MediaResource($this->photo) : null,
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

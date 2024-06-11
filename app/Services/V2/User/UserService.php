@@ -2,22 +2,14 @@
 
 namespace App\Services\V2\User;
 
-use Illuminate\Support\Arr;
+use App\Traits\MediaTrait;
 use App\Models\V2\User\User;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Redis;
+use App\Traits\AuthHelperTrait;
 use App\Validators\Auth\UserValidator;
-use Illuminate\Validation\ValidationException;
-use App\Contracts\Repositories\UserRepositoryInterface;
 
 class UserService
 {
-    // private $userRepository;
-
-    // public function __construct(UserRepositoryInterface $userRepository, private $user)
-    // {
-    //     $this->userRepository = $userRepository;
-    // }
+    use MediaTrait, AuthHelperTrait;
 
     public function createOne(array $userData): User
     {
@@ -39,17 +31,6 @@ class UserService
         return $user->delete();
     }
 
-    // public function create(array $data): User
-    // {
-    //     // Create user
-    //     $user = $this->userRepository->create($data);
-
-    //     // Assign user role
-    //     $user->assignRole('consumer');
-
-    //     return $user;
-    // }
-
     public function updateProfile(array $userData, User $user): User
     {
         UserValidator::throwExceptionIfPhoneNotVerified($user);
@@ -67,67 +48,35 @@ class UserService
 
         $user->save();
 
+        return $user;
+    }
 
-        // $this->updatePassword($user, $data);
+    public function updatePhoto(array $userData)
+    {
+        $user =  auth()->user();
+        $collectionName = 'avatars';
 
-        // $this->updatePhoto($user, $data);
-
-        // $user->load('photo');
+        if (!empty($userData['photo']))
+            $this->uploadImage($user, $userData['photo'], $collectionName);
+        else
+            $this->deleteImage($user);
 
         return $user;
     }
 
-    // public function updatePhoto(User $user, array $data): User
-    // {
-    //     if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
-    //         $user->addMedia($data['photo'])->toMediaCollection('avatars');
-    //     } elseif (array_key_exists('photo', $data) && empty($data['photo'])) {
-    //         // Delete all user media
-    //         // As there is only one collection - avatars
-    //         $user->media()->delete();
-    //     }
+    public function updatePassword(array $userData): User
+    {
+        $currentUser = auth()->user();
+        $oldPassword = $userData['old_password'] ?? null;
 
-    //     return $user;
-    // }
+        UserValidator::throwExceptionIfPhoneNotVerified($currentUser);
+        UserValidator::throwExceptionIfPasswordIsnotMatch($currentUser, $oldPassword);
 
-    // public function updatePassword(User $user, array $data): User
-    // {
-    //     $currentUser = auth()->user();
+        if (!empty($userData['new_password'])) {
+            $userData = ['password' => $this->cryptPassword($userData['new_password'])];
+            $user = $this->updateOne($userData, $currentUser);
+        }
 
-    //     if (!isset($data['password'], $currentUser)) {
-    //         return $user;
-    //     }
-
-    //     if (!isset($data['oldpassword'])) {
-    //         $message = $currentUser->isAdmin() ?
-    //             'Your admin password is incorrect' :
-    //             'Please provide old password';
-
-    //         throw ValidationException::withMessages([
-    //             'oldpassword' => $message,
-    //         ]);
-    //     }
-
-    //     // Check for old password or admin password for admins
-    //     if (!\Hash::check($data['oldpassword'], $currentUser->password)) {
-    //         $message = $currentUser->isAdmin() ?
-    //             'Your admin password is incorrect' :
-    //             'Old password is incorrect';
-
-    //         throw ValidationException::withMessages([
-    //             'oldpassword' => $message,
-    //         ]);
-    //     }
-
-    //     $user->update(['password' => $data['password']]);
-
-    //     return $user;
-    // }
-
-
-
-
-
-
-
+        return $user;
+    }
 }

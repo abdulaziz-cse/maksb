@@ -8,6 +8,8 @@ use App\Services\V2\User\UserService;
 use App\Http\Resources\V2\User\UserResource;
 use App\Http\Controllers\Api\V2\BaseApiController;
 use App\Http\Requests\Api\V2\User\UserUpdateRequest;
+use App\Http\Requests\Api\V2\User\UserUpdatePhotoRequest;
+use App\Http\Requests\Api\V2\User\UserUpdatePasswordRequest;
 
 class UserController extends BaseApiController
 {
@@ -25,8 +27,30 @@ class UserController extends BaseApiController
 
     public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
-        $data = $request->validated();
-        $user = $this->service->updateProfile($data, $user);
+        $userData = $request->validated();
+        $user = $this->service->updateProfile($userData, $user);
+
+        return $this->returnDate(
+            new UserResource($user),
+            'success'
+        );
+    }
+
+    public function updatePhoto(UserUpdatePhotoRequest $request): JsonResponse
+    {
+        $userData = $request->validated();
+        $user = $this->service->updatePhoto($userData);
+
+        return $this->returnDate(
+            new UserResource($user),
+            'success'
+        );
+    }
+
+    public function updatePassword(UserUpdatePasswordRequest $request): JsonResponse
+    {
+        $userData = $request->validated();
+        $user = $this->service->updatePassword($userData);
 
         return $this->returnDate(
             new UserResource($user),
