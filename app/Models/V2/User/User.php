@@ -16,10 +16,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable implements HasMedia
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, Messageable, InteractsWithMedia;
+    use HasApiTokens,
+        HasFactory,
+        Notifiable,
+        HasRoles,
+        Messageable,
+        InteractsWithMedia,
+        SoftDeletes;
 
     protected $guard_name = 'web';
 

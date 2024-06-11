@@ -2,10 +2,8 @@
 
 namespace App\Http\Resources\V2\User;
 
+use App\Http\Resources\Media\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\V2\Project\ProjectResource;
-use App\Http\Resources\V2\Buyer\EmbeddedBuyerResource;
-use App\Http\Resources\V2\Project\EmbeddedProjectResource;
 use App\Http\Resources\V2\Settings\PredefinedValue\EmbeddedPredefinedValueResource;
 
 class UserResource extends JsonResource
@@ -27,11 +25,9 @@ class UserResource extends JsonResource
             'owner_of' => $this->owner_of,
             'portfolio' => $this->portfolio,
             'website' => $this->website,
-            'photo' => $this->photo,
-            'projects' => $this->projects ? ProjectResource::collection($this->projects) : null,
-            'buyers' => $this->buyers ? EmbeddedBuyerResource::collection($this->buyers) : null,
-            'favourites' => $this->favourites ? EmbeddedProjectResource::collection($this->favourites) : null,
+            'photo' => $this->photo ? new MediaResource($this->photo) : null,
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -37,6 +37,7 @@ class RouteServiceProvider extends ServiceProvider
                     base_path('routes/v2/projects.php'),
                     base_path('routes/v2/buyers.php'),
                     base_path('routes/v2/general.php'),
+                    base_path('routes/v2/user.php'),
 
                 ]);
 
