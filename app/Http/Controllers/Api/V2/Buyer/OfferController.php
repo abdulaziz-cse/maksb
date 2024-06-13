@@ -18,7 +18,7 @@ class OfferController extends BaseApiController
     public function updateStatus(UpdateStatusRequest $request, Buyer $buyer): JsonResponse
     {
         $requestData = $request->validated();
-        $buyer =  $this->buyerService->updateStatus($requestData, $buyer);
+        $buyer = $this->buyerService->updateStatus($requestData, $buyer);
 
         return $this->returnDate(
             new BuyerResource($buyer),

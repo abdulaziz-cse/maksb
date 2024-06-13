@@ -5,10 +5,13 @@ namespace App\Services\V2\Buyer;
 use App\Models\V2\Buyer\Buyer;
 use App\Enums\Buyer\BuyerStatus;
 use App\Enums\Project\ProjectStatus;
+use App\Http\Mappers\Offer\OfferMapper;
+use App\Http\Mappers\Project\ProjectMapper;
 use App\Services\V2\Project\ProjectService;
 use App\Interfaces\BuyerRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\V2\Settings\PredefinedValueService;
+use App\Validators\Offer\OfferValidator;
 
 class BuyerService
 {
@@ -16,6 +19,8 @@ class BuyerService
         private BuyerRepositoryInterface $buyerRepositoryInterface,
         private PredefinedValueService $predefinedValueService,
         private ProjectService $projectService,
+        private OfferMapper $offerMapper,
+        private ProjectMapper $projectMapper,
     ) {
     }
 
@@ -41,25 +46,21 @@ class BuyerService
 
     public function updateStatus(array $requestData, Buyer $buyer): Buyer
     {
-        $acceptedStatusId = $this->predefinedValueService->getOneBySlug(
-            BuyerStatus::ACCEPTED->value
-        )?->id;
+        OfferValidator::throwExceptionIfOfferNotPending($buyer);
 
-        $rejectedStatusId = $this->predefinedValueService->getOneBySlug(
-            BuyerStatus::REJECTED->value
-        )?->id;
-
-        $accpeptedProjectStatusId = $this->predefinedValueService->getOneBySlug(
-            ProjectStatus::ACCEPTED->value
-        )?->id;
+        $acceptedStatusId = $this->predefinedValueService->getOneBySlug(BuyerStatus::ACCEPTED->value)?->id;
+        $rejectedStatusId = $this->predefinedValueService->getOneBySlug(BuyerStatus::REJECTED->value)?->id;
+        $accpeptedProjectStatusId = $this->predefinedValueService->getOneBySlug(ProjectStatus::ACCEPTED->value)?->id;
 
         if ($requestData['is_accepted']) {
-            $data['status_id'] = $acceptedStatusId;
-            $this->update($data, $buyer);
-            $this->projectService->updateProjectsByStatus($buyer->projects, $accpeptedProjectStatusId);
+            $this->update($this->offerMapper->toSaveStatusParam($acceptedStatusId), $buyer);
+
+            $this->projectService->update(
+                $this->projectMapper->toSaveAcceptedProject($accpeptedProjectStatusId, $buyer->user),
+                $buyer->project
+            );
         } else {
-            $data['status_id'] = $rejectedStatusId;
-            $this->update($data, $buyer);
+            $this->update($this->offerMapper->toSaveStatusParam($rejectedStatusId), $buyer);
         }
 
         return $buyer;

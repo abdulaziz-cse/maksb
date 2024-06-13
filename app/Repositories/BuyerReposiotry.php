@@ -4,13 +4,16 @@ namespace App\Repositories;
 
 use ErrorException;
 use App\Constants\App;
-use App\Models\V2\Project;
 use App\Models\V2\Buyer\Buyer;
 use App\Enums\Buyer\BuyerStatus;
 use App\Services\BuilderService;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use App\Enums\Project\ProjectStatus;
 use Illuminate\Database\QueryException;
+use App\Validators\Offer\OfferValidator;
 use App\Interfaces\BuyerRepositoryInterface;
+use App\Validators\Project\ProjectValidator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\V2\Settings\PredefinedValueService;
 
@@ -39,6 +42,7 @@ class BuyerReposiotry implements BuyerRepositoryInterface
         $user_id = $buyerFilters['user_id'];
         $status_id = $buyerFilters['status_id'];
         $consultant_type_id = $buyerFilters['consultant_type_id'];
+        $project_id = $buyerFilters['project_id'];
 
         if (isset($user_id)) {
             $builder->where('user_id', $user_id);
@@ -51,43 +55,45 @@ class BuyerReposiotry implements BuyerRepositoryInterface
         if (isset($consultant_type_id)) {
             $builder->where('consultant_type_id', $consultant_type_id);
         }
+
+        if (isset($project_id)) {
+            $builder->where('project_id', $project_id);
+        }
     }
 
     /**
      * Create a buyer
      *
-     * @param  mixed  $data
+     * @param  mixed  $buyerData
      *
      * @throws QueryException|ErrorException
      */
-    public function create(array $data): Buyer
+    public function create(array $buyerData): Buyer
     {
-        $statusId = $this->predefinedValueService->getOneBySlug(
-            BuyerStatus::PENDING->value
-        )?->id;
+        $buyerData = $this->prepareBuyerData($buyerData);
+        $this->validateOffer($buyerData);
 
-        $data['user_id'] = auth(App::API_GUARD)->id();
-        $data['status_id'] = $statusId;
-
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($buyerData) {
             // Create buyer
-            $buyer = $this->createOne($data);
-
-            // Attach related data
-            $this->upsertProjects($data, $buyer);
+            $buyer = $this->createOne($buyerData);
 
             // Add media file
-            $this->addMediaFile($data, $buyer);
+            $this->addMediaFile($buyerData, $buyer);
 
             return $buyer->refresh();
         });
     }
 
-    private function upsertProjects(array $data, Buyer $buyer): void
+    private function prepareBuyerData(array $buyerData): array
     {
-        if (isset($data['project_ids'])) {
-            $buyer->projects()->sync($data['project_ids']);
-        }
+        $statusId = $this->predefinedValueService->getOneBySlug(
+            BuyerStatus::PENDING->value
+        )?->id;
+
+        $buyerData['user_id'] = auth(App::API_GUARD)->id();
+        $buyerData['status_id'] = $statusId;
+
+        return $buyerData;
     }
 
     private function addMediaFile(array $data, Buyer $buyer): void
@@ -109,16 +115,13 @@ class BuyerReposiotry implements BuyerRepositoryInterface
             // Update project
             $buyer = $this->updateOne($buyerData, $buyer);
 
-            // Update related data
-            $this->upsertProjects($buyerData, $buyer);
-
             return $buyer->refresh();
         });
     }
 
-    public function getOne($projectId): ?Project
+    public function getOne($id): ?Buyer
     {
-        return Project::findOrFail($projectId);
+        return Buyer::findOrFail($id);
     }
 
     public function deleteOne(Buyer $buyer): bool
@@ -135,5 +138,28 @@ class BuyerReposiotry implements BuyerRepositoryInterface
     public function createOne(array $buyerData): Buyer
     {
         return Buyer::create($buyerData)->fresh();
+    }
+
+    private function validateOffer(array $buyerData)
+    {
+        $offers = $this->getManyByProjectIdAndUserId(
+            $buyerData['project_id'],
+            $buyerData['user_id']
+        );
+
+        OfferValidator::throwExceptionIfAllOffersPending($this->isAllPending($offers));
+    }
+
+    private function isAllPending(Collection $offers): bool
+    {
+        return $offers->contains(function ($offer) {
+            return $offer->status?->slug == BuyerStatus::PENDING->value;
+        });
+    }
+
+    private function getManyByProjectIdAndUserId($projectId, $userId): Collection
+    {
+        return Buyer::where('project_id', $projectId)
+            ->where('user_id', $userId)->get();
     }
 }

@@ -3,9 +3,10 @@
 namespace App\Services\V2\Project;
 
 use App\Models\V2\Project;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use App\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 
 class ProjectService
 {
@@ -36,14 +37,5 @@ class ProjectService
     public function deleteOne(Project $project): bool
     {
         return $this->projectRepositoryInterface->deleteOne($project);
-    }
-
-    public function updateProjectsByStatus(Collection $projects, ?int $statusId): void
-    {
-        $data['status_id'] = $statusId;
-
-        $projects->map(function ($project) use ($data) {
-            $this->update($data, $project);
-        });
     }
 }
