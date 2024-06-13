@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Conversation extends Model
 {
     protected $fillable = [
-    	'name', 'relatable_id', 'relatable_type',
+        'name', 'relatable_id', 'relatable_type',
     ];
 
     /**
@@ -17,7 +17,7 @@ class Conversation extends Model
      */
     public function relatable()
     {
-    	return $this->morphTo();
+        return $this->morphTo();
     }
 
     /**
@@ -55,10 +55,9 @@ class Conversation extends Model
      * Get conversation participants/messageables of one type directly
      * This is the problem we have solved using the previous method
      */
-    public function messageables($messageableModel = 'App\Models\User')
+    public function messageables($messageableModel = 'App\Models\V2\User\User')
     {
-        if ( ! class_exists($messageableModel))
-        {
+        if (!class_exists($messageableModel)) {
             return null;
         }
 
