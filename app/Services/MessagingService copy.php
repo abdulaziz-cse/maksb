@@ -24,7 +24,14 @@ class MessagingService
         $this->projectRepository = $projectRepository;
     }
 
-
+    /**
+     * Send message
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $sender
+     * @param  array  $data
+     *
+     * @return \Hamedov\Messenger\Models\Message
+     */
     public function sendMessage(User $sender, array $data): Message
     {
         $type = $this->getMessageType($data['message']);
@@ -79,6 +86,14 @@ class MessagingService
         return 'offer';
     }
 
+    /**
+     * Get user conversations
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $messageable
+     * @param  array  $filters
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getConversations(User $messageable, array $filters): LengthAwarePaginator
     {
         $conversations = $messageable->conversations()
@@ -126,7 +141,16 @@ class MessagingService
         return $conversations;
     }
 
-    public function getMessages($messageable, array $filters): LengthAwarePaginator
+    /**
+     * Get conversation messages
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $messageable
+     * @param  int    $conversation_id
+     * @param  array  $filters
+     *
+     * @return array
+     */
+    public function getMessages(Model $messageable, array $filters): LengthAwarePaginator
     {
         $conversation = $messageable->conversations()->where([
             'conversations.id' => $filters['conversation_id'] ?? 0,
@@ -145,7 +169,15 @@ class MessagingService
         return $messages;
     }
 
-    public function markConversationAsRead($messageable, int $conversation_id): Conversation
+    /**
+     * Mark conversation as read
+     *
+     * @param  \Illuminate\Database\Eloquent\Model  $messageable
+     * @param  int    $conversation_id [description]
+     *
+     * @return \Hamedov\Messenger\Models\Conversation
+     */
+    public function markConversationAsRead(Model $messageable, int $conversation_id): Conversation
     {
         // Get user conversation
         $conversation = $messageable->conversations()->where([
