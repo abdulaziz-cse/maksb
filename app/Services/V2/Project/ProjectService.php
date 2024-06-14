@@ -3,8 +3,6 @@
 namespace App\Services\V2\Project;
 
 use App\Models\V2\Project;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use App\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 

@@ -8,7 +8,6 @@ use App\Models\V2\Buyer\Buyer;
 
 class OfferValidator
 {
-
     public static function throwExceptionIfOfferNotPending(Buyer $buyer)
     {
         if ($buyer?->status?->slug != BuyerStatus::PENDING->value) {

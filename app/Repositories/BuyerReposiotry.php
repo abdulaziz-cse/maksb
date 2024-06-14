@@ -14,6 +14,7 @@ use Illuminate\Database\QueryException;
 use App\Validators\Offer\OfferValidator;
 use App\Interfaces\BuyerRepositoryInterface;
 use App\Validators\Project\ProjectValidator;
+use App\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\V2\Settings\PredefinedValueService;
 
@@ -21,6 +22,7 @@ class BuyerReposiotry implements BuyerRepositoryInterface
 {
     public function __construct(
         private PredefinedValueService $predefinedValueService,
+        private ProjectRepositoryInterface $projectRepositoryInterface
     ) {
     }
 
@@ -148,6 +150,9 @@ class BuyerReposiotry implements BuyerRepositoryInterface
         );
 
         OfferValidator::throwExceptionIfAllOffersPending($this->isAllPending($offers));
+
+        $project = $this->projectRepositoryInterface->getOne($buyerData['project_id']);
+        ProjectValidator::throwExceptionIfProjectAlreadyAccepted($project);
     }
 
     private function isAllPending(Collection $offers): bool

@@ -57,34 +57,41 @@ class ProjectReposiotry implements ProjectRepositoryInterface
     /**
      * Create a project
      *
-     * @param  mixed  $data
+     * @param  mixed  $projectData
      *
      * @throws QueryException|ErrorException
      */
-    public function create(array $data): Project
+    public function create(array $projectData): Project
+    {
+        $projectData = $this->prepareProjectData($projectData);
+
+        return DB::transaction(function () use ($projectData) {
+            // Create project
+            $project = $this->createOne($projectData);
+
+            // Attach related data
+            $this->upsertRevenueSources($projectData, $project);
+            $this->upsertPlatforms($projectData, $project);
+            $this->upsertAssets($projectData, $project);
+
+            // Add media files
+            $this->addImageMediaFiles($projectData, $project);
+            $this->addAttachmentMediaFiles($projectData, $project);
+
+            return $project->refresh();
+        });
+    }
+
+    private function prepareProjectData(array $projectData): array
     {
         $statusId = $this->predefinedValueService->getOneBySlug(
             ProjectStatus::OPEN->value
         )?->id;
 
-        $data['user_id'] = auth(App::API_GUARD)->id();
-        $data['status_id'] = $statusId;
+        $projectData['user_id'] = auth(App::API_GUARD)->id();
+        $projectData['status_id'] = $statusId;
 
-        return DB::transaction(function () use ($data) {
-            // Create project
-            $project = $this->createOne($data);
-
-            // Attach related data
-            $this->upsertRevenueSources($data, $project);
-            $this->upsertPlatforms($data, $project);
-            $this->upsertAssets($data, $project);
-
-            // Add media files
-            $this->addImageMediaFiles($data, $project);
-            $this->addAttachmentMediaFiles($data, $project);
-
-            return $project->refresh();
-        });
+        return $projectData;
     }
 
     private function upsertRevenueSources(array $data, Project $project): void
@@ -115,12 +122,13 @@ class ProjectReposiotry implements ProjectRepositoryInterface
 
     public function deleteOne(Project $project): bool
     {
-        if ($project->buyers->isNotEmpty())
-            ProjectValidator::throwExceptionIfProjectHasOffers($project);
+        ProjectValidator::throwExceptionIfProjectHasOffers($project);
 
         $project->revenueSources()->detach();
         $project->platforms()->detach();
         $project->assets()->detach();
+        $project->images()->delete();
+        $project->attachments()->delete();
 
         return $project->delete();
     }
@@ -148,7 +156,7 @@ class ProjectReposiotry implements ProjectRepositoryInterface
     /**
      * Update a project
      *
-     * @param  mixed  $benefitData
+     * @param  mixed  $projectData
      *
      * @throws QueryException|ErrorException
      */
