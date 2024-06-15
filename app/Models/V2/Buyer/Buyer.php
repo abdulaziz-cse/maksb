@@ -27,6 +27,7 @@ class Buyer extends Model implements HasMedia
         'consultant_type_id',
         'status_id',
         'user_id',
+        'project_id',
     ];
 
     /**
@@ -62,5 +63,10 @@ class Buyer extends Model implements HasMedia
     public function status(): BelongsTo
     {
         return $this->belongsTo(PredefinedValue::class, 'status_id');
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 }

@@ -22,7 +22,7 @@ class BuyerResource extends JsonResource
             'status' => $this->status ? new EmbeddedPredefinedValueResource($this->status) : null,
             'user' => $this->user ? new EmbeddedUserResource($this->user) : null,
             'file' => $this->file ? new MediaResource($this->file) : null,
-            'projects' => $this->projects ? EmbeddedProjectResource::collection($this->projects) : null,
+            'project' => $this->project ? new EmbeddedProjectResource($this->project) : null,
             'created_at' => $this->created_at,
         ];
     }

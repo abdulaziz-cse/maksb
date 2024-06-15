@@ -14,11 +14,6 @@ class BuyerUpdateRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -27,8 +22,6 @@ class BuyerUpdateRequest extends FormRequest
             'law' => 'nullable|string',
             'nda' => 'nullable|boolean',
             'consultant_type_id' => 'nullable|integer|exists:predefined_values,id,deleted_at,NULL',
-            'project_ids' => 'nullable|array',
-            'project_ids.*' => 'nullable|integer|exists:projects,id,deleted_at,NULL',
         ];
     }
 }

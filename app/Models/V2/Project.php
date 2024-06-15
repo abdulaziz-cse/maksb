@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model implements HasMedia
 {
@@ -54,6 +55,7 @@ class Project extends Model implements HasMedia
         'cost',
         'revenue',
         'status_id',
+        'buyer_id',
     ];
 
     protected $guarded = [];
@@ -84,13 +86,6 @@ class Project extends Model implements HasMedia
 
     public function getIsFavoriteAttribute()
     {
-        // $relations = $this->getRelations();
-        // dd($relations['currentUserFavorite']);
-        // if (isset($relations['currentUserFavorite']))
-        //     return count($relations['currentUserFavorite']);
-        // else
-        //     return 0;
-
         return $this->currentUserFavorite()->count();
     }
 
@@ -134,6 +129,11 @@ class Project extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
+    public function buyer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'buyer_id');
+    }
+
     public function images()
     {
         return $this->morphMany('App\Models\Media', 'model')
@@ -146,9 +146,9 @@ class Project extends Model implements HasMedia
             ->where('collection_name', 'attachments');
     }
 
-    public function buyers(): BelongsToMany
+    public function offers(): HasMany
     {
-        return $this->belongsToMany(Buyer::class);
+        return $this->hasMany(Buyer::class);
     }
 
     public function currentUserFavorite()
@@ -164,6 +164,6 @@ class Project extends Model implements HasMedia
 
     public function getOfferCountAttribute()
     {
-        return $this->buyers()->count();
+        return $this->offers()->count();
     }
 }

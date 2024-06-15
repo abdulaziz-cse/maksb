@@ -20,7 +20,7 @@ class BuyerIndexResource extends JsonResource
             'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
             'status' => $this->status ? new EmbeddedPredefinedValueResource($this->status) : null,
             'user' => $this->user ? new EmbeddedUserResource($this->user) : null,
-            'projects' => $this->projects ? EmbeddedProjectResource::collection($this->projects) : null,
+            'project' => $this->project ? new EmbeddedProjectResource($this->project) : null,
         ];
     }
 }
