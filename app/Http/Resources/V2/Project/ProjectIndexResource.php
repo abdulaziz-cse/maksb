@@ -4,7 +4,6 @@ namespace App\Http\Resources\V2\Project;
 
 use App\Http\Resources\Media\MediaResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-// use App\Http\Resources\V2\User\EmbeddedUserResource;
 use App\Http\Resources\V2\User\EmbeddedUserResource;
 use App\Http\Resources\V2\Buyer\EmbeddedBuyerResource;
 use App\Http\Resources\Settings\Currency\EmbededCurrencyResource;
@@ -28,7 +27,7 @@ class ProjectIndexResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'status' => $this->status ? new EmbeddedPredefinedValueResource($this->status) : null,
-            // 'user' => $this->user ? new EmbeddedUserResource($this->user) : null,
+            'user' => $this->user ? new EmbeddedUserResource($this->user) : null,
             'buyer' => $this->buyer ? new EmbeddedUserResource($this->buyer) : null,
             'type' => $this->type ? new EmbeddedPredefinedValueResource($this->type) : null,
             'category' => $this->category ? new EmbeddedCategoryResource($this->category) : null,
@@ -52,6 +51,8 @@ class ProjectIndexResource extends JsonResource
             'images' => $this->images ? MediaResource::collection($this->images) : null,
             'revenue_sources' => $this->revenueSources ? EmbededRevenueSourceResource::collection($this->revenueSources) : null,
             'offer_count' => $this->offer_count,
+            'offer_pending_count' => $this->offer_pending_count,
+            'offer_rejected_count' => $this->offer_rejected_count,
             // 'current_user_favorite' => $this->currentUserFavorite,
         ];
     }

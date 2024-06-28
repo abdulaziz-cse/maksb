@@ -13,16 +13,17 @@ use App\Models\V2\User\User;
 use App\Models\RevenueSource;
 use App\Models\V2\Buyer\Buyer;
 use App\Traits\SearchableTrait;
+use App\Enums\Buyer\BuyerStatus;
 use Spatie\MediaLibrary\HasMedia;
 use App\Models\V2\Settings\Region;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\V2\Settings\PredefinedValue;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model implements HasMedia
 {
@@ -58,8 +59,6 @@ class Project extends Model implements HasMedia
         'buyer_id',
     ];
 
-    protected $guarded = [];
-
     protected $casts = [
         'incoming' => 'array',
         'cost' => 'array',
@@ -83,11 +82,6 @@ class Project extends Model implements HasMedia
         'user.id',
         'category.id',
     ];
-
-    public function getIsFavoriteAttribute()
-    {
-        return $this->currentUserFavorite()->count();
-    }
 
     public function revenueSources(): BelongsToMany
     {
@@ -162,8 +156,31 @@ class Project extends Model implements HasMedia
         return $this->belongsTo(PredefinedValue::class, 'status_id');
     }
 
+    public function getIsFavoriteAttribute()
+    {
+        return $this->currentUserFavorite()->count();
+    }
+
     public function getOfferCountAttribute()
     {
         return $this->offers()->count();
+    }
+
+    public function getOfferPendingCountAttribute()
+    {
+        return $this->offers()
+            ->whereHas('status', function ($query) {
+                $query->where('slug', BuyerStatus::PENDING->value);
+            })
+            ->count();
+    }
+
+    public function getOfferRejectedCountAttribute()
+    {
+        return $this->offers()
+            ->whereHas('status', function ($query) {
+                $query->where('slug', BuyerStatus::REJECTED->value);
+            })
+            ->count();
     }
 }

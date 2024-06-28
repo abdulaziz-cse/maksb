@@ -6,12 +6,13 @@ use App\Models\V2\Buyer\Buyer;
 use App\Enums\Buyer\BuyerStatus;
 use App\Enums\Project\ProjectStatus;
 use App\Http\Mappers\Offer\OfferMapper;
+use App\Validators\Offer\OfferValidator;
 use App\Http\Mappers\Project\ProjectMapper;
 use App\Services\V2\Project\ProjectService;
 use App\Interfaces\BuyerRepositoryInterface;
+use App\Validators\Project\ProjectValidator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Services\V2\Settings\PredefinedValueService;
-use App\Validators\Offer\OfferValidator;
 
 class BuyerService
 {
@@ -46,6 +47,8 @@ class BuyerService
 
     public function updateStatus(array $requestData, Buyer $buyer): Buyer
     {
+        OfferValidator::throwExceptionIfAuthoriziedUserInvalid($buyer->project);
+        ProjectValidator::throwExceptionIfProjectAlreadyAccepted($buyer->project);
         OfferValidator::throwExceptionIfOfferNotPending($buyer);
 
         $acceptedStatusId = $this->predefinedValueService->getOneBySlug(BuyerStatus::ACCEPTED->value)?->id;
