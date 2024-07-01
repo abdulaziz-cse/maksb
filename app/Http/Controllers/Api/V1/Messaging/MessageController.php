@@ -17,19 +17,19 @@ class MessageController extends BaseApiController
     public function __construct(MessagingService $messagingService)
     {
         parent::__construct();
-        
+
         $this->messagingService = $messagingService;
     }
 
     /**
      * Get messages
-     * 
+     *
      * @queryParam conversation_id required Conversation id.
      * @queryParam page            Page number for pagination. Example: 2
      * @queryParam perPage         Results per page. Example: 15
-     * 
+     *
      * @param  \Illuminate\Http\Request $request
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(Request $request)
@@ -39,9 +39,10 @@ class MessageController extends BaseApiController
             'page' => 'sometimes|integer|min:1',
             'perPage' => 'sometimes|integer|min:5|max:50',
         ]);
-
+        dd(auth()->user());
         $messages = $this->messagingService->getMessages(
-            auth()->user(), $filters
+            auth()->user(),
+            $filters
         );
 
         return response()->json($messages);
@@ -51,14 +52,14 @@ class MessageController extends BaseApiController
      * Send message
      *
      * @param  \App\Http\Requests\Api\V1\MessageRequest $request
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function create(MessageRequest $request)
     {
-    	$data = $request->validated();
-    	$message = $this->messagingService->sendMessage(auth()->user(), $data);
+        $data = $request->validated();
+        $message = $this->messagingService->sendMessage(auth()->user(), $data);
 
-    	return response()->json($message);
+        return response()->json($message);
     }
 }

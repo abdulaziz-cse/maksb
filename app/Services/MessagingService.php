@@ -2,17 +2,17 @@
 
 namespace App\Services;
 
-use App\Contracts\Repositories\ProjectRepositoryInterface;
+use Carbon\Carbon;
+use App\Models\Message;
 use App\Events\ChatMessage;
+use App\Models\Conversation;
 use App\Models\V2\User\User;
 use App\Notifications\NewMessage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Validation\ValidationException;
-use App\Models\Conversation;
-use App\Models\Message;
-use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class MessagingService
 {
